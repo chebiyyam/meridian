@@ -49,6 +49,26 @@ const QUOTES = [
   "Knowing is not enough; we must apply. Willing is not enough; we must do.",
   "Motivation is what gets you started. Habit is what keeps you going.",
   "The future belongs to those who believe in the beauty of their dreams.",
+  "Storms make trees take deeper roots.",
+  "The only way to do great work is to love what you do.",
+  "In the middle of every difficulty lies opportunity.",
+  "It always seems impossible until it is done.",
+  "You miss 100% of the shots you don't take.",
+  "The best time to plant a tree was 20 years ago. The second best time is now.",
+  "Your limitation — it's only your imagination.",
+  "Great things never come from comfort zones.",
+  "Success is walking from failure to failure with no loss of enthusiasm.",
+  "Don't watch the clock. Do what it does. Keep going.",
+  "Someday is not a day of the week.",
+  "If you want to achieve greatness, stop asking for permission.",
+  "Things work out best for those who make the best of how things work out.",
+  "To live a creative life, we must lose our fear of being wrong.",
+  "If you are not willing to risk the usual, you will have to settle for the ordinary.",
+  "All our dreams can come true if we have the courage to pursue them.",
+  "Good things come to people who wait, but better things come to those who go out and get them.",
+  "If you do what you always did, you will get what you always got.",
+  "Success is not how high you have climbed, but how you make a positive difference.",
+  "Knowing yourself is the beginning of all wisdom.",
 ];
 
 const DAYS = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
@@ -375,6 +395,7 @@ function MeridianApp({ user }) {
           <div style={{ fontSize: "10px", color: "#6B5E4E", letterSpacing: "2px", textTransform: "uppercase", marginBottom: "8px" }}>Done: {completionRate}%</div>
           <div style={{ height: "3px", background: "#2E2820", marginBottom: "14px" }}><div style={fill(completionRate, "#C4A882")} /></div>
           <button onClick={signOut} style={{ background: "none", border: "none", color: "#6B5E4E", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", padding: 0, fontFamily: "Georgia, serif" }}>Sign Out</button>
+          <div style={{ fontSize: "9px", color: "#3A3028", marginTop: "12px", letterSpacing: "1px" }}>© 2026 Chebiyyam</div>
         </div>
       </div>
 
