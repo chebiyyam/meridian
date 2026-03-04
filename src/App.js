@@ -153,7 +153,6 @@ function AIScheduler() {
     // Build time blocks starting at 8am
     const blocks = [];
     let currentHour = 8;
-    const WORK_START = 8;
     const WORK_END = 22;
     const BREAK_AFTER = 2; // break every 2 hours
 
@@ -295,7 +294,15 @@ function AIScheduler() {
 
 // ── MAIN APP ─────────────────────────────────────────────────────────────────
 function MeridianApp({ user }) {
-  const [view, setView] = useState("dashboard");
+  const [view, setView] = useState(() => {
+    const hash = window.location.hash.replace("#", "");
+    return ["dashboard","calendar","tasks","goals","scheduler"].includes(hash) ? hash : "dashboard";
+  });
+
+  const navigate = (v) => {
+    setView(v);
+    window.location.hash = v;
+  };
   const [goals, setGoals] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [events, setEvents] = useState([]);
@@ -419,8 +426,8 @@ function MeridianApp({ user }) {
           <div style={{ fontSize: "10px", color: "#6B5E4E", letterSpacing: "2px", marginTop: "4px", textTransform: "uppercase" }}>Your operating system</div>
         </div>
         <nav style={{ padding: "20px 0", flex: 1 }}>
-          {[["dashboard","Dashboard"],["calendar","Calendar"],["tasks","Tasks"],["goals","Goals"],["scheduler","AI Scheduler"]].map(([id,lbl]) => (
-            <button key={id} style={navBtn(view===id)} onClick={() => setView(id)}>{lbl}</button>
+          {[["dashboard","Dashboard"],["calendar","Calendar"],["tasks","Tasks"],["goals","Goals"],["scheduler","Schedule Builder"]].map(([id,lbl]) => (
+            <button key={id} style={navBtn(view===id)} onClick={() => navigate(id)}>{lbl}</button>
           ))}
         </nav>
         <div style={{ padding: "16px 28px", borderTop: "1px solid #2E2820" }}>
@@ -438,7 +445,7 @@ function MeridianApp({ user }) {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "40px" }}>
           <div>
             <div style={{ fontSize: "32px", fontWeight: "400", letterSpacing: "1px" }}>
-              {view === "dashboard" ? greeting : view === "calendar" ? "Calendar" : view === "tasks" ? "Tasks" : view === "goals" ? "Goals" : "AI Scheduler"}
+              {view === "dashboard" ? greeting : view === "calendar" ? "Calendar" : view === "tasks" ? "Tasks" : view === "goals" ? "Goals" : "Schedule Builder"}
             </div>
             <div style={{ fontSize: "12px", color: "#9B8B7A", letterSpacing: "2px", textTransform: "uppercase", marginTop: "6px" }}>
               {DAYS[today.getDay()]}, {MONTHS[today.getMonth()]} {today.getDate()}, {today.getFullYear()}
@@ -458,7 +465,7 @@ function MeridianApp({ user }) {
               <div style={{ ...S.card, borderLeft: "3px solid #C4A882", marginBottom: "24px" }}>
                 <div style={{ fontSize: "14px", marginBottom: "8px" }}>Welcome to Meridian.</div>
                 <div style={{ fontSize: "12px", color: "#9B8B7A", marginBottom: "16px" }}>Start by creating your goals. Add the commitments you want to track and stay accountable to.</div>
-                <button style={S.btn} onClick={() => { setView("goals"); setShowAddGoal(true); }}>Create Your First Goal</button>
+                <button style={S.btn} onClick={() => { navigate("goals"); setShowAddGoal(true); }}>Create Your First Goal</button>
               </div>
             )}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "20px", marginBottom: "24px" }}>
@@ -484,7 +491,7 @@ function MeridianApp({ user }) {
               <div style={S.card}>
                 <div style={S.cardTitle}>
                   <span>Upcoming Tasks</span>
-                  <button style={S.btnOut} onClick={() => { if(noGoals){setView("goals");setShowAddGoal(true);}else setShowAddTask(true); }}>+ Add</button>
+                  <button style={S.btnOut} onClick={() => { if(noGoals){navigate("goals");setShowAddGoal(true);}else setShowAddTask(true); }}>+ Add</button>
                 </div>
                 {upcomingTasks.length === 0 && <div style={{ fontSize: "13px", color: "#9B8B7A" }}>{noGoals ? "Create a goal first to start adding tasks." : "No tasks yet."}</div>}
                 {upcomingTasks.map(task => (
@@ -536,7 +543,7 @@ function MeridianApp({ user }) {
                   <button style={{ background: "none", border: "none", cursor: "pointer", fontSize: "18px", color: "#1A1612" }}
                     onClick={() => { if(calMonth===11){setCalMonth(0);setCalYear(y=>y+1);}else setCalMonth(m=>m+1); }}>&gt;</button>
                 </div>
-                <button style={S.btnOut} onClick={() => { if(noGoals){setView("goals");setShowAddGoal(true);}else setShowAddEvent(true); }}>+ Event</button>
+                <button style={S.btnOut} onClick={() => { if(noGoals){navigate("goals");setShowAddGoal(true);}else setShowAddEvent(true); }}>+ Event</button>
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: "2px" }}>
                 {DAYS.map(d => <div key={d} style={{ textAlign: "center", fontSize: "10px", letterSpacing: "2px", color: "#9B8B7A", padding: "8px 0", textTransform: "uppercase" }}>{d}</div>)}
@@ -574,7 +581,7 @@ function MeridianApp({ user }) {
             <div style={S.card}>
               <div style={S.cardTitle}>
                 <span>Pending ({pendingTasks.length})</span>
-                <button style={S.btnOut} onClick={() => { if(noGoals){setView("goals");setShowAddGoal(true);}else setShowAddTask(true); }}>+ Task</button>
+                <button style={S.btnOut} onClick={() => { if(noGoals){navigate("goals");setShowAddGoal(true);}else setShowAddTask(true); }}>+ Task</button>
               </div>
               {pendingTasks.length===0 && <div style={{fontSize:"13px",color:"#9B8B7A"}}>{noGoals?"Create a goal first.":"All caught up. Remarkable."}</div>}
               {pendingTasks.map(task=>(
@@ -659,7 +666,7 @@ function MeridianApp({ user }) {
         {/* AI SCHEDULER */}
         {view === "scheduler" && (
           <div style={S.card}>
-            <div style={S.cardTitle}>AI Schedule Builder</div>
+            <div style={S.cardTitle}>Schedule Builder</div>
             <AIScheduler />
           </div>
         )}
