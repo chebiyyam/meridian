@@ -1,54 +1,88 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  "https://tbztpvqwiutcrvecqauj.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRienRwdnF3aXV0Y3J2ZWNxYXVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1ODUwMjIsImV4cCI6MjA4ODE2MTAyMn0.ybcgn0ahWdmRbFFD5zNBXUGbLlqHnllweuE2ws6l7V0"
+);
 
 const GOALS = [
-  { id: "oxford", label: "Oxford Internship", color: "#8B1A1A", icon: "[O]" },
-  { id: "tamu", label: "TAMU Research", color: "#1A3A5C", icon: "[T]" },
-  { id: "clubs", label: "Clubs & EC", color: "#2C4A2E", icon: "[C]" },
-  { id: "academics", label: "Academics", color: "#4A3520", icon: "[A]" },
+  { id: "oxford", label: "Oxford Internship", color: "#8B1A1A" },
+  { id: "tamu", label: "TAMU Research", color: "#1A3A5C" },
+  { id: "clubs", label: "Clubs & EC", color: "#2C4A2E" },
+  { id: "academics", label: "Academics", color: "#4A3520" },
 ];
 
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 
-function getDaysInMonth(year, month) {
-  return new Date(year, month + 1, 0).getDate();
+function getDaysInMonth(year, month) { return new Date(year, month + 1, 0).getDate(); }
+function getFirstDayOfMonth(year, month) { return new Date(year, month, 1).getDay(); }
+
+function AuthScreen() {
+  const [mode, setMode] = useState("login");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const s = {
+    wrap: { minHeight: "100vh", background: "#0E0C0A", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Georgia, serif" },
+    box: { width: "400px", padding: "48px", background: "#1A1612", border: "1px solid #2E2820" },
+    logo: { fontSize: "28px", letterSpacing: "6px", color: "#C4A882", textTransform: "uppercase", marginBottom: "8px" },
+    sub: { fontSize: "11px", color: "#6B5E4E", letterSpacing: "2px", textTransform: "uppercase", marginBottom: "40px" },
+    label: { fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#9B8B7A", marginBottom: "6px", display: "block" },
+    input: { width: "100%", padding: "12px 14px", background: "#0E0C0A", border: "1px solid #2E2820", color: "#F5F2EC", fontSize: "13px", fontFamily: "Georgia, serif", outline: "none", boxSizing: "border-box", marginBottom: "16px" },
+    btn: { width: "100%", padding: "14px", background: "#C4A882", color: "#0E0C0A", border: "none", fontSize: "11px", letterSpacing: "3px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif", marginTop: "8px" },
+    toggle: { fontSize: "11px", color: "#6B5E4E", textAlign: "center", marginTop: "24px", cursor: "pointer" },
+    error: { fontSize: "11px", color: "#8B1A1A", marginBottom: "16px", padding: "8px 12px", background: "#8B1A1A18", border: "1px solid #8B1A1A40" },
+    success: { fontSize: "11px", color: "#2C4A2E", marginBottom: "16px", padding: "8px 12px", background: "#2C4A2E18", border: "1px solid #2C4A2E40" },
+  };
+
+  const handle = async () => {
+    setError(""); setMessage(""); setLoading(true);
+    if (mode === "login") {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) setError(error.message);
+    } else {
+      const { error } = await supabase.auth.signUp({ email, password });
+      if (error) setError(error.message);
+      else setMessage("Account created! Check your email to confirm, then sign in.");
+    }
+    setLoading(false);
+  };
+
+  return (
+    <div style={s.wrap}>
+      <div style={s.box}>
+        <div style={s.logo}>Meridian</div>
+        <div style={s.sub}>Your operating system</div>
+        {error && <div style={s.error}>{error}</div>}
+        {message && <div style={s.success}>{message}</div>}
+        <label style={s.label}>Email</label>
+        <input style={s.input} type="email" value={email} onChange={e => setEmail(e.target.value)} onKeyDown={e => e.key === "Enter" && handle()} />
+        <label style={s.label}>Password</label>
+        <input style={s.input} type="password" value={password} onChange={e => setPassword(e.target.value)} onKeyDown={e => e.key === "Enter" && handle()} />
+        <button style={s.btn} onClick={handle} disabled={loading}>
+          {loading ? "..." : mode === "login" ? "Sign In" : "Create Account"}
+        </button>
+        <div style={s.toggle} onClick={() => { setMode(mode === "login" ? "signup" : "login"); setError(""); setMessage(""); }}>
+          {mode === "login" ? "No account? Sign up" : "Have an account? Sign in"}
+        </div>
+      </div>
+    </div>
+  );
 }
-function getFirstDayOfMonth(year, month) {
-  return new Date(year, month, 1).getDay();
-}
 
-const initialTasks = [
-  { id: 1, text: "Submit Oxford progress report", goal: "oxford", due: "2026-03-05", done: false, priority: "high" },
-  { id: 2, text: "TAMU lab meeting prep", goal: "tamu", due: "2026-03-04", done: false, priority: "high" },
-  { id: 3, text: "Review protein folding paper", goal: "tamu", due: "2026-03-06", done: true, priority: "med" },
-  { id: 4, text: "Finance club treasurer report", goal: "clubs", due: "2026-03-07", done: false, priority: "med" },
-  { id: 5, text: "ECON 301 problem set", goal: "academics", due: "2026-03-05", done: false, priority: "high" },
-  { id: 6, text: "Email Oxford supervisor", goal: "oxford", due: "2026-03-03", done: true, priority: "low" },
-];
-
-const initialEvents = [
-  { id: 1, title: "TAMU Lab Meeting", date: "2026-03-04", time: "10:00", goal: "tamu" },
-  { id: 2, title: "Oxford Check-in Call", date: "2026-03-06", time: "14:00", goal: "oxford" },
-  { id: 3, title: "Finance Club", date: "2026-03-07", time: "18:00", goal: "clubs" },
-  { id: 4, title: "ECON 301 Midterm", date: "2026-03-12", time: "09:00", goal: "academics" },
-  { id: 5, title: "Research Presentation", date: "2026-03-18", time: "13:00", goal: "tamu" },
-  { id: 6, title: "Oxford Deadline", date: "2026-03-20", time: "23:59", goal: "oxford" },
-];
-
-const streakData = {
-  oxford: { current: 12, best: 18 },
-  tamu: { current: 8, best: 14 },
-  clubs: { current: 5, best: 9 },
-  academics: { current: 21, best: 21 },
-};
-
-export default function App() {
+function MeridianApp({ user }) {
   const [view, setView] = useState("dashboard");
-  const [tasks, setTasks] = useState(initialTasks);
-  const [events, setEvents] = useState(initialEvents);
-  const [today] = useState(new Date(2026, 2, 3));
-  const [calMonth, setCalMonth] = useState(2);
-  const [calYear, setCalYear] = useState(2026);
+  const [tasks, setTasks] = useState([]);
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const today = new Date();
+  const [calMonth, setCalMonth] = useState(today.getMonth());
+  const [calYear, setCalYear] = useState(today.getFullYear());
   const [selectedDate, setSelectedDate] = useState(null);
   const [newTask, setNewTask] = useState({ text: "", goal: "oxford", due: "", priority: "med" });
   const [newEvent, setNewEvent] = useState({ title: "", date: "", time: "", goal: "oxford" });
@@ -56,40 +90,56 @@ export default function App() {
   const [showAddEvent, setShowAddEvent] = useState(false);
 
   const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,"0")}-${String(today.getDate()).padStart(2,"0")}`;
-  const daysInMonth = getDaysInMonth(calYear, calMonth);
-  const firstDay = getFirstDayOfMonth(calYear, calMonth);
 
-  const toggleTask = (id) => setTasks(tasks.map(t => t.id === id ? { ...t, done: !t.done } : t));
+  useEffect(() => { fetchAll(); }, []);
 
-  const addTask = () => {
+  const fetchAll = async () => {
+    setLoading(true);
+    const [{ data: t }, { data: e }] = await Promise.all([
+      supabase.from("tasks").select("*").order("created_at"),
+      supabase.from("events").select("*").order("date"),
+    ]);
+    setTasks(t || []);
+    setEvents(e || []);
+    setLoading(false);
+  };
+
+  const toggleTask = async (task) => {
+    const { data } = await supabase.from("tasks").update({ done: !task.done }).eq("id", task.id).select().single();
+    if (data) setTasks(tasks.map(t => t.id === task.id ? data : t));
+  };
+
+  const addTask = async () => {
     if (!newTask.text.trim()) return;
-    setTasks([...tasks, { ...newTask, id: Date.now(), done: false }]);
-    setNewTask({ text: "", goal: "oxford", due: "", priority: "med" });
-    setShowAddTask(false);
+    const { data } = await supabase.from("tasks").insert({ ...newTask, user_id: user.id, done: false }).select().single();
+    if (data) { setTasks([...tasks, data]); setNewTask({ text: "", goal: "oxford", due: "", priority: "med" }); setShowAddTask(false); }
   };
 
-  const addEvent = () => {
+  const addEvent = async () => {
     if (!newEvent.title.trim() || !newEvent.date) return;
-    setEvents([...events, { ...newEvent, id: Date.now() }]);
-    setNewEvent({ title: "", date: "", time: "", goal: "oxford" });
-    setShowAddEvent(false);
+    const { data } = await supabase.from("events").insert({ ...newEvent, user_id: user.id }).select().single();
+    if (data) { setEvents([...events, data]); setNewEvent({ title: "", date: "", time: "", goal: "oxford" }); setShowAddEvent(false); }
   };
+
+  const signOut = () => supabase.auth.signOut();
 
   const pendingTasks = tasks.filter(t => !t.done);
   const doneTasks = tasks.filter(t => t.done);
-  const completionRate = Math.round((doneTasks.length / tasks.length) * 100);
-  const eventsForDate = (dateStr) => events.filter(e => e.date === dateStr);
+  const completionRate = tasks.length ? Math.round((doneTasks.length / tasks.length) * 100) : 0;
+  const eventsForDate = (ds) => events.filter(e => e.date === ds);
   const todayEvents = eventsForDate(todayStr);
   const upcomingTasks = pendingTasks.filter(t => t.due).sort((a, b) => new Date(a.due) - new Date(b.due)).slice(0, 5);
   const goalColor = (id) => GOALS.find(g => g.id === id)?.color || "#555";
   const goalLabel = (id) => GOALS.find(g => g.id === id)?.label || id;
+  const daysInMonth = getDaysInMonth(calYear, calMonth);
+  const firstDay = getFirstDayOfMonth(calYear, calMonth);
   const calDateStr = (day) => `${calYear}-${String(calMonth+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
 
   const s = {
-    app: { minHeight: "100vh", background: "#F5F2EC", fontFamily: "'Georgia', 'Times New Roman', serif", color: "#1A1612" },
+    app: { minHeight: "100vh", background: "#F5F2EC", fontFamily: "Georgia, 'Times New Roman', serif", color: "#1A1612" },
     sidebar: { position: "fixed", left: 0, top: 0, bottom: 0, width: "220px", background: "#1A1612", display: "flex", flexDirection: "column", zIndex: 100 },
     main: { marginLeft: "220px", padding: "40px 48px", minHeight: "100vh" },
-    card: { background: "#FDFAF6", border: "1px solid #E0D8CC", padding: "24px", marginBottom: "0" },
+    card: { background: "#FDFAF6", border: "1px solid #E0D8CC", padding: "24px" },
     cardTitle: { fontSize: "10px", letterSpacing: "3px", textTransform: "uppercase", color: "#9B8B7A", marginBottom: "16px", display: "flex", justifyContent: "space-between", alignItems: "center" },
     btn: { padding: "10px 20px", background: "#1A1612", color: "#F5F2EC", border: "none", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer" },
     btnOutline: { padding: "8px 16px", background: "transparent", color: "#1A1612", border: "1px solid #C0B8AC", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer" },
@@ -106,76 +156,68 @@ export default function App() {
     border: "none", width: "100%", textAlign: "left", borderLeft: active ? "2px solid #C4A882" : "2px solid transparent",
   });
 
-  const taskItem = (done) => ({
+  const taskRow = (done) => ({
     display: "flex", alignItems: "flex-start", gap: "12px", padding: "12px 0",
     borderBottom: "1px solid #EDE8E0", opacity: done ? 0.5 : 1, cursor: "pointer",
   });
 
-  const checkbox = (done) => ({
+  const chk = (done) => ({
     width: "16px", height: "16px", border: `1.5px solid ${done ? "#C4A882" : "#C0B8AC"}`,
     background: done ? "#C4A882" : "transparent", display: "flex", alignItems: "center",
-    justifyContent: "center", flexShrink: 0, marginTop: "2px", cursor: "pointer",
+    justifyContent: "center", flexShrink: 0, marginTop: "2px",
   });
 
-  const goalDot = (goalId) => ({
-    width: "6px", height: "6px", borderRadius: "50%", background: goalColor(goalId), flexShrink: 0, marginTop: "6px",
-  });
+  const dot = (id) => ({ width: "6px", height: "6px", borderRadius: "50%", background: goalColor(id), flexShrink: 0, marginTop: "6px" });
 
-  const priorityBadge = (p) => ({
+  const badge = (p) => ({
     fontSize: "9px", letterSpacing: "1px", textTransform: "uppercase", padding: "2px 6px", flexShrink: 0,
     background: p === "high" ? "#8B1A1A20" : p === "med" ? "#4A352020" : "#2C4A2E20",
     color: p === "high" ? "#8B1A1A" : p === "med" ? "#4A3520" : "#2C4A2E",
   });
 
-  const eventChip = (goalId) => ({
-    fontSize: "11px", padding: "4px 10px", background: goalColor(goalId) + "18",
-    color: goalColor(goalId), borderLeft: `2px solid ${goalColor(goalId)}`, marginBottom: "6px",
+  const chip = (id) => ({
+    fontSize: "11px", padding: "4px 10px", background: goalColor(id) + "18",
+    color: goalColor(id), borderLeft: `2px solid ${goalColor(id)}`, marginBottom: "6px",
     display: "flex", justifyContent: "space-between",
   });
 
-  const progressFill = (pct, color) => ({
-    height: "4px", width: `${pct}%`, background: color || "#1A1612", transition: "width 0.6s ease",
-  });
+  const fill = (pct, color) => ({ height: "4px", width: `${pct}%`, background: color || "#1A1612", transition: "width 0.6s ease" });
 
-  const calDay = (isToday, isSelected) => ({
+  const dayCell = (isToday, isSelected) => ({
     aspectRatio: "1", display: "flex", flexDirection: "column", alignItems: "center",
     justifyContent: "flex-start", padding: "6px 4px",
     background: isToday ? "#1A1612" : isSelected ? "#E8E0D4" : "transparent",
     color: isToday ? "#F5F2EC" : "#1A1612", cursor: "pointer", fontSize: "12px",
   });
 
-  const navItems = [
-    { id: "dashboard", label: "Dashboard" },
-    { id: "calendar", label: "Calendar" },
-    { id: "tasks", label: "Tasks" },
-    { id: "goals", label: "Goals" },
-  ];
+  if (loading) return (
+    <div style={{ minHeight: "100vh", background: "#F5F2EC", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Georgia, serif" }}>
+      <div style={{ fontSize: "12px", letterSpacing: "4px", color: "#9B8B7A", textTransform: "uppercase" }}>Loading...</div>
+    </div>
+  );
 
   return (
     <div style={s.app}>
-      {/* Sidebar */}
       <div style={s.sidebar}>
         <div style={{ padding: "32px 28px 24px", borderBottom: "1px solid #2E2820" }}>
           <div style={{ fontSize: "22px", fontWeight: "400", color: "#F5F2EC", letterSpacing: "4px", textTransform: "uppercase" }}>Meridian</div>
           <div style={{ fontSize: "10px", color: "#6B5E4E", letterSpacing: "2px", marginTop: "4px", textTransform: "uppercase" }}>Your operating system</div>
         </div>
         <nav style={{ padding: "20px 0", flex: 1 }}>
-          {navItems.map(item => (
-            <button key={item.id} style={navItem(view === item.id)} onClick={() => setView(item.id)}>
-              {item.label}
-            </button>
+          {[{ id: "dashboard", label: "Dashboard" }, { id: "calendar", label: "Calendar" }, { id: "tasks", label: "Tasks" }, { id: "goals", label: "Goals" }].map(item => (
+            <button key={item.id} style={navItem(view === item.id)} onClick={() => setView(item.id)}>{item.label}</button>
           ))}
         </nav>
-        <div style={{ padding: "20px 28px", borderTop: "1px solid #2E2820" }}>
-          <div style={{ fontSize: "10px", color: "#6B5E4E", letterSpacing: "2px", marginBottom: "8px", textTransform: "uppercase" }}>Completion</div>
-          <div style={{ fontSize: "28px", color: "#C4A882" }}>{completionRate}%</div>
-          <div style={{ height: "3px", background: "#2E2820", marginTop: "8px" }}>
-            <div style={progressFill(completionRate, "#C4A882")} />
+        <div style={{ padding: "16px 28px", borderTop: "1px solid #2E2820" }}>
+          <div style={{ fontSize: "10px", color: "#6B5E4E", marginBottom: "4px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.email}</div>
+          <div style={{ fontSize: "10px", color: "#6B5E4E", letterSpacing: "2px", textTransform: "uppercase", marginBottom: "8px" }}>Done: {completionRate}%</div>
+          <div style={{ height: "3px", background: "#2E2820", marginBottom: "14px" }}>
+            <div style={fill(completionRate, "#C4A882")} />
           </div>
+          <button onClick={signOut} style={{ background: "none", border: "none", color: "#6B5E4E", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", padding: 0 }}>Sign Out</button>
         </div>
       </div>
 
-      {/* Main */}
       <div style={s.main}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "40px" }}>
           <div>
@@ -191,7 +233,6 @@ export default function App() {
           </div>
         </div>
 
-        {/* DASHBOARD */}
         {view === "dashboard" && (
           <>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "20px", marginBottom: "24px" }}>
@@ -199,65 +240,56 @@ export default function App() {
                 <div style={s.cardTitle}>Tasks Remaining</div>
                 <div style={{ fontSize: "48px", fontWeight: "400", lineHeight: 1 }}>{pendingTasks.length}</div>
                 <div style={{ fontSize: "11px", color: "#9B8B7A", marginTop: "8px" }}>of {tasks.length} total</div>
-                <div style={{ height: "3px", background: "#E0D8CC", marginTop: "12px" }}>
-                  <div style={progressFill(completionRate)} />
-                </div>
+                <div style={{ height: "3px", background: "#E0D8CC", marginTop: "12px" }}><div style={fill(completionRate)} /></div>
               </div>
               <div style={s.card}>
                 <div style={s.cardTitle}>Today's Events</div>
                 <div style={{ fontSize: "48px", fontWeight: "400", lineHeight: 1 }}>{todayEvents.length}</div>
-                <div style={{ fontSize: "11px", color: "#9B8B7A", marginTop: "8px" }}>scheduled commitments</div>
-                {todayEvents.map(e => (
-                  <div key={e.id} style={{ fontSize: "11px", color: "#6B5E4E", marginTop: "6px" }}>
-                    {e.time} - {e.title}
-                  </div>
-                ))}
+                <div style={{ fontSize: "11px", color: "#9B8B7A", marginTop: "8px" }}>scheduled today</div>
+                {todayEvents.map(e => <div key={e.id} style={{ fontSize: "11px", color: "#6B5E4E", marginTop: "6px" }}>{e.time} - {e.title}</div>)}
               </div>
               <div style={s.card}>
-                <div style={s.cardTitle}>Best Streak</div>
-                <div style={{ fontSize: "48px", fontWeight: "400", lineHeight: 1 }}>21</div>
-                <div style={{ fontSize: "11px", color: "#9B8B7A", marginTop: "8px" }}>days - Academics</div>
+                <div style={s.cardTitle}>Active Goals</div>
+                <div style={{ fontSize: "48px", fontWeight: "400", lineHeight: 1 }}>{GOALS.length}</div>
+                <div style={{ fontSize: "11px", color: "#9B8B7A", marginTop: "8px" }}>commitments tracked</div>
               </div>
             </div>
-
             <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: "20px" }}>
               <div style={s.card}>
                 <div style={s.cardTitle}>
                   <span>Upcoming Tasks</span>
                   <button style={s.btnOutline} onClick={() => setShowAddTask(true)}>+ Add</button>
                 </div>
+                {upcomingTasks.length === 0 && <div style={{ fontSize: "13px", color: "#9B8B7A" }}>No tasks yet. Add one to get started.</div>}
                 {upcomingTasks.map(task => (
-                  <div key={task.id} style={taskItem(task.done)} onClick={() => toggleTask(task.id)}>
-                    <div style={checkbox(task.done)}>{task.done && <span style={{ fontSize: "10px", color: "#FDFAF6" }}>v</span>}</div>
-                    <div style={goalDot(task.goal)} />
-                    <div style={{ flex: 1, fontSize: "13px", textDecoration: task.done ? "line-through" : "none", color: task.done ? "#9B8B7A" : "#1A1612" }}>{task.text}</div>
-                    <div style={priorityBadge(task.priority)}>{task.priority}</div>
+                  <div key={task.id} style={taskRow(task.done)} onClick={() => toggleTask(task)}>
+                    <div style={chk(task.done)}>{task.done && <span style={{ fontSize: "10px", color: "#FDFAF6" }}>v</span>}</div>
+                    <div style={dot(task.goal)} />
+                    <div style={{ flex: 1, fontSize: "13px" }}>{task.text}</div>
+                    <div style={badge(task.priority)}>{task.priority}</div>
                     {task.due && <div style={{ fontSize: "10px", color: "#9B8B7A", flexShrink: 0 }}>{task.due.slice(5)}</div>}
                   </div>
                 ))}
               </div>
               <div style={s.card}>
-                <div style={s.cardTitle}>Accountability Streaks</div>
+                <div style={s.cardTitle}>Goals Overview</div>
                 {GOALS.map(g => {
-                  const st = streakData[g.id];
-                  const pct = Math.round((st.current / st.best) * 100);
+                  const gt = tasks.filter(t => t.goal === g.id);
+                  const d = gt.filter(t => t.done).length;
+                  const p = gt.length ? Math.round((d / gt.length) * 100) : 0;
                   return (
-                    <div key={g.id} style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "14px" }}>
-                      <div style={{ fontSize: "11px", color: "#6B5E4E", width: "120px", flexShrink: 0 }}>{g.label}</div>
-                      <div style={{ flex: 1, height: "6px", background: "#E0D8CC" }}>
-                        <div style={{ height: "6px", width: `${pct}%`, background: g.color }} />
+                    <div key={g.id} style={{ marginBottom: "16px" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}>
+                        <div style={{ fontSize: "11px", color: "#6B5E4E" }}>{g.label}</div>
+                        <div style={{ fontSize: "10px", color: "#9B8B7A" }}>{d}/{gt.length}</div>
                       </div>
-                      <div style={{ fontSize: "11px", color: "#6B5E4E", minWidth: "30px", textAlign: "right" }}>{st.current}d</div>
+                      <div style={{ height: "4px", background: "#E0D8CC" }}><div style={fill(p, g.color)} /></div>
                     </div>
                   );
                 })}
                 <div style={{ marginTop: "16px", paddingTop: "16px", borderTop: "1px solid #EDE8E0" }}>
                   <div style={{ fontSize: "10px", color: "#9B8B7A", letterSpacing: "2px", textTransform: "uppercase", marginBottom: "8px" }}>Today's Focus</div>
-                  {todayEvents.map(e => (
-                    <div key={e.id} style={eventChip(e.goal)}>
-                      <span>{e.title}</span><span>{e.time}</span>
-                    </div>
-                  ))}
+                  {todayEvents.map(e => <div key={e.id} style={chip(e.goal)}><span>{e.title}</span><span>{e.time}</span></div>)}
                   {todayEvents.length === 0 && <div style={{ fontSize: "12px", color: "#C0B8AC" }}>No events today</div>}
                 </div>
               </div>
@@ -265,7 +297,6 @@ export default function App() {
           </>
         )}
 
-        {/* CALENDAR */}
         {view === "calendar" && (
           <div style={{ display: "grid", gridTemplateColumns: "1fr 320px", gap: "24px" }}>
             <div style={s.card}>
@@ -280,9 +311,7 @@ export default function App() {
                 <button style={s.btnOutline} onClick={() => setShowAddEvent(true)}>+ Event</button>
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: "2px" }}>
-                {DAYS.map(d => (
-                  <div key={d} style={{ textAlign: "center", fontSize: "10px", letterSpacing: "2px", color: "#9B8B7A", padding: "8px 0", textTransform: "uppercase" }}>{d}</div>
-                ))}
+                {DAYS.map(d => <div key={d} style={{ textAlign: "center", fontSize: "10px", letterSpacing: "2px", color: "#9B8B7A", padding: "8px 0", textTransform: "uppercase" }}>{d}</div>)}
                 {Array.from({ length: firstDay }).map((_, i) => <div key={`e${i}`} />)}
                 {Array.from({ length: daysInMonth }).map((_, i) => {
                   const day = i + 1;
@@ -291,12 +320,10 @@ export default function App() {
                   const isToday = ds === todayStr;
                   const isSelected = ds === selectedDate;
                   return (
-                    <div key={day} style={calDay(isToday, isSelected)} onClick={() => setSelectedDate(isSelected ? null : ds)}>
+                    <div key={day} style={dayCell(isToday, isSelected)} onClick={() => setSelectedDate(isSelected ? null : ds)}>
                       <span>{day}</span>
                       <div style={{ display: "flex", gap: "2px", flexWrap: "wrap", justifyContent: "center" }}>
-                        {evs.slice(0, 3).map(e => (
-                          <div key={e.id} style={{ width: "4px", height: "4px", borderRadius: "50%", background: isToday ? "#C4A882" : goalColor(e.goal), marginTop: "2px" }} />
-                        ))}
+                        {evs.slice(0, 3).map(e => <div key={e.id} style={{ width: "4px", height: "4px", borderRadius: "50%", background: isToday ? "#C4A882" : goalColor(e.goal), marginTop: "2px" }} />)}
                       </div>
                     </div>
                   );
@@ -306,19 +333,17 @@ export default function App() {
             <div style={s.card}>
               <div style={s.cardTitle}>{selectedDate || "All Events"}</div>
               {(selectedDate ? eventsForDate(selectedDate) : [...events].sort((a,b) => a.date.localeCompare(b.date))).map(e => (
-                <div key={e.id} style={{ ...eventChip(e.goal), flexDirection: "column", gap: "2px", alignItems: "flex-start", marginBottom: "8px" }}>
+                <div key={e.id} style={{ ...chip(e.goal), flexDirection: "column", gap: "2px", alignItems: "flex-start", marginBottom: "8px" }}>
                   <div style={{ fontWeight: "600", fontSize: "12px" }}>{e.title}</div>
                   <div style={{ fontSize: "10px", opacity: 0.7 }}>{e.date} at {e.time} - {goalLabel(e.goal)}</div>
                 </div>
               ))}
-              {selectedDate && eventsForDate(selectedDate).length === 0 && (
-                <div style={{ fontSize: "12px", color: "#C0B8AC" }}>No events on this day</div>
-              )}
+              {events.length === 0 && <div style={{ fontSize: "12px", color: "#C0B8AC" }}>No events yet.</div>}
+              {selectedDate && eventsForDate(selectedDate).length === 0 && <div style={{ fontSize: "12px", color: "#C0B8AC" }}>No events on this day</div>}
             </div>
           </div>
         )}
 
-        {/* TASKS */}
         {view === "tasks" && (
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }}>
             <div style={s.card}>
@@ -328,23 +353,24 @@ export default function App() {
               </div>
               {pendingTasks.length === 0 && <div style={{ fontSize: "13px", color: "#9B8B7A" }}>All caught up. Remarkable.</div>}
               {pendingTasks.map(task => (
-                <div key={task.id} style={taskItem(false)} onClick={() => toggleTask(task.id)}>
-                  <div style={checkbox(false)} />
-                  <div style={goalDot(task.goal)} />
+                <div key={task.id} style={taskRow(false)} onClick={() => toggleTask(task)}>
+                  <div style={chk(false)} />
+                  <div style={dot(task.goal)} />
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: "13px", color: "#1A1612" }}>{task.text}</div>
+                    <div style={{ fontSize: "13px" }}>{task.text}</div>
                     <div style={{ fontSize: "10px", color: "#9B8B7A", marginTop: "2px" }}>{goalLabel(task.goal)}{task.due ? ` - due ${task.due}` : ""}</div>
                   </div>
-                  <div style={priorityBadge(task.priority)}>{task.priority}</div>
+                  <div style={badge(task.priority)}>{task.priority}</div>
                 </div>
               ))}
             </div>
             <div style={s.card}>
               <div style={s.cardTitle}>Completed ({doneTasks.length})</div>
+              {doneTasks.length === 0 && <div style={{ fontSize: "13px", color: "#9B8B7A" }}>Nothing yet.</div>}
               {doneTasks.map(task => (
-                <div key={task.id} style={taskItem(true)} onClick={() => toggleTask(task.id)}>
-                  <div style={checkbox(true)}><span style={{ fontSize: "10px", color: "#FDFAF6" }}>v</span></div>
-                  <div style={goalDot(task.goal)} />
+                <div key={task.id} style={taskRow(true)} onClick={() => toggleTask(task)}>
+                  <div style={chk(true)}><span style={{ fontSize: "10px", color: "#FDFAF6" }}>v</span></div>
+                  <div style={dot(task.goal)} />
                   <div style={{ fontSize: "13px", textDecoration: "line-through", color: "#9B8B7A" }}>{task.text}</div>
                 </div>
               ))}
@@ -352,47 +378,37 @@ export default function App() {
           </div>
         )}
 
-        {/* GOALS */}
         {view === "goals" && (
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
             {GOALS.map(g => {
-              const st = streakData[g.id];
-              const goalTasks = tasks.filter(t => t.goal === g.id);
-              const done = goalTasks.filter(t => t.done).length;
-              const pct = goalTasks.length ? Math.round((done / goalTasks.length) * 100) : 0;
-              const goalEvents = events.filter(e => e.goal === g.id).sort((a,b) => a.date.localeCompare(b.date));
+              const gt = tasks.filter(t => t.goal === g.id);
+              const d = gt.filter(t => t.done).length;
+              const p = gt.length ? Math.round((d / gt.length) * 100) : 0;
+              const ge = events.filter(e => e.goal === g.id).sort((a,b) => a.date.localeCompare(b.date));
               return (
                 <div key={g.id} style={{ ...s.card, borderLeft: `3px solid ${g.color}` }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
-                    <div>
-                      <div style={{ fontSize: "14px", letterSpacing: "1px" }}>{g.label}</div>
-                      <div style={{ fontSize: "10px", color: "#9B8B7A" }}>Active commitment</div>
-                    </div>
-                  </div>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "12px", marginBottom: "20px" }}>
-                    {[{ label: "Streak", val: `${st.current}d` }, { label: "Best", val: `${st.best}d` }, { label: "Tasks", val: `${done}/${goalTasks.length}` }].map(stat => (
+                  <div style={{ fontSize: "14px", letterSpacing: "1px", marginBottom: "4px" }}>{g.label}</div>
+                  <div style={{ fontSize: "10px", color: "#9B8B7A", marginBottom: "20px" }}>Active commitment</div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "20px" }}>
+                    {[{ label: "Tasks Done", val: `${d}/${gt.length}` }, { label: "Progress", val: `${p}%` }].map(stat => (
                       <div key={stat.label} style={{ textAlign: "center" }}>
                         <div style={{ fontSize: "22px", color: g.color }}>{stat.val}</div>
                         <div style={{ fontSize: "10px", color: "#9B8B7A", textTransform: "uppercase" }}>{stat.label}</div>
                       </div>
                     ))}
                   </div>
-                  <div style={{ fontSize: "10px", color: "#9B8B7A", letterSpacing: "2px", textTransform: "uppercase", marginBottom: "6px" }}>Progress</div>
-                  <div style={{ height: "4px", background: "#E0D8CC" }}>
-                    <div style={progressFill(pct, g.color)} />
-                  </div>
-                  <div style={{ fontSize: "11px", color: "#9B8B7A", marginTop: "4px" }}>{pct}% tasks complete</div>
-                  {goalEvents.length > 0 && (
-                    <div style={{ marginTop: "16px" }}>
+                  <div style={{ height: "4px", background: "#E0D8CC", marginBottom: "16px" }}><div style={fill(p, g.color)} /></div>
+                  {ge.length > 0 && (
+                    <>
                       <div style={{ fontSize: "10px", color: "#9B8B7A", letterSpacing: "2px", textTransform: "uppercase", marginBottom: "8px" }}>Upcoming</div>
-                      {goalEvents.slice(0, 2).map(e => (
+                      {ge.slice(0, 2).map(e => (
                         <div key={e.id} style={{ fontSize: "11px", color: "#6B5E4E", padding: "4px 0", borderBottom: "1px solid #EDE8E0", display: "flex", justifyContent: "space-between" }}>
-                          <span>{e.title}</span>
-                          <span style={{ color: "#9B8B7A" }}>{e.date.slice(5)}</span>
+                          <span>{e.title}</span><span style={{ color: "#9B8B7A" }}>{e.date.slice(5)}</span>
                         </div>
                       ))}
-                    </div>
+                    </>
                   )}
+                  {ge.length === 0 && <div style={{ fontSize: "11px", color: "#C0B8AC" }}>No upcoming events</div>}
                 </div>
               );
             })}
@@ -400,7 +416,6 @@ export default function App() {
         )}
       </div>
 
-      {/* Add Task Modal */}
       {showAddTask && (
         <div style={s.modal} onClick={() => setShowAddTask(false)}>
           <div style={s.modalBox} onClick={e => e.stopPropagation()}>
@@ -425,7 +440,6 @@ export default function App() {
         </div>
       )}
 
-      {/* Add Event Modal */}
       {showAddEvent && (
         <div style={s.modal} onClick={() => setShowAddEvent(false)}>
           <div style={s.modalBox} onClick={e => e.stopPropagation()}>
@@ -447,4 +461,28 @@ export default function App() {
       )}
     </div>
   );
+}
+
+export default function App() {
+  const [user, setUser] = useState(null);
+  const [checking, setChecking] = useState(true);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      setChecking(false);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  if (checking) return (
+    <div style={{ minHeight: "100vh", background: "#0E0C0A", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Georgia, serif" }}>
+      <div style={{ fontSize: "12px", letterSpacing: "4px", color: "#6B5E4E", textTransform: "uppercase" }}>Meridian</div>
+    </div>
+  );
+
+  return user ? <MeridianApp user={user} /> : <AuthScreen />;
 }
