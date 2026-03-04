@@ -294,6 +294,7 @@ function AIScheduler({ user }) {
   };
 
   // Auto-save items as user types (debounced)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const timer = setTimeout(() => {
       save(items, schedule);
