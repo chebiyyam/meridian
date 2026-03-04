@@ -116,8 +116,20 @@ function AuthScreen() {
 
 // ── SMART SCHEDULER ──────────────────────────────────────────────────────────
 function AIScheduler() {
-  const [items, setItems] = useState([{ name: "", hours: "", priority: "high", deadline: "" }]);
-  const [schedule, setSchedule] = useState(null);
+  const [items, setItems] = useState(() => {
+    try { const s = localStorage.getItem("meridian_schedule_items"); return s ? JSON.parse(s) : [{ name: "", hours: "", priority: "high", deadline: "" }]; } catch { return [{ name: "", hours: "", priority: "high", deadline: "" }]; }
+  });
+  const [schedule, setSchedule] = useState(() => {
+    try { const s = localStorage.getItem("meridian_schedule_result"); return s ? JSON.parse(s) : null; } catch { return null; }
+  });
+
+  useEffect(() => {
+    try { localStorage.setItem("meridian_schedule_items", JSON.stringify(items)); } catch {}
+  }, [items]);
+
+  useEffect(() => {
+    try { if (schedule) localStorage.setItem("meridian_schedule_result", JSON.stringify(schedule)); } catch {}
+  }, [schedule]);
 
   const addItem = () => setItems([...items, { name: "", hours: "", priority: "high", deadline: "" }]);
   const updateItem = (i, field, val) => setItems(items.map((t, idx) => idx === i ? { ...t, [field]: val } : t));
@@ -143,61 +155,13 @@ function AIScheduler() {
     const valid = items.filter(t => t.name.trim() && t.hours);
     if (valid.length === 0) return;
 
-    // Score each task
     const scored = valid.map(t => {
       const days = daysUntil(t.deadline);
       const score = priorityScore(t.priority) * 3 + urgencyScore(days) * 2;
       return { ...t, days, score, hours: parseFloat(t.hours) };
     }).sort((a, b) => b.score - a.score);
 
-    // Build time blocks starting at 8am
-    const blocks = [];
-    let currentHour = 8;
-    const WORK_END = 22;
-    const BREAK_AFTER = 2; // break every 2 hours
-
-    let hoursWorked = 0;
-    for (const task of scored) {
-      let remaining = task.hours;
-      while (remaining > 0) {
-        if (currentHour >= WORK_END) break;
-        // Add a break if worked 2 hours straight
-        if (hoursWorked >= BREAK_AFTER) {
-          const breakStart = `${Math.floor(currentHour)}:${currentHour % 1 === 0.5 ? "30" : "00"}`;
-          currentHour += 0.25;
-          const breakEnd = `${Math.floor(currentHour)}:${currentHour % 1 === 0.5 ? "30" : "00"}`;
-          blocks.push({ type: "break", label: "Short Break", start: breakStart, end: breakEnd });
-          hoursWorked = 0;
-        }
-        const chunk = Math.min(remaining, 1.5);
-        const startH = Math.floor(currentHour);
-        const startM = currentHour % 1 === 0.5 ? "30" : "00";
-        currentHour += chunk;
-        const endH = Math.floor(currentHour);
-        const endM = currentHour % 1 === 0.5 ? "30" : "00";
-        blocks.push({
-          type: "task",
-          label: task.name,
-          start: `${startH}:${startM === "00" ? "00" : startM}`,
-          end: `${endH}:${endM === "00" ? "00" : endM}`,
-          priority: task.priority,
-          deadline: task.deadline,
-          days: task.days,
-        });
-        remaining -= chunk;
-        hoursWorked += chunk;
-      }
-    }
-
-    const totalHours = valid.reduce((s, t) => s + parseFloat(t.hours), 0);
-    setSchedule({ blocks, scored, totalHours });
-  };
-
-  const fmt = (t) => {
-    const [h, m] = t.split(":").map(Number);
-    const ampm = h >= 12 ? "PM" : "AM";
-    const h12 = h % 12 === 0 ? 12 : h % 12;
-    return `${h12}:${m === 0 ? "00" : m} ${ampm}`;
+    setSchedule({ scored });
   };
 
   const S = {
@@ -231,7 +195,7 @@ function AIScheduler() {
             <option value="med">Medium</option>
             <option value="low">Low</option>
           </select>
-          <input style={S.input} type="date" value={task.deadline} onChange={e => updateItem(i, "deadline", e.target.value)} />
+          <input style={S.input} type="date" min={new Date().toISOString().split("T")[0]} value={task.deadline} onChange={e => updateItem(i, "deadline", e.target.value)} />
           <button onClick={() => removeItem(i)} style={{ background: "none", border: "none", color: "#C0B8AC", fontSize: "18px", cursor: "pointer", padding: "0 4px" }}>x</button>
         </div>
       ))}
