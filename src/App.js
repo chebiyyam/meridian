@@ -282,12 +282,14 @@ function AIScheduler({ user }) {
   // Save to Supabase whenever items or schedule changes
   const save = async (newItems, newSchedule) => {
     setSyncing(true);
-    const { data: existing } = await supabase.from("schedules").select("id").eq("user_id", user.id).maybeSingle();
-    if (existing) {
-      await supabase.from("schedules").update({ items: newItems, result: newSchedule, updated_at: new Date() }).eq("user_id", user.id);
-    } else {
-      await supabase.from("schedules").insert({ user_id: user.id, items: newItems, result: newSchedule });
-    }
+    try {
+      const { data: existing } = await supabase.from("schedules").select("id").eq("user_id", user.id).maybeSingle();
+      if (existing) {
+        await supabase.from("schedules").update({ items: newItems, result: newSchedule, updated_at: new Date().toISOString() }).eq("user_id", user.id);
+      } else {
+        await supabase.from("schedules").insert({ user_id: user.id, items: newItems, result: newSchedule });
+      }
+    } catch(e) { console.error("Save error:", e); }
     setSyncing(false);
   };
 
@@ -366,9 +368,12 @@ function AIScheduler({ user }) {
         </div>
       ))}
 
-      <div style={{ display: "flex", gap: "12px", marginTop: "16px", marginBottom: "32px" }}>
+      <div style={{ display: "flex", gap: "12px", marginTop: "16px", marginBottom: "32px", alignItems: "center" }}>
         <button style={S.btnOut} onClick={addItem}>+ Add Task</button>
         <button style={S.btn} onClick={buildSchedule}>Build My Schedule</button>
+        <button style={S.btnOut} onClick={() => save(items, schedule)} disabled={syncing}>
+          {syncing ? "Saving..." : "Save"}
+        </button>
       </div>
 
       {schedule && (
