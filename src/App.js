@@ -270,7 +270,7 @@ function AIScheduler({ user }) {
   // Load from Supabase on mount
   useEffect(() => {
     const load = async () => {
-      const { data } = await supabase.from("schedules").select("*").eq("user_id", user.id).single();
+      const { data } = await supabase.from("schedules").select("*").eq("user_id", user.id).maybeSingle();
       if (data) {
         if (data.items) setItems(data.items);
         if (data.result) setSchedule(data.result);
@@ -282,7 +282,7 @@ function AIScheduler({ user }) {
   // Save to Supabase whenever items or schedule changes
   const save = async (newItems, newSchedule) => {
     setSyncing(true);
-    const { data: existing } = await supabase.from("schedules").select("id").eq("user_id", user.id).single();
+    const { data: existing } = await supabase.from("schedules").select("id").eq("user_id", user.id).maybeSingle();
     if (existing) {
       await supabase.from("schedules").update({ items: newItems, result: newSchedule, updated_at: new Date() }).eq("user_id", user.id);
     } else {
