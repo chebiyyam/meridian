@@ -261,31 +261,7 @@ function AIScheduler() {
             ))}
           </div>
 
-          {/* Time blocks */}
-          <div>
-            <div style={{ fontSize: "10px", letterSpacing: "3px", textTransform: "uppercase", color: "#9B8B7A", marginBottom: "12px" }}>
-              Your Day ({schedule.totalHours}h total)
-            </div>
-            {schedule.blocks.map((b, i) => (
-              <div key={i} style={{ display: "flex", gap: "16px", alignItems: "stretch", marginBottom: "6px" }}>
-                <div style={{ fontSize: "11px", color: "#9B8B7A", width: "110px", flexShrink: 0, paddingTop: "10px" }}>
-                  {fmt(b.start)} - {fmt(b.end)}
-                </div>
-                <div style={{
-                  flex: 1, padding: "10px 14px",
-                  background: b.type === "break" ? "#F0EDE8" : "#1A1612",
-                  borderLeft: b.type === "break" ? "2px solid #E0D8CC" : "2px solid #C4A882",
-                  color: b.type === "break" ? "#9B8B7A" : "#F5F2EC",
-                  fontSize: "12px", fontStyle: b.type === "break" ? "italic" : "normal"
-                }}>
-                  {b.label}
-                  {b.type === "task" && b.deadline && (
-                    <span style={{ fontSize: "10px", color: "#C4A882", marginLeft: "10px" }}>due {b.deadline.slice(5)}</span>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
+
         </>
       )}
     </div>
