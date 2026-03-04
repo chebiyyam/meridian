@@ -262,25 +262,41 @@ function AuthScreen({ onBack }) {
 }
 
 // ── SMART SCHEDULER ──────────────────────────────────────────────────────────
-function AIScheduler() {
-  const [items, setItems] = useState(() => {
-    try { const s = localStorage.getItem("meridian_schedule_items"); return s ? JSON.parse(s) : [{ name: "", hours: "", priority: "high", deadline: "" }]; } catch { return [{ name: "", hours: "", priority: "high", deadline: "" }]; }
-  });
-  const [schedule, setSchedule] = useState(() => {
-    try { const s = localStorage.getItem("meridian_schedule_result"); return s ? JSON.parse(s) : null; } catch { return null; }
-  });
+function AIScheduler({ user }) {
+  const [items, setItems] = useState([{ name: "", hours: "", priority: "high", deadline: "" }]);
+  const [schedule, setSchedule] = useState(null);
+  const [syncing, setSyncing] = useState(false);
 
+  // Load from Supabase on mount
   useEffect(() => {
-    try { localStorage.setItem("meridian_schedule_items", JSON.stringify(items)); } catch {}
-  }, [items]);
+    const load = async () => {
+      const { data } = await supabase.from("schedules").select("*").eq("user_id", user.id).single();
+      if (data) {
+        if (data.items) setItems(data.items);
+        if (data.result) setSchedule(data.result);
+      }
+    };
+    load();
+  }, [user.id]);
 
-  useEffect(() => {
-    try { if (schedule) localStorage.setItem("meridian_schedule_result", JSON.stringify(schedule)); } catch {}
-  }, [schedule]);
+  // Save to Supabase whenever items or schedule changes
+  const save = async (newItems, newSchedule) => {
+    setSyncing(true);
+    const { data: existing } = await supabase.from("schedules").select("id").eq("user_id", user.id).single();
+    if (existing) {
+      await supabase.from("schedules").update({ items: newItems, result: newSchedule, updated_at: new Date() }).eq("user_id", user.id);
+    } else {
+      await supabase.from("schedules").insert({ user_id: user.id, items: newItems, result: newSchedule });
+    }
+    setSyncing(false);
+  };
 
-  const addItem = () => setItems([...items, { name: "", hours: "", priority: "high", deadline: "" }]);
-  const updateItem = (i, field, val) => setItems(items.map((t, idx) => idx === i ? { ...t, [field]: val } : t));
-  const removeItem = (i) => setItems(items.filter((_, idx) => idx !== i));
+  const updateItems = (newItems) => { setItems(newItems); save(newItems, schedule); };
+  const updateSchedule = (newSchedule) => { setSchedule(newSchedule); save(items, newSchedule); };
+
+  const addItem = () => updateItems([...items, { name: "", hours: "", priority: "high", deadline: "" }]);
+  const updateItem = (i, field, val) => updateItems(items.map((t, idx) => idx === i ? { ...t, [field]: val } : t));
+  const removeItem = (i) => updateItems(items.filter((_, idx) => idx !== i));
 
   const priorityScore = (p) => p === "high" ? 3 : p === "med" ? 2 : 1;
 
@@ -308,7 +324,7 @@ function AIScheduler() {
       return { ...t, days, score, hours: parseFloat(t.hours) };
     }).sort((a, b) => b.score - a.score);
 
-    setSchedule({ scored });
+    updateSchedule({ scored });
   };
 
   const S = {
@@ -322,8 +338,11 @@ function AIScheduler() {
 
   return (
     <div>
-      <div style={{ fontSize: "12px", color: "#9B8B7A", marginBottom: "24px", lineHeight: "1.7" }}>
-        Add everything you need to get done. The scheduler will prioritize by urgency and importance and map out your day.
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
+        <div style={{ fontSize: "12px", color: "#9B8B7A", lineHeight: "1.7" }}>
+          Add everything you need to get done. The scheduler will prioritize by urgency and importance.
+        </div>
+        {syncing && <div style={{ fontSize: "10px", color: "#C4A882", letterSpacing: "2px", textTransform: "uppercase" }}>Saving...</div>}
       </div>
 
       {/* Column headers */}
@@ -755,7 +774,7 @@ function MeridianApp({ user }) {
         {view === "scheduler" && (
           <div style={S.card}>
             <div style={S.cardTitle}>Schedule Builder</div>
-            <AIScheduler />
+            <AIScheduler user={user} />
           </div>
         )}
       </div>
