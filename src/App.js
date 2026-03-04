@@ -114,103 +114,180 @@ function AuthScreen() {
   );
 }
 
-// ── AI SCHEDULER ─────────────────────────────────────────────────────────────
-function AIScheduler({ goals }) {
-  const [tasks, setTasks] = useState([{ name: "", hours: "", priority: "high", deadline: "" }]);
-  const [result, setResult] = useState("");
-  const [loading, setLoading] = useState(false);
+// ── SMART SCHEDULER ──────────────────────────────────────────────────────────
+function AIScheduler() {
+  const [items, setItems] = useState([{ name: "", hours: "", priority: "high", deadline: "" }]);
+  const [schedule, setSchedule] = useState(null);
 
-  const addTask = () => setTasks([...tasks, { name: "", hours: "", priority: "high", deadline: "" }]);
-  const updateTask = (i, field, val) => setTasks(tasks.map((t, idx) => idx === i ? { ...t, [field]: val } : t));
-  const removeTask = (i) => setTasks(tasks.filter((_, idx) => idx !== i));
+  const addItem = () => setItems([...items, { name: "", hours: "", priority: "high", deadline: "" }]);
+  const updateItem = (i, field, val) => setItems(items.map((t, idx) => idx === i ? { ...t, [field]: val } : t));
+  const removeItem = (i) => setItems(items.filter((_, idx) => idx !== i));
 
-  const generate = async () => {
-    const valid = tasks.filter(t => t.name.trim() && t.hours);
+  const priorityScore = (p) => p === "high" ? 3 : p === "med" ? 2 : 1;
+
+  const daysUntil = (dateStr) => {
+    if (!dateStr) return 999;
+    const diff = new Date(dateStr) - new Date();
+    return Math.ceil(diff / (1000 * 60 * 60 * 24));
+  };
+
+  const urgencyScore = (days) => {
+    if (days <= 1) return 10;
+    if (days <= 3) return 7;
+    if (days <= 7) return 5;
+    if (days <= 14) return 3;
+    return 1;
+  };
+
+  const buildSchedule = () => {
+    const valid = items.filter(t => t.name.trim() && t.hours);
     if (valid.length === 0) return;
-    setLoading(true); setResult("");
-    try {
-      const prompt = `You are a productivity coach helping a college student manage their schedule. 
-Given these tasks, create an optimized daily schedule with specific time blocks. Be practical, concise and motivating.
 
-Tasks:
-${valid.map(t => `- "${t.name}" | ${t.hours}hrs needed | Priority: ${t.priority} | Deadline: ${t.deadline || "flexible"}`).join("\n")}
+    // Score each task
+    const scored = valid.map(t => {
+      const days = daysUntil(t.deadline);
+      const score = priorityScore(t.priority) * 3 + urgencyScore(days) * 2;
+      return { ...t, days, score, hours: parseFloat(t.hours) };
+    }).sort((a, b) => b.score - a.score);
 
-Provide:
-1. A suggested daily schedule with time blocks
-2. Which tasks to tackle first and why
-3. One key productivity tip for this workload
+    // Build time blocks starting at 8am
+    const blocks = [];
+    let currentHour = 8;
+    const WORK_START = 8;
+    const WORK_END = 22;
+    const BREAK_AFTER = 2; // break every 2 hours
 
-Keep it under 300 words. Be direct and actionable.`;
-
-      const res = await fetch("/api/schedule", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 1000,
-          messages: [{ role: "user", content: prompt }]
-        })
-      });
-      const data = await res.json();
-      setResult(data.content?.[0]?.text || "Could not generate schedule.");
-    } catch (e) {
-      setResult("Something went wrong. Please try again.");
+    let hoursWorked = 0;
+    for (const task of scored) {
+      let remaining = task.hours;
+      while (remaining > 0) {
+        if (currentHour >= WORK_END) break;
+        // Add a break if worked 2 hours straight
+        if (hoursWorked >= BREAK_AFTER) {
+          const breakStart = `${Math.floor(currentHour)}:${currentHour % 1 === 0.5 ? "30" : "00"}`;
+          currentHour += 0.25;
+          const breakEnd = `${Math.floor(currentHour)}:${currentHour % 1 === 0.5 ? "30" : "00"}`;
+          blocks.push({ type: "break", label: "Short Break", start: breakStart, end: breakEnd });
+          hoursWorked = 0;
+        }
+        const chunk = Math.min(remaining, 1.5);
+        const startH = Math.floor(currentHour);
+        const startM = currentHour % 1 === 0.5 ? "30" : "00";
+        currentHour += chunk;
+        const endH = Math.floor(currentHour);
+        const endM = currentHour % 1 === 0.5 ? "30" : "00";
+        blocks.push({
+          type: "task",
+          label: task.name,
+          start: `${startH}:${startM === "00" ? "00" : startM}`,
+          end: `${endH}:${endM === "00" ? "00" : endM}`,
+          priority: task.priority,
+          deadline: task.deadline,
+          days: task.days,
+        });
+        remaining -= chunk;
+        hoursWorked += chunk;
+      }
     }
-    setLoading(false);
+
+    const totalHours = valid.reduce((s, t) => s + parseFloat(t.hours), 0);
+    setSchedule({ blocks, scored, totalHours });
+  };
+
+  const fmt = (t) => {
+    const [h, m] = t.split(":").map(Number);
+    const ampm = h >= 12 ? "PM" : "AM";
+    const h12 = h % 12 === 0 ? 12 : h % 12;
+    return `${h12}:${m === 0 ? "00" : m} ${ampm}`;
   };
 
   const S = {
-    input: { width: "100%", padding: "8px 10px", border: "1px solid #E0D8CC", background: "#FDFAF6", fontSize: "12px", fontFamily: "Georgia, serif", color: "#1A1612", outline: "none", boxSizing: "border-box" },
-    select: { padding: "8px 10px", border: "1px solid #E0D8CC", background: "#FDFAF6", fontSize: "12px", fontFamily: "Georgia, serif", color: "#1A1612", outline: "none", cursor: "pointer" },
-    btn: { padding: "10px 20px", background: "#1A1612", color: "#F5F2EC", border: "none", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" },
+    input:  { width: "100%", padding: "8px 10px", border: "1px solid #E0D8CC", background: "#FDFAF6", fontSize: "12px", fontFamily: "Georgia, serif", color: "#1A1612", outline: "none", boxSizing: "border-box" },
+    select: { width: "100%", padding: "8px 10px", border: "1px solid #E0D8CC", background: "#FDFAF6", fontSize: "12px", fontFamily: "Georgia, serif", color: "#1A1612", outline: "none", cursor: "pointer" },
+    btn:    { padding: "10px 20px", background: "#1A1612", color: "#F5F2EC", border: "none", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" },
     btnOut: { padding: "8px 14px", background: "transparent", color: "#1A1612", border: "1px solid #C0B8AC", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" },
   };
 
+  const priorityColor = (p) => p === "high" ? "#8B1A1A" : p === "med" ? "#4A3520" : "#2C4A2E";
+
   return (
     <div>
-      <div style={{ fontSize: "10px", letterSpacing: "3px", textTransform: "uppercase", color: "#9B8B7A", marginBottom: "20px" }}>
-        Tell me what you need to get done and I'll build your schedule.
+      <div style={{ fontSize: "12px", color: "#9B8B7A", marginBottom: "24px", lineHeight: "1.7" }}>
+        Add everything you need to get done. The scheduler will prioritize by urgency and importance and map out your day.
       </div>
 
       {/* Column headers */}
-      <div style={{ display: "grid", gridTemplateColumns: "2fr 0.6fr 0.8fr 1fr auto", gap: "8px", marginBottom: "6px" }}>
-        {["Task Name", "Hours Needed", "Priority", "Deadline", ""].map((lbl, i) => (
+      <div style={{ display: "grid", gridTemplateColumns: "2fr 0.7fr 0.8fr 1fr auto", gap: "8px", marginBottom: "6px" }}>
+        {["Task Name", "Hours", "Priority", "Deadline", ""].map((lbl, i) => (
           <div key={i} style={{ fontSize: "9px", letterSpacing: "2px", textTransform: "uppercase", color: "#9B8B7A" }}>{lbl}</div>
         ))}
       </div>
 
-      {tasks.map((task, i) => (
-        <div key={i} style={{ display: "grid", gridTemplateColumns: "2fr 0.6fr 0.8fr 1fr auto", gap: "8px", marginBottom: "10px", alignItems: "center" }}>
-          <input style={S.input} placeholder="Task name" value={task.name} onChange={e => updateTask(i, "name", e.target.value)} />
-          <input style={S.input} placeholder="Hours" type="number" min="0.5" step="0.5" value={task.hours} onChange={e => updateTask(i, "hours", e.target.value)} />
-          <select style={S.select} value={task.priority} onChange={e => updateTask(i, "priority", e.target.value)}>
+      {items.map((task, i) => (
+        <div key={i} style={{ display: "grid", gridTemplateColumns: "2fr 0.7fr 0.8fr 1fr auto", gap: "8px", marginBottom: "10px", alignItems: "center" }}>
+          <input style={S.input} placeholder="e.g. Write essay" value={task.name} onChange={e => updateItem(i, "name", e.target.value)} />
+          <input style={S.input} placeholder="e.g. 2" type="number" min="0.5" step="0.5" value={task.hours} onChange={e => updateItem(i, "hours", e.target.value)} />
+          <select style={S.select} value={task.priority} onChange={e => updateItem(i, "priority", e.target.value)}>
             <option value="high">High</option>
-            <option value="med">Med</option>
+            <option value="med">Medium</option>
             <option value="low">Low</option>
           </select>
-          <input style={S.input} placeholder="Deadline (optional)" type="date" value={task.deadline} onChange={e => updateTask(i, "deadline", e.target.value)} />
-          <button onClick={() => removeTask(i)} style={{ background: "none", border: "none", color: "#C0B8AC", fontSize: "18px", cursor: "pointer", padding: "0 4px" }}>x</button>
+          <input style={S.input} type="date" value={task.deadline} onChange={e => updateItem(i, "deadline", e.target.value)} />
+          <button onClick={() => removeItem(i)} style={{ background: "none", border: "none", color: "#C0B8AC", fontSize: "18px", cursor: "pointer", padding: "0 4px" }}>x</button>
         </div>
       ))}
 
-      <div style={{ display: "flex", gap: "12px", marginTop: "16px", marginBottom: "24px" }}>
-        <button style={S.btnOut} onClick={addTask}>+ Add Task</button>
-        <button style={S.btn} onClick={generate} disabled={loading}>
-          {loading ? "Thinking..." : "Build My Schedule"}
-        </button>
+      <div style={{ display: "flex", gap: "12px", marginTop: "16px", marginBottom: "32px" }}>
+        <button style={S.btnOut} onClick={addItem}>+ Add Task</button>
+        <button style={S.btn} onClick={buildSchedule}>Build My Schedule</button>
       </div>
 
-      {loading && (
-        <div style={{ fontSize: "12px", color: "#9B8B7A", fontStyle: "italic", padding: "20px 0" }}>
-          Building your optimal schedule...
-        </div>
-      )}
+      {schedule && (
+        <>
+          {/* Priority order */}
+          <div style={{ marginBottom: "28px" }}>
+            <div style={{ fontSize: "10px", letterSpacing: "3px", textTransform: "uppercase", color: "#9B8B7A", marginBottom: "12px" }}>Tackle In This Order</div>
+            {schedule.scored.map((t, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "10px 0", borderBottom: "1px solid #EDE8E0" }}>
+                <div style={{ fontSize: "18px", color: "#C4A882", fontWeight: "400", width: "24px" }}>{i + 1}</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: "13px" }}>{t.name}</div>
+                  <div style={{ fontSize: "10px", color: "#9B8B7A", marginTop: "2px" }}>
+                    {t.hours}h needed
+                    {t.days < 999 ? ` · due in ${t.days} day${t.days !== 1 ? "s" : ""}` : " · no deadline"}
+                  </div>
+                </div>
+                <div style={{ fontSize: "9px", letterSpacing: "1px", textTransform: "uppercase", padding: "2px 8px", background: priorityColor(t.priority) + "18", color: priorityColor(t.priority) }}>{t.priority}</div>
+              </div>
+            ))}
+          </div>
 
-      {result && (
-        <div style={{ background: "#1A1612", padding: "24px", borderLeft: "3px solid #C4A882" }}>
-          <div style={{ fontSize: "10px", letterSpacing: "3px", textTransform: "uppercase", color: "#C4A882", marginBottom: "16px" }}>Your Schedule</div>
-          <div style={{ fontSize: "13px", color: "#E8DDD0", lineHeight: "1.8", whiteSpace: "pre-wrap" }}>{result}</div>
-        </div>
+          {/* Time blocks */}
+          <div>
+            <div style={{ fontSize: "10px", letterSpacing: "3px", textTransform: "uppercase", color: "#9B8B7A", marginBottom: "12px" }}>
+              Your Day ({schedule.totalHours}h total)
+            </div>
+            {schedule.blocks.map((b, i) => (
+              <div key={i} style={{ display: "flex", gap: "16px", alignItems: "stretch", marginBottom: "6px" }}>
+                <div style={{ fontSize: "11px", color: "#9B8B7A", width: "110px", flexShrink: 0, paddingTop: "10px" }}>
+                  {fmt(b.start)} - {fmt(b.end)}
+                </div>
+                <div style={{
+                  flex: 1, padding: "10px 14px",
+                  background: b.type === "break" ? "#F0EDE8" : "#1A1612",
+                  borderLeft: b.type === "break" ? "2px solid #E0D8CC" : "2px solid #C4A882",
+                  color: b.type === "break" ? "#9B8B7A" : "#F5F2EC",
+                  fontSize: "12px", fontStyle: b.type === "break" ? "italic" : "normal"
+                }}>
+                  {b.label}
+                  {b.type === "task" && b.deadline && (
+                    <span style={{ fontSize: "10px", color: "#C4A882", marginLeft: "10px" }}>due {b.deadline.slice(5)}</span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
       )}
     </div>
   );
@@ -583,7 +660,7 @@ function MeridianApp({ user }) {
         {view === "scheduler" && (
           <div style={S.card}>
             <div style={S.cardTitle}>AI Schedule Builder</div>
-            <AIScheduler goals={goals} />
+            <AIScheduler />
           </div>
         )}
       </div>
