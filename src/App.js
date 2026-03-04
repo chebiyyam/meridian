@@ -142,7 +142,7 @@ Provide:
 
 Keep it under 300 words. Be direct and actionable.`;
 
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/api/schedule", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -170,6 +170,13 @@ Keep it under 300 words. Be direct and actionable.`;
     <div>
       <div style={{ fontSize: "10px", letterSpacing: "3px", textTransform: "uppercase", color: "#9B8B7A", marginBottom: "20px" }}>
         Tell me what you need to get done and I'll build your schedule.
+      </div>
+
+      {/* Column headers */}
+      <div style={{ display: "grid", gridTemplateColumns: "2fr 0.6fr 0.8fr 1fr auto", gap: "8px", marginBottom: "6px" }}>
+        {["Task Name", "Hours Needed", "Priority", "Deadline", ""].map((lbl, i) => (
+          <div key={i} style={{ fontSize: "9px", letterSpacing: "2px", textTransform: "uppercase", color: "#9B8B7A" }}>{lbl}</div>
+        ))}
       </div>
 
       {tasks.map((task, i) => (
