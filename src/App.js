@@ -293,7 +293,15 @@ function AIScheduler({ user }) {
     setSyncing(false);
   };
 
-  const updateItems = (newItems) => { setItems(newItems); save(newItems, schedule); };
+  // Auto-save items as user types (debounced)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      save(items, schedule);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [items]);
+
+  const updateItems = (newItems) => setItems(newItems);
   const updateSchedule = (newSchedule) => { setSchedule(newSchedule); save(items, newSchedule); };
 
   const addItem = () => updateItems([...items, { name: "", hours: "", priority: "high", deadline: "" }]);
