@@ -294,12 +294,21 @@ function AIScheduler({ user }) {
   };
 
   // Auto-save items as user types (debounced)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    const timer = setTimeout(() => {
-      save(items, schedule);
+    const timer = setTimeout(async () => {
+      setSyncing(true);
+      try {
+        const { data: existing } = await supabase.from("schedules").select("id").eq("user_id", user.id).maybeSingle();
+        if (existing) {
+          await supabase.from("schedules").update({ items, updated_at: new Date().toISOString() }).eq("user_id", user.id);
+        } else {
+          await supabase.from("schedules").insert({ user_id: user.id, items, result: null });
+        }
+      } catch(e) { console.error("Save error:", e); }
+      setSyncing(false);
     }, 1000);
     return () => clearTimeout(timer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items]);
 
   const updateItems = (newItems) => setItems(newItems);
