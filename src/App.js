@@ -85,8 +85,134 @@ function getGreeting() {
   return "Working late.";
 }
 
-// ── AUTH ─────────────────────────────────────────────────────────────────────
-function AuthScreen() {
+// ── LANDING PAGE ─────────────────────────────────────────────────────────────
+function LandingPage({ onLogin }) {
+  const features = [
+    { title: "Goals", desc: "Create and track every commitment you have." },
+    { title: "Tasks", desc: "Prioritize what matters. Check off what's done." },
+    { title: "Calendar", desc: "See your month at a glance. Never miss a deadline." },
+    { title: "Schedule Builder", desc: "Input your tasks and get an optimized daily plan." },
+  ];
+
+  return (
+    <div style={{ minHeight: "100vh", background: "#0E0C0A", fontFamily: "Georgia, serif", color: "#F5F2EC" }}>
+
+      {/* Nav */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "24px 48px", borderBottom: "1px solid #2E2820" }}>
+        <div style={{ fontSize: "20px", letterSpacing: "5px", color: "#C4A882", textTransform: "uppercase" }}>Meridian</div>
+        <button onClick={onLogin}
+          style={{ padding: "10px 24px", background: "transparent", border: "1px solid #C4A882", color: "#C4A882", fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" }}>
+          Sign In
+        </button>
+      </div>
+
+      {/* Hero */}
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "80px 48px 60px", textAlign: "center" }}>
+        <div style={{ fontSize: "11px", letterSpacing: "4px", textTransform: "uppercase", color: "#C4A882", marginBottom: "24px" }}>Welcome to Meridian</div>
+        <div style={{ fontSize: "52px", fontWeight: "400", lineHeight: "1.2", marginBottom: "24px", maxWidth: "700px" }}>
+          Every goal deserves a plan.
+        </div>
+        <div style={{ fontSize: "15px", color: "#9B8B7A", lineHeight: "1.8", marginBottom: "40px", maxWidth: "500px" }}>
+          Meridian is your personal accountability system. Track goals, manage tasks, plan your schedule and stay on top of everything that matters.
+        </div>
+        <div style={{ display: "flex", gap: "16px" }}>
+          <button onClick={onLogin}
+            style={{ padding: "14px 36px", background: "#C4A882", color: "#0E0C0A", border: "none", fontSize: "11px", letterSpacing: "3px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" }}>
+            Get Started
+          </button>
+          <button onClick={onLogin}
+            style={{ padding: "14px 36px", background: "transparent", border: "1px solid #2E2820", color: "#9B8B7A", fontSize: "11px", letterSpacing: "3px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" }}>
+            Sign In
+          </button>
+        </div>
+      </div>
+
+      {/* App Preview with overlay */}
+      <div style={{ position: "relative", margin: "0 48px 80px", border: "1px solid #2E2820" }}>
+        {/* Fake app preview */}
+        <div style={{ background: "#F5F2EC", padding: "24px", display: "grid", gridTemplateColumns: "200px 1fr", minHeight: "400px", pointerEvents: "none", userSelect: "none" }}>
+          {/* Fake sidebar */}
+          <div style={{ background: "#1A1612", padding: "24px 0", display: "flex", flexDirection: "column", gap: "4px" }}>
+            <div style={{ padding: "8px 24px", fontSize: "18px", letterSpacing: "4px", color: "#C4A882", textTransform: "uppercase", marginBottom: "16px" }}>Meridian</div>
+            {["Dashboard", "Calendar", "Tasks", "Goals", "Schedule Builder"].map((item, i) => (
+              <div key={item} style={{ padding: "10px 24px", fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", color: i === 0 ? "#F5F2EC" : "#6B5E4E", background: i === 0 ? "#2E2820" : "transparent", borderLeft: i === 0 ? "2px solid #C4A882" : "2px solid transparent" }}>{item}</div>
+            ))}
+          </div>
+          {/* Fake dashboard */}
+          <div style={{ padding: "32px", background: "#F5F2EC" }}>
+            <div style={{ fontSize: "28px", marginBottom: "6px", color: "#1A1612" }}>Good morning.</div>
+            <div style={{ fontSize: "11px", color: "#9B8B7A", letterSpacing: "2px", textTransform: "uppercase", marginBottom: "28px" }}>Your day at a glance</div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "16px", marginBottom: "20px" }}>
+              {[["Tasks Remaining", "4"], ["Today's Events", "2"], ["Active Goals", "3"]].map(([lbl, val]) => (
+                <div key={lbl} style={{ background: "#FDFAF6", border: "1px solid #E0D8CC", padding: "18px" }}>
+                  <div style={{ fontSize: "9px", letterSpacing: "2px", textTransform: "uppercase", color: "#9B8B7A", marginBottom: "10px" }}>{lbl}</div>
+                  <div style={{ fontSize: "36px", color: "#1A1612" }}>{val}</div>
+                </div>
+              ))}
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: "16px" }}>
+              <div style={{ background: "#FDFAF6", border: "1px solid #E0D8CC", padding: "18px" }}>
+                <div style={{ fontSize: "9px", letterSpacing: "2px", textTransform: "uppercase", color: "#9B8B7A", marginBottom: "14px" }}>Upcoming Tasks</div>
+                {[["Finish research paper", "high", "#8B1A1A"], ["Submit Oxford application", "high", "#1A3A5C"], ["Club meeting prep", "med", "#2C4A2E"]].map(([t, p, c]) => (
+                  <div key={t} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "8px 0", borderBottom: "1px solid #EDE8E0" }}>
+                    <div style={{ width: "14px", height: "14px", border: "1.5px solid #C0B8AC" }} />
+                    <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: c }} />
+                    <div style={{ fontSize: "12px", color: "#1A1612", flex: 1 }}>{t}</div>
+                    <div style={{ fontSize: "9px", padding: "2px 6px", background: c + "20", color: c }}>{p}</div>
+                  </div>
+                ))}
+              </div>
+              <div style={{ background: "#FDFAF6", border: "1px solid #E0D8CC", padding: "18px" }}>
+                <div style={{ fontSize: "9px", letterSpacing: "2px", textTransform: "uppercase", color: "#9B8B7A", marginBottom: "14px" }}>Goals Overview</div>
+                {[["Oxford Internship", "#8B1A1A", 70], ["TAMU Research", "#1A3A5C", 45], ["Academics", "#4A3520", 80]].map(([lbl, c, pct]) => (
+                  <div key={lbl} style={{ marginBottom: "14px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}>
+                      <div style={{ fontSize: "11px", color: "#6B5E4E" }}>{lbl}</div>
+                      <div style={{ fontSize: "10px", color: "#9B8B7A" }}>{pct}%</div>
+                    </div>
+                    <div style={{ height: "4px", background: "#E0D8CC" }}>
+                      <div style={{ height: "4px", width: `${pct}%`, background: c }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Blur overlay with CTA */}
+        <div style={{ position: "absolute", inset: 0, backdropFilter: "blur(6px)", background: "rgba(14,12,10,0.6)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ fontSize: "13px", letterSpacing: "3px", textTransform: "uppercase", color: "#C4A882", marginBottom: "12px" }}>Your dashboard awaits</div>
+          <div style={{ fontSize: "15px", color: "#F5F2EC", marginBottom: "28px" }}>Sign in to access your personal Meridian.</div>
+          <button onClick={onLogin}
+            style={{ padding: "14px 40px", background: "#C4A882", color: "#0E0C0A", border: "none", fontSize: "11px", letterSpacing: "3px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" }}>
+            Sign In / Sign Up
+          </button>
+        </div>
+      </div>
+
+      {/* Features */}
+      <div style={{ padding: "0 48px 80px" }}>
+        <div style={{ fontSize: "10px", letterSpacing: "4px", textTransform: "uppercase", color: "#C4A882", textAlign: "center", marginBottom: "40px" }}>What's inside</div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: "20px" }}>
+          {features.map(f => (
+            <div key={f.title} style={{ padding: "28px 24px", border: "1px solid #2E2820" }}>
+              <div style={{ fontSize: "13px", letterSpacing: "2px", textTransform: "uppercase", color: "#C4A882", marginBottom: "12px" }}>{f.title}</div>
+              <div style={{ fontSize: "13px", color: "#6B5E4E", lineHeight: "1.7" }}>{f.desc}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div style={{ borderTop: "1px solid #2E2820", padding: "24px 48px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ fontSize: "9px", letterSpacing: "2px", color: "#3A3028", textTransform: "uppercase" }}>© 2026 Chebiyyam</div>
+        <div style={{ fontSize: "9px", letterSpacing: "2px", color: "#3A3028", textTransform: "uppercase" }}>Meridian</div>
+      </div>
+    </div>
+  );
+}
+function AuthScreen({ onBack }) {
   const [mode, setMode] = useState("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -129,6 +255,7 @@ function AuthScreen() {
           style={{ fontSize: "11px", color: "#6B5E4E", textAlign: "center", marginTop: "24px", cursor: "pointer" }}>
           {mode === "login" ? "No account? Sign up" : "Have an account? Sign in"}
         </div>
+        {onBack && <div onClick={onBack} style={{ fontSize: "11px", color: "#3A3028", textAlign: "center", marginTop: "12px", cursor: "pointer" }}>Back to home</div>}
       </div>
     </div>
   );
@@ -713,6 +840,7 @@ function MeridianApp({ user }) {
 export default function App() {
   const [user, setUser] = useState(null);
   const [checking, setChecking] = useState(true);
+  const [showAuth, setShowAuth] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -721,6 +849,7 @@ export default function App() {
     });
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
       setUser(session?.user ?? null);
+      if (session?.user) setShowAuth(false);
     });
     return () => subscription.unsubscribe();
   }, []);
@@ -731,5 +860,7 @@ export default function App() {
     </div>
   );
 
-  return user ? <MeridianApp user={user} /> : <AuthScreen />;
+  if (user) return <MeridianApp user={user} />;
+  if (showAuth) return <AuthScreen onBack={() => setShowAuth(false)} />;
+  return <LandingPage onLogin={() => setShowAuth(true)} />;
 }
