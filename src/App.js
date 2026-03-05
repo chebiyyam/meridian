@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
@@ -293,8 +293,11 @@ function AIScheduler({ user }) {
     setSyncing(false);
   };
 
-  // Auto-save items as user types (debounced)
+  const isFirstRender = useRef(true);
+
+  // Auto-save items as user types (debounced) - skip first render
   useEffect(() => {
+    if (isFirstRender.current) { isFirstRender.current = false; return; }
     const timer = setTimeout(async () => {
       setSyncing(true);
       try {
@@ -312,7 +315,19 @@ function AIScheduler({ user }) {
   }, [items]);
 
   const updateItems = (newItems) => setItems(newItems);
-  const updateSchedule = (newSchedule) => { setSchedule(newSchedule); save(items, newSchedule); };
+  const updateSchedule = async (newSchedule) => {
+    setSchedule(newSchedule);
+    setSyncing(true);
+    try {
+      const { data: existing } = await supabase.from("schedules").select("id").eq("user_id", user.id).maybeSingle();
+      if (existing) {
+        await supabase.from("schedules").update({ items, result: newSchedule, updated_at: new Date().toISOString() }).eq("user_id", user.id);
+      } else {
+        await supabase.from("schedules").insert({ user_id: user.id, items, result: newSchedule });
+      }
+    } catch(e) { console.error("Save error:", e); }
+    setSyncing(false);
+  };
 
   const addItem = () => updateItems([...items, { name: "", hours: "", priority: "high", deadline: "" }]);
   const updateItem = (i, field, val) => updateItems(items.map((t, idx) => idx === i ? { ...t, [field]: val } : t));
