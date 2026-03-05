@@ -266,68 +266,41 @@ function AIScheduler({ user }) {
   const [items, setItems] = useState([{ name: "", hours: "", priority: "high", deadline: "" }]);
   const [schedule, setSchedule] = useState(null);
   const [syncing, setSyncing] = useState(false);
+  const isFirstRender = useRef(true);
 
   // Load from Supabase on mount
   useEffect(() => {
     const load = async () => {
-      const { data } = await supabase.from("schedules").select("*").eq("user_id", user.id).maybeSingle();
-      if (data) {
-        if (data.items) setItems(data.items);
-        if (data.result) setSchedule(data.result);
+      const { data } = await supabase.from("schedules").select("*").eq("user_id", user.id).order("updated_at", { ascending: false }).limit(1);
+      if (data && data.length > 0) {
+        if (data[0].items && data[0].items.length > 0) setItems(data[0].items);
+        if (data[0].result) setSchedule(data[0].result);
       }
     };
     load();
   }, [user.id]);
 
-  // Save to Supabase whenever items or schedule changes
   const save = async (newItems, newSchedule) => {
     setSyncing(true);
     try {
-      const { data: existing } = await supabase.from("schedules").select("id").eq("user_id", user.id).maybeSingle();
-      if (existing) {
-        await supabase.from("schedules").update({ items: newItems, result: newSchedule, updated_at: new Date().toISOString() }).eq("user_id", user.id);
-      } else {
-        await supabase.from("schedules").insert({ user_id: user.id, items: newItems, result: newSchedule });
-      }
+      await supabase.from("schedules").upsert(
+        { user_id: user.id, items: newItems, result: newSchedule, updated_at: new Date().toISOString() },
+        { onConflict: "user_id" }
+      );
     } catch(e) { console.error("Save error:", e); }
     setSyncing(false);
   };
 
-  const isFirstRender = useRef(true);
-
   // Auto-save items as user types (debounced) - skip first render
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (isFirstRender.current) { isFirstRender.current = false; return; }
-    const timer = setTimeout(async () => {
-      setSyncing(true);
-      try {
-        const { data: existing } = await supabase.from("schedules").select("id").eq("user_id", user.id).maybeSingle();
-        if (existing) {
-          await supabase.from("schedules").update({ items, updated_at: new Date().toISOString() }).eq("user_id", user.id);
-        } else {
-          await supabase.from("schedules").insert({ user_id: user.id, items, result: null });
-        }
-      } catch(e) { console.error("Save error:", e); }
-      setSyncing(false);
-    }, 1000);
+    const timer = setTimeout(() => save(items, schedule), 1000);
     return () => clearTimeout(timer);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items]);
 
   const updateItems = (newItems) => setItems(newItems);
-  const updateSchedule = async (newSchedule) => {
-    setSchedule(newSchedule);
-    setSyncing(true);
-    try {
-      const { data: existing } = await supabase.from("schedules").select("id").eq("user_id", user.id).maybeSingle();
-      if (existing) {
-        await supabase.from("schedules").update({ items, result: newSchedule, updated_at: new Date().toISOString() }).eq("user_id", user.id);
-      } else {
-        await supabase.from("schedules").insert({ user_id: user.id, items, result: newSchedule });
-      }
-    } catch(e) { console.error("Save error:", e); }
-    setSyncing(false);
-  };
+  const updateSchedule = (newSchedule) => { setSchedule(newSchedule); save(items, newSchedule); };
 
   const addItem = () => updateItems([...items, { name: "", hours: "", priority: "high", deadline: "" }]);
   const updateItem = (i, field, val) => updateItems(items.map((t, idx) => idx === i ? { ...t, [field]: val } : t));
@@ -396,7 +369,7 @@ function AIScheduler({ user }) {
             <option value="med">Medium</option>
             <option value="low">Low</option>
           </select>
-          <input style={S.input} type="date" min={new Date().toISOString().split("T")[0]} value={task.deadline} onChange={e => updateItem(i, "deadline", e.target.value)} />
+          <input style={S.input} type="date" value={task.deadline} onChange={e => updateItem(i, "deadline", e.target.value)} />
           <button onClick={() => removeItem(i)} style={{ background: "none", border: "none", color: "#C0B8AC", fontSize: "18px", cursor: "pointer", padding: "0 4px" }}>x</button>
         </div>
       ))}
