@@ -310,8 +310,9 @@ function AIScheduler({ user }) {
 
   const daysUntil = (dateStr) => {
     if (!dateStr) return 999;
-    const diff = new Date(dateStr) - new Date();
-    return Math.ceil(diff / (1000 * 60 * 60 * 24));
+    const today = new Date(); today.setHours(0,0,0,0);
+    const due = new Date(dateStr + "T00:00:00");
+    return Math.ceil((due - today) / (1000 * 60 * 60 * 24));
   };
 
   const urgencyScore = (days) => {
