@@ -292,11 +292,11 @@ function AIScheduler({ user }) {
   };
 
   // Auto-save items as user types (debounced) - skip first render
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (isFirstRender.current) { isFirstRender.current = false; return; }
     const timer = setTimeout(() => save(items, schedule), 1000);
     return () => clearTimeout(timer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items]);
 
   const updateItems = (newItems) => setItems(newItems);
