@@ -370,7 +370,7 @@ function AIScheduler({ user }) {
             <option value="med">Medium</option>
             <option value="low">Low</option>
           </select>
-          <input style={S.input} type="date" value={task.deadline} onChange={e => updateItem(i, "deadline", e.target.value)} />
+          <input style={S.input} type="date" min={new Date().toLocaleDateString('en-CA')} value={task.deadline} onChange={e => updateItem(i, "deadline", e.target.value)} />
           <button onClick={() => removeItem(i)} style={{ background: "none", border: "none", color: "#C0B8AC", fontSize: "18px", cursor: "pointer", padding: "0 4px" }}>x</button>
         </div>
       ))}
