@@ -436,6 +436,7 @@ function MeridianApp({ user }) {
   const [newEvent, setNewEvent] = useState({ title: "", goal_id: "", date: "", time: "" });
   const [newGoal,  setNewGoal]  = useState({ label: "", color: "#8B1A1A" });
   const [editEvent, setEditEvent] = useState(null);
+  const [editTask, setEditTask] = useState(null);
   const [quoteIdx, setQuoteIdx] = useState(() => Math.floor(Math.random() * QUOTES.length));
   const [greeting] = useState(getGreeting());
 
@@ -472,6 +473,17 @@ function MeridianApp({ user }) {
   const toggleTask = async (task) => {
     const { data } = await supabase.from("tasks").update({ done: !task.done }).eq("id", task.id).select().single();
     if (data) setTasks(tasks.map(t => t.id === task.id ? data : t));
+  };
+
+  const deleteTask = async (id) => {
+    await supabase.from("tasks").delete().eq("id", id);
+    setTasks(tasks.filter(t => t.id !== id));
+  };
+
+  const saveEditTask = async () => {
+    if (!editTask) return;
+    const { data } = await supabase.from("tasks").update({ text: editTask.text, goal_id: editTask.goal_id, due: editTask.due, priority: editTask.priority, hours: editTask.hours }).eq("id", editTask.id).select().single();
+    if (data) { setTasks(tasks.map(t => t.id === data.id ? data : t)); setEditTask(null); }
   };
 
   const addTask = async () => {
@@ -749,14 +761,16 @@ function MeridianApp({ user }) {
               </div>
               {pendingTasks.length===0 && <div style={{fontSize:"13px",color:"#9B8B7A"}}>{noGoals?"Create a goal first.":"All caught up. Remarkable."}</div>}
               {pendingTasks.map(task=>(
-                <div key={task.id} style={taskRow(false)} onClick={()=>toggleTask(task)}>
-                  <div style={chk(false)}/>
+                <div key={task.id} style={taskRow(false)}>
+                  <div style={chk(false)} onClick={()=>toggleTask(task)}/>
                   <div style={dot(task.goal_id)}/>
-                  <div style={{flex:1}}>
+                  <div style={{flex:1}} onClick={()=>toggleTask(task)}>
                     <div style={{fontSize:"13px"}}>{task.text}</div>
                     <div style={{fontSize:"10px",color:"#9B8B7A",marginTop:"2px"}}>{goalLabel(task.goal_id)}{task.due?` - due ${task.due}`:""}</div>
                   </div>
                   <div style={badge(task.priority)}>{task.priority}</div>
+                  <button onClick={() => setEditTask({...task})} style={{background:"none",border:"none",color:"#9B8B7A",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>Edit</button>
+                  <button onClick={() => deleteTask(task.id)} style={{background:"none",border:"none",color:"#8B1A1A",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>x</button>
                 </div>
               ))}
             </div>
@@ -764,10 +778,11 @@ function MeridianApp({ user }) {
               <div style={S.cardTitle}>Completed ({doneTasks.length})</div>
               {doneTasks.length===0 && <div style={{fontSize:"13px",color:"#9B8B7A"}}>Nothing yet.</div>}
               {doneTasks.map(task=>(
-                <div key={task.id} style={taskRow(true)} onClick={()=>toggleTask(task)}>
-                  <div style={chk(true)}><span style={{fontSize:"10px",color:"#FDFAF6"}}>v</span></div>
+                <div key={task.id} style={taskRow(true)}>
+                  <div style={chk(true)} onClick={()=>toggleTask(task)}><span style={{fontSize:"10px",color:"#FDFAF6"}}>v</span></div>
                   <div style={dot(task.goal_id)}/>
-                  <div style={{fontSize:"13px",textDecoration:"line-through",color:"#9B8B7A"}}>{task.text}</div>
+                  <div style={{fontSize:"13px",textDecoration:"line-through",color:"#9B8B7A",flex:1}} onClick={()=>toggleTask(task)}>{task.text}</div>
+                  <button onClick={() => deleteTask(task.id)} style={{background:"none",border:"none",color:"#8B1A1A",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>x</button>
                 </div>
               ))}
             </div>
@@ -905,6 +920,33 @@ function MeridianApp({ user }) {
               <div style={{ display: "flex", gap: "12px", marginTop: "8px" }}>
                 <button style={S.btn} onClick={addEvent}>Add Event</button>
                 <button style={S.btnOut} onClick={() => setShowAddEvent(false)}>Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* EDIT TASK MODAL */}
+      {editTask && (
+        <div style={S.modal} onClick={() => setEditTask(null)}>
+          <div style={S.modalBox} onClick={e => e.stopPropagation()}>
+            <div style={{ fontSize: "12px", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "24px" }}>Edit Task</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              <input style={S.input} placeholder="Task description" value={editTask.text} onChange={e => setEditTask({...editTask, text: e.target.value})} />
+              <select style={S.select} value={editTask.goal_id} onChange={e => setEditTask({...editTask, goal_id: e.target.value})}>
+                {goals.map(g => <option key={g.id} value={g.id}>{g.label}</option>)}
+              </select>
+              <input style={S.input} type="date" value={editTask.due || ""} onChange={e => setEditTask({...editTask, due: e.target.value})} />
+              <select style={S.select} value={editTask.priority} onChange={e => setEditTask({...editTask, priority: e.target.value})}>
+                <option value="high">High Priority</option>
+                <option value="med">Medium Priority</option>
+                <option value="low">Low Priority</option>
+              </select>
+              <input style={S.input} type="number" min="0.5" step="0.5" placeholder="Hours needed (optional)" value={editTask.hours || ""} onChange={e => setEditTask({...editTask, hours: e.target.value})} />
+              <div style={{ display: "flex", gap: "12px", marginTop: "8px" }}>
+                <button style={S.btn} onClick={saveEditTask}>Save Changes</button>
+                <button style={S.btnDanger} onClick={() => { deleteTask(editTask.id); setEditTask(null); }}>Delete</button>
+                <button style={S.btnOut} onClick={() => setEditTask(null)}>Cancel</button>
               </div>
             </div>
           </div>
