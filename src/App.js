@@ -432,9 +432,10 @@ function MeridianApp({ user }) {
   const [showAddTask,  setShowAddTask]  = useState(false);
   const [showAddEvent, setShowAddEvent] = useState(false);
   const [showAddGoal,  setShowAddGoal]  = useState(false);
-  const [newTask,  setNewTask]  = useState({ text: "", goal_id: "", due: "", priority: "med" });
+  const [newTask,  setNewTask]  = useState({ text: "", goal_id: "", due: "", priority: "med", hours: "" });
   const [newEvent, setNewEvent] = useState({ title: "", goal_id: "", date: "", time: "" });
   const [newGoal,  setNewGoal]  = useState({ label: "", color: "#8B1A1A" });
+  const [editEvent, setEditEvent] = useState(null);
   const [quoteIdx, setQuoteIdx] = useState(() => Math.floor(Math.random() * QUOTES.length));
   const [greeting] = useState(getGreeting());
 
@@ -476,13 +477,40 @@ function MeridianApp({ user }) {
   const addTask = async () => {
     if (!newTask.text.trim() || !newTask.goal_id) return;
     const { data } = await supabase.from("tasks").insert({ ...newTask, user_id: user.id, done: false }).select().single();
-    if (data) { setTasks([...tasks, data]); setNewTask({ text: "", goal_id: goals[0]?.id || "", due: "", priority: "med" }); setShowAddTask(false); }
+    if (data) {
+      const updatedTasks = [...tasks, data];
+      setTasks(updatedTasks);
+      setNewTask({ text: "", goal_id: goals[0]?.id || "", due: "", priority: "med", hours: "" });
+      setShowAddTask(false);
+      // Sync to schedule builder if hours provided
+      if (newTask.hours) {
+        const schedItem = { name: newTask.text, hours: String(newTask.hours), priority: newTask.priority, deadline: newTask.due || "" };
+        const { data: existing } = await supabase.from("schedules").select("*").eq("user_id", user.id).maybeSingle();
+        if (existing) {
+          const updatedItems = [...(existing.items || []), schedItem];
+          await supabase.from("schedules").update({ items: updatedItems, updated_at: new Date().toISOString() }).eq("user_id", user.id);
+        } else {
+          await supabase.from("schedules").insert({ user_id: user.id, items: [schedItem], result: null });
+        }
+      }
+    }
   };
 
   const addEvent = async () => {
     if (!newEvent.title.trim() || !newEvent.date || !newEvent.goal_id) return;
     const { data } = await supabase.from("events").insert({ ...newEvent, user_id: user.id }).select().single();
     if (data) { setEvents([...events, data]); setNewEvent({ title: "", goal_id: goals[0]?.id || "", date: "", time: "" }); setShowAddEvent(false); }
+  };
+
+  const deleteEvent = async (id) => {
+    await supabase.from("events").delete().eq("id", id);
+    setEvents(events.filter(e => e.id !== id));
+  };
+
+  const saveEditEvent = async () => {
+    if (!editEvent) return;
+    const { data } = await supabase.from("events").update({ title: editEvent.title, date: editEvent.date, time: editEvent.time, goal_id: editEvent.goal_id }).eq("id", editEvent.id).select().single();
+    if (data) { setEvents(events.map(e => e.id === data.id ? data : e)); setEditEvent(null); }
   };
 
   const signOut = () => supabase.auth.signOut();
@@ -493,7 +521,8 @@ function MeridianApp({ user }) {
   const pendingTasks   = tasks.filter(t => !t.done);
   const doneTasks      = tasks.filter(t => t.done);
   const completionRate = tasks.length ? Math.round((doneTasks.length / tasks.length) * 100) : 0;
-  const eventsForDate  = (ds) => events.filter(e => e.date === ds);
+  const futureEvents   = events.filter(e => e.date >= todayStr);
+  const eventsForDate  = (ds) => futureEvents.filter(e => e.date === ds);
   const todayEvents    = eventsForDate(todayStr);
   const upcomingTasks  = pendingTasks.filter(t => t.due).sort((a,b) => new Date(a.due)-new Date(b.due)).slice(0,5);
   const daysInMonth    = getDaysInMonth(calYear, calMonth);
@@ -506,10 +535,11 @@ function MeridianApp({ user }) {
     cardTitle: { fontSize: "10px", letterSpacing: "3px", textTransform: "uppercase", color: "#9B8B7A", marginBottom: "16px", display: "flex", justifyContent: "space-between", alignItems: "center" },
     btn:       { padding: "10px 20px", background: "#1A1612", color: "#F5F2EC", border: "none", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" },
     btnOut:    { padding: "8px 16px", background: "transparent", color: "#1A1612", border: "1px solid #C0B8AC", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" },
+    btnDanger: { padding: "8px 16px", background: "transparent", color: "#8B1A1A", border: "1px solid #8B1A1A", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" },
     input:     { width: "100%", padding: "10px 12px", border: "1px solid #E0D8CC", background: "#FDFAF6", fontSize: "13px", fontFamily: "Georgia, serif", color: "#1A1612", outline: "none", boxSizing: "border-box" },
     select:    { width: "100%", padding: "10px 12px", border: "1px solid #E0D8CC", background: "#FDFAF6", fontSize: "12px", fontFamily: "Georgia, serif", color: "#1A1612", outline: "none", cursor: "pointer" },
     modal:     { position: "fixed", inset: 0, background: "rgba(26,22,18,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 200 },
-    modalBox:  { background: "#FDFAF6", border: "1px solid #E0D8CC", padding: "32px", width: "420px", maxWidth: "90vw" },
+    modalBox:  { background: "#FDFAF6", border: "1px solid #E0D8CC", padding: "32px", width: "420px", maxWidth: "90vw", maxHeight: "90vh", overflowY: "auto" },
   };
 
   const navBtn = (active) => ({
@@ -534,45 +564,57 @@ function MeridianApp({ user }) {
     </div>
   );
 
+  const isMobile = window.innerWidth < 768;
+
   return (
     <div style={{ minHeight: "100vh", background: "#F5F2EC", fontFamily: "Georgia, 'Times New Roman', serif", color: "#1A1612" }}>
 
-      {/* Sidebar */}
-      <div style={{ position: "fixed", left: 0, top: 0, bottom: 0, width: "220px", background: "#1A1612", display: "flex", flexDirection: "column", zIndex: 100 }}>
-        <div style={{ padding: "32px 28px 24px", borderBottom: "1px solid #2E2820" }}>
-          <div style={{ fontSize: "22px", fontWeight: "400", color: "#F5F2EC", letterSpacing: "4px", textTransform: "uppercase" }}>Meridian</div>
-          <div style={{ fontSize: "10px", color: "#6B5E4E", letterSpacing: "2px", marginTop: "4px", textTransform: "uppercase" }}>Your operating system</div>
+      {/* Sidebar - desktop only */}
+      {!isMobile && (
+        <div style={{ position: "fixed", left: 0, top: 0, bottom: 0, width: "220px", background: "#1A1612", display: "flex", flexDirection: "column", zIndex: 100 }}>
+          <div style={{ padding: "32px 28px 24px", borderBottom: "1px solid #2E2820" }}>
+            <div style={{ fontSize: "22px", fontWeight: "400", color: "#F5F2EC", letterSpacing: "4px", textTransform: "uppercase" }}>Meridian</div>
+            <div style={{ fontSize: "10px", color: "#6B5E4E", letterSpacing: "2px", marginTop: "4px", textTransform: "uppercase" }}>Your operating system</div>
+          </div>
+          <nav style={{ padding: "20px 0", flex: 1 }}>
+            {[["dashboard","Dashboard"],["calendar","Calendar"],["tasks","Tasks"],["goals","Goals"],["scheduler","Schedule Builder"]].map(([id,lbl]) => (
+              <button key={id} style={navBtn(view===id)} onClick={() => navigate(id)}>{lbl}</button>
+            ))}
+          </nav>
+          <div style={{ padding: "16px 28px", borderTop: "1px solid #2E2820" }}>
+            <div style={{ fontSize: "10px", color: "#6B5E4E", marginBottom: "4px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.email}</div>
+            <div style={{ fontSize: "10px", color: "#6B5E4E", letterSpacing: "2px", textTransform: "uppercase", marginBottom: "8px" }}>Done: {completionRate}%</div>
+            <div style={{ height: "3px", background: "#2E2820", marginBottom: "14px" }}><div style={fill(completionRate, "#C4A882")} /></div>
+            <button onClick={signOut} style={{ background: "none", border: "none", color: "#6B5E4E", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", padding: 0, fontFamily: "Georgia, serif" }}>Sign Out</button>
+            <div style={{ fontSize: "9px", color: "#3A3028", marginTop: "12px", letterSpacing: "1px" }}>© 2026 Chebiyyam</div>
+          </div>
         </div>
-        <nav style={{ padding: "20px 0", flex: 1 }}>
-          {[["dashboard","Dashboard"],["calendar","Calendar"],["tasks","Tasks"],["goals","Goals"],["scheduler","Schedule Builder"]].map(([id,lbl]) => (
-            <button key={id} style={navBtn(view===id)} onClick={() => navigate(id)}>{lbl}</button>
-          ))}
-        </nav>
-        <div style={{ padding: "16px 28px", borderTop: "1px solid #2E2820" }}>
-          <div style={{ fontSize: "10px", color: "#6B5E4E", marginBottom: "4px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.email}</div>
-          <div style={{ fontSize: "10px", color: "#6B5E4E", letterSpacing: "2px", textTransform: "uppercase", marginBottom: "8px" }}>Done: {completionRate}%</div>
-          <div style={{ height: "3px", background: "#2E2820", marginBottom: "14px" }}><div style={fill(completionRate, "#C4A882")} /></div>
-          <button onClick={signOut} style={{ background: "none", border: "none", color: "#6B5E4E", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", padding: 0, fontFamily: "Georgia, serif" }}>Sign Out</button>
-          <div style={{ fontSize: "9px", color: "#3A3028", marginTop: "12px", letterSpacing: "1px" }}>© 2026 Chebiyyam</div>
+      )}
+
+      {/* Mobile top bar */}
+      {isMobile && (
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, background: "#1A1612", padding: "14px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", zIndex: 100 }}>
+          <div style={{ fontSize: "18px", letterSpacing: "4px", color: "#C4A882", textTransform: "uppercase" }}>Meridian</div>
+          <button onClick={signOut} style={{ background: "none", border: "none", color: "#6B5E4E", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" }}>Sign Out</button>
         </div>
-      </div>
+      )}
 
       {/* Main */}
-      <div style={{ marginLeft: "220px", padding: "40px 48px", minHeight: "100vh" }}>
+      <div style={{ marginLeft: isMobile ? "0" : "220px", padding: isMobile ? "70px 16px 80px" : "40px 48px", minHeight: "100vh" }}>
 
         {/* Header */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "40px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: isMobile ? "24px" : "40px", flexWrap: "wrap", gap: "12px" }}>
           <div>
-            <div style={{ fontSize: "32px", fontWeight: "400", letterSpacing: "1px" }}>
+            <div style={{ fontSize: isMobile ? "24px" : "32px", fontWeight: "400", letterSpacing: "1px" }}>
               {view === "dashboard" ? greeting : view === "calendar" ? "Calendar" : view === "tasks" ? "Tasks" : view === "goals" ? "Goals" : "Schedule Builder"}
             </div>
-            <div style={{ fontSize: "12px", color: "#9B8B7A", letterSpacing: "2px", textTransform: "uppercase", marginTop: "6px" }}>
+            <div style={{ fontSize: "11px", color: "#9B8B7A", letterSpacing: "2px", textTransform: "uppercase", marginTop: "6px" }}>
               {DAYS[today.getDay()]}, {MONTHS[today.getMonth()]} {today.getDate()}, {today.getFullYear()}
             </div>
           </div>
           {/* Clickable quote */}
           <div onClick={nextQuote} title="Click for a new quote"
-            style={{ padding: "12px 20px", background: "#1A1612", color: "#C4A882", fontSize: "11px", letterSpacing: "2px", fontStyle: "italic", maxWidth: "360px", textAlign: "right", cursor: "pointer", transition: "opacity 0.2s", userSelect: "none" }}>
+            style={{ padding: "10px 16px", background: "#1A1612", color: "#C4A882", fontSize: "10px", letterSpacing: "1px", fontStyle: "italic", maxWidth: isMobile ? "100%" : "320px", textAlign: "right", cursor: "pointer", userSelect: "none" }}>
             "{QUOTES[quoteIdx]}"
           </div>
         </div>
@@ -587,7 +629,7 @@ function MeridianApp({ user }) {
                 <button style={S.btn} onClick={() => { navigate("goals"); setShowAddGoal(true); }}>Create Your First Goal</button>
               </div>
             )}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "20px", marginBottom: "24px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr", gap: "16px", marginBottom: "24px" }}>
               <div style={S.card}>
                 <div style={S.cardTitle}>Tasks Remaining</div>
                 <div style={{ fontSize: "48px", fontWeight: "400", lineHeight: 1 }}>{pendingTasks.length}</div>
@@ -606,7 +648,7 @@ function MeridianApp({ user }) {
                 <div style={{ fontSize: "11px", color: "#9B8B7A", marginTop: "8px" }}>commitments tracked</div>
               </div>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: "20px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.4fr 1fr", gap: "16px" }}>
               <div style={S.card}>
                 <div style={S.cardTitle}>
                   <span>Upcoming Tasks</span>
@@ -652,7 +694,7 @@ function MeridianApp({ user }) {
 
         {/* CALENDAR */}
         {view === "calendar" && (
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 320px", gap: "24px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 320px", gap: "16px" }}>
             <div style={S.card}>
               <div style={S.cardTitle}>
                 <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
@@ -681,14 +723,17 @@ function MeridianApp({ user }) {
               </div>
             </div>
             <div style={S.card}>
-              <div style={S.cardTitle}>{selectedDate || "All Events"}</div>
-              {(selectedDate ? eventsForDate(selectedDate) : [...events].sort((a,b)=>a.date.localeCompare(b.date))).map(e=>(
+              <div style={S.cardTitle}>{selectedDate || "Upcoming Events"}</div>
+              {(selectedDate ? eventsForDate(selectedDate) : [...futureEvents].sort((a,b)=>a.date.localeCompare(b.date))).map(e=>(
                 <div key={e.id} style={{...chip(e.goal_id),flexDirection:"column",gap:"2px",alignItems:"flex-start",marginBottom:"8px"}}>
-                  <div style={{fontWeight:"600",fontSize:"12px"}}>{e.title}</div>
+                  <div style={{display:"flex",justifyContent:"space-between",width:"100%",alignItems:"center"}}>
+                    <div style={{fontWeight:"600",fontSize:"12px"}}>{e.title}</div>
+                    <button onClick={() => setEditEvent({...e})} style={{background:"none",border:"none",color:"inherit",fontSize:"10px",cursor:"pointer",opacity:0.7,padding:"0 0 0 8px"}}>Edit</button>
+                  </div>
                   <div style={{fontSize:"10px",opacity:0.7}}>{e.date} at {e.time} - {goalLabel(e.goal_id)}</div>
                 </div>
               ))}
-              {events.length===0 && <div style={{fontSize:"12px",color:"#C0B8AC"}}>No events yet.</div>}
+              {futureEvents.length===0 && <div style={{fontSize:"12px",color:"#C0B8AC"}}>No upcoming events.</div>}
               {selectedDate && eventsForDate(selectedDate).length===0 && <div style={{fontSize:"12px",color:"#C0B8AC"}}>No events on this day</div>}
             </div>
           </div>
@@ -696,7 +741,7 @@ function MeridianApp({ user }) {
 
         {/* TASKS */}
         {view === "tasks" && (
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "16px" }}>
             <div style={S.card}>
               <div style={S.cardTitle}>
                 <span>Pending ({pendingTasks.length})</span>
@@ -742,7 +787,7 @@ function MeridianApp({ user }) {
                 <button style={S.btn} onClick={() => setShowAddGoal(true)}>Create Your First Goal</button>
               </div>
             )}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "16px" }}>
               {goals.map(g => {
                 const gt = tasks.filter(t => t.goal_id === g.id);
                 const d  = gt.filter(t => t.done).length;
@@ -827,12 +872,14 @@ function MeridianApp({ user }) {
                 <option value="">Select a goal</option>
                 {goals.map(g => <option key={g.id} value={g.id}>{g.label}</option>)}
               </select>
-              <input style={S.input} type="date" value={newTask.due} onChange={e => setNewTask({...newTask, due: e.target.value})} />
+              <input style={S.input} type="date" min={new Date().toLocaleDateString('en-CA')} value={newTask.due} onChange={e => setNewTask({...newTask, due: e.target.value})} />
               <select style={S.select} value={newTask.priority} onChange={e => setNewTask({...newTask, priority: e.target.value})}>
                 <option value="high">High Priority</option>
                 <option value="med">Medium Priority</option>
                 <option value="low">Low Priority</option>
               </select>
+              <input style={S.input} type="number" min="0.5" step="0.5" placeholder="Hours needed (optional — syncs to Schedule Builder)" value={newTask.hours} onChange={e => setNewTask({...newTask, hours: e.target.value})} />
+              <div style={{ fontSize: "10px", color: "#9B8B7A" }}>If you add hours, this task will automatically appear in your Schedule Builder.</div>
               <div style={{ display: "flex", gap: "12px", marginTop: "8px" }}>
                 <button style={S.btn} onClick={addTask}>Add Task</button>
                 <button style={S.btnOut} onClick={() => setShowAddTask(false)}>Cancel</button>
@@ -861,6 +908,39 @@ function MeridianApp({ user }) {
               </div>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* EDIT EVENT MODAL */}
+      {editEvent && (
+        <div style={S.modal} onClick={() => setEditEvent(null)}>
+          <div style={S.modalBox} onClick={e => e.stopPropagation()}>
+            <div style={{ fontSize: "12px", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "24px" }}>Edit Event</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              <input style={S.input} placeholder="Event title" value={editEvent.title} onChange={e => setEditEvent({...editEvent, title: e.target.value})} />
+              <select style={S.select} value={editEvent.goal_id} onChange={e => setEditEvent({...editEvent, goal_id: e.target.value})}>
+                {goals.map(g => <option key={g.id} value={g.id}>{g.label}</option>)}
+              </select>
+              <input style={S.input} type="date" value={editEvent.date} onChange={e => setEditEvent({...editEvent, date: e.target.value})} />
+              <input style={S.input} type="time" value={editEvent.time} onChange={e => setEditEvent({...editEvent, time: e.target.value})} />
+              <div style={{ display: "flex", gap: "12px", marginTop: "8px" }}>
+                <button style={S.btn} onClick={saveEditEvent}>Save Changes</button>
+                <button style={S.btnDanger} onClick={() => { deleteEvent(editEvent.id); setEditEvent(null); }}>Delete</button>
+                <button style={S.btnOut} onClick={() => setEditEvent(null)}>Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Mobile bottom nav */}
+      {isMobile && (
+        <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: "#1A1612", display: "flex", justifyContent: "space-around", padding: "10px 0", zIndex: 100, borderTop: "1px solid #2E2820" }}>
+          {[["dashboard","Home"],["calendar","Cal"],["tasks","Tasks"],["goals","Goals"],["scheduler","Plan"]].map(([id,lbl]) => (
+            <button key={id} onClick={() => navigate(id)} style={{ background: "none", border: "none", color: view===id ? "#C4A882" : "#6B5E4E", fontSize: "9px", letterSpacing: "1px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif", display: "flex", flexDirection: "column", alignItems: "center", gap: "2px", padding: "4px 8px", borderTop: view===id ? "2px solid #C4A882" : "2px solid transparent" }}>
+              {lbl}
+            </button>
+          ))}
         </div>
       )}
     </div>
