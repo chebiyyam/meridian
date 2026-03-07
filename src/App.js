@@ -488,7 +488,9 @@ function MeridianApp({ user }) {
 
   const addTask = async () => {
     if (!newTask.text.trim() || !newTask.goal_id) return;
-    const { data } = await supabase.from("tasks").insert({ ...newTask, user_id: user.id, done: false }).select().single();
+    const taskData = { text: newTask.text, goal_id: newTask.goal_id, due: newTask.due, priority: newTask.priority, user_id: user.id, done: false };
+    if (newTask.hours) taskData.hours = parseFloat(newTask.hours);
+    const { data } = await supabase.from("tasks").insert(taskData).select().single();
     if (data) {
       const updatedTasks = [...tasks, data];
       setTasks(updatedTasks);
