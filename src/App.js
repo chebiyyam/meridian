@@ -1077,7 +1077,7 @@ function SanjuLoader() {
       octx.drawImage(img, 0, 0, off.width, off.height);
       const imgData = octx.getImageData(0, 0, off.width, off.height);
 
-      const gap = 2;
+      const gap = 8;
       const particles = [];
       for (let y = 0; y < off.height; y += gap) {
         for (let x = 0; x < off.width; x += gap) {
@@ -1106,21 +1106,14 @@ function SanjuLoader() {
 
         for (const p of particles) {
           if (frame < p.delay) continue;
-          // lerp quickly at first, then snap to exact position after frame 300
-          if (frame >= 300) {
-            p.x = p.tx;
-            p.y = p.ty;
-          } else {
-            p.x += (p.tx - p.x) * 0.06;
-            p.y += (p.ty - p.y) * 0.06;
-          }
+          p.x += (p.tx - p.x) * 0.05;
+          p.y += (p.ty - p.y) * 0.05;
           ctx.fillStyle = p.color;
           ctx.fillRect(Math.round(p.x), Math.round(p.y), p.size, p.size);
         }
 
-        // Meridian text fades in near end
-        if (frame > 280) {
-          const alpha = Math.min(1, (frame - 280) / 60);
+        if (frame > 200) {
+          const alpha = Math.min(1, (frame - 200) / 60);
           ctx.globalAlpha = alpha;
           ctx.fillStyle = "#C4A882";
           ctx.font = "13px Georgia, serif";
