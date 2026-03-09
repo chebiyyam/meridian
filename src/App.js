@@ -1049,117 +1049,79 @@ function MeridianApp({ user }) {
 
 // ── SANJU LOADER ─────────────────────────────────────────────────────────────
 function SanjuLoader() {
-  const canvasRef = useRef(null);
+  const [phase, setPhase] = useState(0);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    const W = canvas.width = window.innerWidth;
-    const H = canvas.height = window.innerHeight;
-
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.src = "https://tbztpvqwiutcrvecqauj.supabase.co/storage/v1/object/public/assets/sanju.jpg";
-
-    img.onload = () => {
-      // Figure out display size (centered, max 340px tall)
-      const maxH = Math.min(H * 0.65, 340);
-      const ratio = img.width / img.height;
-      const dH = maxH;
-      const dW = dH * ratio;
-      const dX = (W - dW) / 2;
-      const dY = (H - dH) / 2 - 30;
-
-      // Draw image to offscreen canvas to sample pixels
-      const off = document.createElement("canvas");
-      off.width = Math.round(dW);
-      off.height = Math.round(dH);
-      const octx = off.getContext("2d");
-      octx.drawImage(img, 0, 0, off.width, off.height);
-      const imgData = octx.getImageData(0, 0, off.width, off.height);
-
-      // Sample every Nth pixel as a particle
-      const gap = 5;
-      const particles = [];
-      for (let y = 0; y < off.height; y += gap) {
-        for (let x = 0; x < off.width; x += gap) {
-          const i = (y * off.width + x) * 4;
-          const r = imgData.data[i];
-          const g = imgData.data[i+1];
-          const b = imgData.data[i+2];
-          const a = imgData.data[i+3];
-          if (a < 30) continue;
-          // skip very dark background pixels
-          if (r + g + b < 30) continue;
-          particles.push({
-            // start: random position scattered around screen
-            x: Math.random() * W,
-            y: Math.random() * H,
-            // target: correct pixel position
-            tx: dX + x,
-            ty: dY + y,
-            color: `rgb(${r},${g},${b})`,
-            size: gap - 1,
-            speed: 0.025 + Math.random() * 0.035,
-            delay: Math.random() * 40,
-          });
-        }
-      }
-
-      let frame = 0;
-      let animId;
-
-      const animate = () => {
-        ctx.fillStyle = "#0E0C0A";
-        ctx.fillRect(0, 0, W, H);
-
-        for (const p of particles) {
-          if (frame < p.delay) continue;
-          p.x += (p.tx - p.x) * p.speed;
-          p.y += (p.ty - p.y) * p.speed;
-          ctx.fillStyle = p.color;
-          ctx.fillRect(Math.round(p.x), Math.round(p.y), p.size, p.size);
-        }
-
-        // MERIDIAN text fades in after frame 100
-        if (frame > 100) {
-          const alpha = Math.min(1, (frame - 100) / 50);
-          ctx.globalAlpha = alpha;
-          ctx.fillStyle = "#C4A882";
-          ctx.font = "bold 13px Georgia, serif";
-          ctx.textAlign = "center";
-          ctx.letterSpacing = "10px";
-          ctx.fillText("M E R I D I A N", W / 2, dY + dH + 42);
-          ctx.globalAlpha = 1;
-        }
-
-        frame++;
-        if (frame < 220) {
-          animId = requestAnimationFrame(animate);
-        }
-      };
-
-      animId = requestAnimationFrame(animate);
-      canvas._cleanup = () => cancelAnimationFrame(animId);
-    };
-
-    img.onerror = () => {
-      // fallback if image fails
-      ctx.fillStyle = "#0E0C0A";
-      ctx.fillRect(0, 0, W, H);
-      ctx.fillStyle = "#C4A882";
-      ctx.font = "13px Georgia, serif";
-      ctx.textAlign = "center";
-      ctx.fillText("MERIDIAN", W/2, H/2);
-    };
-
-    return () => { if (canvas._cleanup) canvas._cleanup(); };
+    const t1 = setTimeout(() => setPhase(1), 300);
+    const t2 = setTimeout(() => setPhase(2), 1600);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
   }, []);
 
+  const silhouette = [
+    // head
+    {x:50,y:4},{x:54,y:5},{x:57,y:8},{x:58,y:12},{x:57,y:16},{x:54,y:19},{x:50,y:20},{x:46,y:19},{x:43,y:16},{x:42,y:12},{x:43,y:8},{x:46,y:5},
+    // neck + body
+    {x:49,y:21},{x:50,y:23},{x:51,y:21},
+    {x:47,y:25},{x:50,y:26},{x:53,y:25},
+    {x:46,y:30},{x:48,y:31},{x:50,y:32},{x:52,y:31},{x:54,y:30},
+    {x:46,y:36},{x:48,y:37},{x:50,y:38},{x:52,y:37},{x:54,y:36},
+    {x:47,y:42},{x:49,y:43},{x:51,y:43},{x:53,y:42},
+    {x:47,y:47},{x:50,y:48},{x:53,y:47},
+    // left arm spread wide
+    {x:44,y:27},{x:40,y:28},{x:36,y:30},{x:32,y:32},{x:28,y:35},{x:24,y:38},{x:20,y:41},{x:16,y:44},{x:12,y:47},
+    {x:43,y:29},{x:39,y:31},{x:35,y:33},{x:31,y:36},{x:27,y:39},
+    // right arm spread wide
+    {x:56,y:27},{x:60,y:28},{x:64,y:30},{x:68,y:32},{x:72,y:35},{x:76,y:38},{x:80,y:41},{x:84,y:44},{x:88,y:47},
+    {x:57,y:29},{x:61,y:31},{x:65,y:33},{x:69,y:36},{x:73,y:39},
+    // left hand
+    {x:10,y:46},{x:11,y:49},{x:9,y:48},{x:12,y:47},
+    // right hand
+    {x:90,y:46},{x:89,y:49},{x:91,y:48},{x:88,y:47},
+    // left leg
+    {x:48,y:50},{x:47,y:55},{x:46,y:60},{x:45,y:65},{x:44,y:70},{x:43,y:74},
+    // right leg
+    {x:52,y:50},{x:53,y:55},{x:54,y:60},{x:55,y:65},{x:56,y:70},{x:57,y:74},
+    // feet
+    {x:41,y:76},{x:43,y:77},{x:45,y:76},{x:42,y:75},
+    {x:55,y:76},{x:57,y:77},{x:59,y:76},{x:58,y:75},
+  ];
+
+  // Give each particle a fixed random start position (memoized via index)
+  const starts = useRef(silhouette.map(() => ({
+    x: (Math.random() - 0.5) * 120,
+    y: (Math.random() - 0.5) * 120,
+  }))).current;
+
   return (
-    <div style={{ position: "fixed", inset: 0, background: "#0E0C0A", zIndex: 9999 }}>
-      <canvas ref={canvasRef} style={{ display: "block", width: "100%", height: "100%" }} />
+    <div style={{ position: "fixed", inset: 0, background: "#0E0C0A", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", zIndex: 9999, overflow: "hidden" }}>
+      <div style={{ position: "relative", width: "200px", height: "180px" }}>
+        {silhouette.map((pt, i) => (
+          <div key={i} style={{
+            position: "absolute",
+            left: phase >= 1 ? `${pt.x * 2}px` : `${100 + starts[i].x * 5}px`,
+            top:  phase >= 1 ? `${pt.y * 2}px` : `${90 + starts[i].y * 5}px`,
+            width: "5px",
+            height: "5px",
+            background: "#C4A882",
+            borderRadius: "1px",
+            opacity: phase >= 1 ? 1 : 0,
+            boxShadow: phase >= 1 ? "0 0 6px #C4A88266" : "none",
+            transition: `left ${0.7 + (i % 8) * 0.05}s cubic-bezier(0.34,1.2,0.64,1) ${(i % 20) * 30}ms,
+                         top  ${0.7 + (i % 8) * 0.05}s cubic-bezier(0.34,1.2,0.64,1) ${(i % 20) * 30}ms,
+                         opacity 0.3s ease ${(i % 20) * 30}ms`,
+          }} />
+        ))}
+      </div>
+      <div style={{
+        marginTop: "16px",
+        fontSize: "13px",
+        letterSpacing: "10px",
+        color: "#C4A882",
+        textTransform: "uppercase",
+        fontFamily: "Georgia, serif",
+        opacity: phase >= 2 ? 1 : 0,
+        transition: "opacity 1s ease",
+      }}>Meridian</div>
     </div>
   );
 }
