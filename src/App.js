@@ -1060,7 +1060,7 @@ function SanjuLoader() {
 
     const img = new Image();
     img.crossOrigin = "anonymous";
-    img.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Sanju_Samson_at_T20_World_Cup_2024.jpg/440px-Sanju_Samson_at_T20_World_Cup_2024.jpg";
+    img.src = "https://tbztpvqwiutcrvecqauj.supabase.co/storage/v1/object/public/assets/Sanju.png";
 
     const runAnim = () => {
       const maxH = Math.min(H * 0.65, 380);
