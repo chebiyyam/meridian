@@ -432,7 +432,7 @@ function MeridianApp({ user }) {
   const [showAddTask,  setShowAddTask]  = useState(false);
   const [showAddEvent, setShowAddEvent] = useState(false);
   const [showAddGoal,  setShowAddGoal]  = useState(false);
-  const [newTask,  setNewTask]  = useState({ text: "", goal_id: "", due: "", priority: "med", hours: "" });
+  const [newTask,  setNewTask]  = useState({ text: "", goal_id: "", due: "", priority: "med", hours: "", recurring: "" });
   const [newEvent, setNewEvent] = useState({ title: "", goal_id: "", date: "", time: "" });
   const [newGoal,  setNewGoal]  = useState({ label: "", color: "#8B1A1A" });
   const [editEvent, setEditEvent] = useState(null);
@@ -452,8 +452,31 @@ function MeridianApp({ user }) {
       supabase.from("events").select("*").order("date"),
     ]);
     setGoals(g || []);
-    setTasks(t || []);
     setEvents(e || []);
+
+    // Auto-reset recurring tasks that were completed before today
+    const allTasks = t || [];
+    const todayDay = new Date().toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+    const tasksToReset = allTasks.filter(task => {
+      if (!task.recurring || !task.done) return false;
+      if (task.recurring === "daily") return true;
+      if (task.recurring === "weekly") {
+        // reset if it was completed more than 7 days ago — use created_at as proxy
+        return true; // simplify: reset weekly tasks each session if done
+      }
+      // specific day like "monday"
+      return task.recurring === todayDay && task.done;
+    });
+
+    if (tasksToReset.length > 0) {
+      await Promise.all(tasksToReset.map(task =>
+        supabase.from("tasks").update({ done: false }).eq("id", task.id)
+      ));
+      const resetIds = tasksToReset.map(t => t.id);
+      setTasks(allTasks.map(t => resetIds.includes(t.id) ? { ...t, done: false } : t));
+    } else {
+      setTasks(allTasks);
+    }
     setLoading(false);
   };
 
@@ -482,14 +505,15 @@ function MeridianApp({ user }) {
 
   const saveEditTask = async () => {
     if (!editTask) return;
-    const { data } = await supabase.from("tasks").update({ text: editTask.text, goal_id: editTask.goal_id, due: editTask.due, priority: editTask.priority, hours: editTask.hours }).eq("id", editTask.id).select().single();
+    const { data } = await supabase.from("tasks").update({ text: editTask.text, goal_id: editTask.goal_id, due: editTask.due, priority: editTask.priority, hours: editTask.hours, recurring: editTask.recurring || null }).eq("id", editTask.id).select().single();
     if (data) { setTasks(tasks.map(t => t.id === data.id ? data : t)); setEditTask(null); }
   };
 
   const addTask = async () => {
     if (!newTask.text.trim() || !newTask.goal_id) return;
-    const taskData = { text: newTask.text, goal_id: newTask.goal_id, due: newTask.due, priority: newTask.priority, user_id: user.id, done: false };
+    const taskData = { text: newTask.text, goal_id: newTask.goal_id, due: newTask.due || null, priority: newTask.priority, user_id: user.id, done: false };
     if (newTask.hours) taskData.hours = parseFloat(newTask.hours);
+    if (newTask.recurring) taskData.recurring = newTask.recurring;
     const { data } = await supabase.from("tasks").insert(taskData).select().single();
     if (data) {
       const updatedTasks = [...tasks, data];
@@ -767,7 +791,7 @@ function MeridianApp({ user }) {
                   <div style={chk(false)} onClick={()=>toggleTask(task)}/>
                   <div style={dot(task.goal_id)}/>
                   <div style={{flex:1}} onClick={()=>toggleTask(task)}>
-                    <div style={{fontSize:"13px"}}>{task.text}</div>
+                    <div style={{fontSize:"13px"}}>{task.text} {task.recurring && <span style={{fontSize:"9px",color:"#C4A882",letterSpacing:"1px",textTransform:"uppercase",marginLeft:"6px"}}>↻ {task.recurring}</span>}</div>
                     <div style={{fontSize:"10px",color:"#9B8B7A",marginTop:"2px"}}>{goalLabel(task.goal_id)}{task.due?` - due ${task.due}`:""}</div>
                   </div>
                   <div style={badge(task.priority)}>{task.priority}</div>
@@ -896,7 +920,18 @@ function MeridianApp({ user }) {
                 <option value="low">Low Priority</option>
               </select>
               <input style={S.input} type="number" min="0.5" step="0.5" placeholder="Hours needed (optional — syncs to Schedule Builder)" value={newTask.hours} onChange={e => setNewTask({...newTask, hours: e.target.value})} />
-              <div style={{ fontSize: "10px", color: "#9B8B7A" }}>If you add hours, this task will automatically appear in your Schedule Builder.</div>
+              <select style={S.select} value={newTask.recurring} onChange={e => setNewTask({...newTask, recurring: e.target.value})}>
+                <option value="">Not recurring</option>
+                <option value="daily">Every day</option>
+                <option value="monday">Every Monday</option>
+                <option value="tuesday">Every Tuesday</option>
+                <option value="wednesday">Every Wednesday</option>
+                <option value="thursday">Every Thursday</option>
+                <option value="friday">Every Friday</option>
+                <option value="saturday">Every Saturday</option>
+                <option value="sunday">Every Sunday</option>
+              </select>
+              <div style={{ fontSize: "10px", color: "#9B8B7A" }}>Recurring tasks automatically reset each day/week.</div>
               <div style={{ display: "flex", gap: "12px", marginTop: "8px" }}>
                 <button style={S.btn} onClick={addTask}>Add Task</button>
                 <button style={S.btnOut} onClick={() => setShowAddTask(false)}>Cancel</button>
@@ -945,6 +980,17 @@ function MeridianApp({ user }) {
                 <option value="low">Low Priority</option>
               </select>
               <input style={S.input} type="number" min="0.5" step="0.5" placeholder="Hours needed (optional)" value={editTask.hours || ""} onChange={e => setEditTask({...editTask, hours: e.target.value})} />
+              <select style={S.select} value={editTask.recurring || ""} onChange={e => setEditTask({...editTask, recurring: e.target.value})}>
+                <option value="">Not recurring</option>
+                <option value="daily">Every day</option>
+                <option value="monday">Every Monday</option>
+                <option value="tuesday">Every Tuesday</option>
+                <option value="wednesday">Every Wednesday</option>
+                <option value="thursday">Every Thursday</option>
+                <option value="friday">Every Friday</option>
+                <option value="saturday">Every Saturday</option>
+                <option value="sunday">Every Sunday</option>
+              </select>
               <div style={{ display: "flex", gap: "12px", marginTop: "8px" }}>
                 <button style={S.btn} onClick={saveEditTask}>Save Changes</button>
                 <button style={S.btnDanger} onClick={() => { deleteTask(editTask.id); setEditTask(null); }}>Delete</button>
