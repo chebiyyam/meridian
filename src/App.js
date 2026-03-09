@@ -1077,7 +1077,7 @@ function SanjuLoader() {
       octx.drawImage(img, 0, 0, off.width, off.height);
       const imgData = octx.getImageData(0, 0, off.width, off.height);
 
-      const gap = 6;
+      const gap = 3;
       const particles = [];
       for (let y = 0; y < off.height; y += gap) {
         for (let x = 0; x < off.width; x += gap) {
