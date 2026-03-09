@@ -688,7 +688,7 @@ function MeridianApp({ user }) {
               <div style={S.card}>
                 <div style={S.cardTitle}>
                   <span>Upcoming Tasks</span>
-                  <button style={S.btnOut} onClick={() => { if(noGoals){navigate("goals");setShowAddGoal(true);}else setShowAddTask(true); }}>+ Add</button>
+                  <button style={S.btnOut} onClick={() => { if(noGoals){navigate("goals");setShowAddGoal(true);}else{ setNewTask({ text: "", goal_id: goals[0]?.id || "", due: "", priority: "med", hours: "", recurring: [] }); setShowAddTask(true); }}}>+ Add</button>
                 </div>
                 {upcomingTasks.length === 0 && <div style={{ fontSize: "13px", color: "#9B8B7A" }}>{noGoals ? "Create a goal first to start adding tasks." : "No tasks yet."}</div>}
                 {upcomingTasks.map(task => (
@@ -781,7 +781,7 @@ function MeridianApp({ user }) {
             <div style={S.card}>
               <div style={S.cardTitle}>
                 <span>Pending ({pendingTasks.length})</span>
-                <button style={S.btnOut} onClick={() => { if(noGoals){navigate("goals");setShowAddGoal(true);}else setShowAddTask(true); }}>+ Task</button>
+                <button style={S.btnOut} onClick={() => { if(noGoals){navigate("goals");setShowAddGoal(true);}else{ setNewTask({ text: "", goal_id: goals[0]?.id || "", due: "", priority: "med", hours: "", recurring: [] }); setShowAddTask(true); }}}>+ Task</button>
               </div>
               {pendingTasks.length===0 && <div style={{fontSize:"13px",color:"#9B8B7A"}}>{noGoals?"Create a goal first.":"All caught up. Remarkable."}</div>}
               {pendingTasks.map(task=>(
