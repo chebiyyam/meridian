@@ -1047,6 +1047,162 @@ function MeridianApp({ user }) {
   );
 }
 
+// ── SANJU LOADER ─────────────────────────────────────────────────────────────
+function SanjuLoader() {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    const W = canvas.width = window.innerWidth;
+    const H = canvas.height = window.innerHeight;
+
+    // Draw Sanju silhouette shape using path (kneeling, arms spread pose)
+    const cx = W / 2, cy = H / 2;
+    const scale = Math.min(W, H) / 520;
+
+    // Sample the silhouette into grid points
+    const offscreen = document.createElement("canvas");
+    offscreen.width = 300; offscreen.height = 300;
+    const octx = offscreen.getContext("2d");
+
+    // Draw silhouette shape
+    octx.fillStyle = "#fff";
+    octx.beginPath();
+    // Head
+    octx.arc(150, 30, 22, 0, Math.PI * 2);
+    octx.fill();
+    // Body
+    octx.beginPath();
+    octx.moveTo(125, 52);
+    octx.lineTo(108, 155);
+    octx.lineTo(142, 155);
+    octx.lineTo(150, 90);
+    octx.lineTo(158, 155);
+    octx.lineTo(192, 155);
+    octx.lineTo(175, 52);
+    octx.closePath();
+    octx.fill();
+    // Left arm (spread wide)
+    octx.beginPath();
+    octx.moveTo(125, 70);
+    octx.quadraticCurveTo(80, 90, 48, 120);
+    octx.lineTo(42, 108);
+    octx.quadraticCurveTo(78, 78, 118, 58);
+    octx.closePath();
+    octx.fill();
+    // Right arm (spread wide)
+    octx.beginPath();
+    octx.moveTo(175, 70);
+    octx.quadraticCurveTo(220, 90, 252, 120);
+    octx.lineTo(258, 108);
+    octx.quadraticCurveTo(222, 78, 182, 58);
+    octx.closePath();
+    octx.fill();
+    // Left hand fist
+    octx.beginPath();
+    octx.arc(42, 114, 10, 0, Math.PI * 2);
+    octx.fill();
+    // Right hand
+    octx.beginPath();
+    octx.arc(258, 114, 10, 0, Math.PI * 2);
+    octx.fill();
+    // Left leg (kneeling)
+    octx.beginPath();
+    octx.moveTo(108, 155);
+    octx.lineTo(96, 210);
+    octx.lineTo(116, 210);
+    octx.lineTo(125, 155);
+    octx.closePath();
+    octx.fill();
+    // Right leg (kneeling)
+    octx.beginPath();
+    octx.moveTo(175, 155);
+    octx.lineTo(184, 210);
+    octx.lineTo(204, 210);
+    octx.lineTo(192, 155);
+    octx.closePath();
+    octx.fill();
+    // Knees/feet
+    octx.beginPath();
+    octx.ellipse(106, 212, 18, 10, 0, 0, Math.PI * 2);
+    octx.fill();
+    octx.beginPath();
+    octx.ellipse(194, 212, 18, 10, 0, 0, Math.PI * 2);
+    octx.fill();
+
+    // Sample pixels into particles
+    const imgData = octx.getImageData(0, 0, 300, 300);
+    const particles = [];
+    const gap = 6;
+    for (let y = 0; y < 300; y += gap) {
+      for (let x = 0; x < 300; x += gap) {
+        const i = (y * 300 + x) * 4;
+        if (imgData.data[i] > 128) {
+          const tx = cx + (x - 150) * scale;
+          const ty = cy + (y - 110) * scale;
+          particles.push({
+            x: Math.random() * W,
+            y: Math.random() * H,
+            tx, ty,
+            size: (2 + Math.random() * 2) * scale,
+            speed: 0.02 + Math.random() * 0.04,
+            opacity: 0,
+          });
+        }
+      }
+    }
+
+    let frame = 0;
+    let animId;
+
+    const animate = () => {
+      ctx.fillStyle = "#0E0C0A";
+      ctx.fillRect(0, 0, W, H);
+
+      let allArrived = true;
+      for (const p of particles) {
+        p.x += (p.tx - p.x) * p.speed;
+        p.y += (p.ty - p.y) * p.speed;
+        p.opacity = Math.min(1, p.opacity + 0.015);
+        const dist = Math.abs(p.x - p.tx) + Math.abs(p.y - p.ty);
+        if (dist > 2) allArrived = false;
+        ctx.globalAlpha = p.opacity;
+        ctx.fillStyle = "#C4A882";
+        ctx.fillRect(p.x, p.y, p.size, p.size);
+      }
+      ctx.globalAlpha = 1;
+
+      // Draw MERIDIAN text once particles mostly assembled
+      if (frame > 80) {
+        const textAlpha = Math.min(1, (frame - 80) / 40);
+        ctx.globalAlpha = textAlpha;
+        ctx.fillStyle = "#C4A882";
+        ctx.font = `${Math.round(14 * scale)}px Georgia, serif`;
+        ctx.letterSpacing = "8px";
+        ctx.textAlign = "center";
+        ctx.fillText("MERIDIAN", cx, cy + 160 * scale);
+        ctx.globalAlpha = 1;
+      }
+
+      frame++;
+      if (frame < 180) {
+        animId = requestAnimationFrame(animate);
+      }
+    };
+
+    animId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animId);
+  }, []);
+
+  return (
+    <div style={{ position: "fixed", inset: 0, background: "#0E0C0A", zIndex: 9999 }}>
+      <canvas ref={canvasRef} style={{ display: "block", width: "100%", height: "100%" }} />
+    </div>
+  );
+}
+
 // ── ROOT ─────────────────────────────────────────────────────────────────────
 export default function App() {
   const [user, setUser] = useState(null);
@@ -1065,11 +1221,7 @@ export default function App() {
     return () => subscription.unsubscribe();
   }, []);
 
-  if (checking) return (
-    <div style={{ minHeight: "100vh", background: "#0E0C0A", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Georgia, serif" }}>
-      <div style={{ fontSize: "12px", letterSpacing: "4px", color: "#6B5E4E", textTransform: "uppercase" }}>Meridian</div>
-    </div>
-  );
+  if (checking) return <SanjuLoader />;
 
   if (user) return <MeridianApp user={user} />;
   if (showAuth) return <AuthScreen onBack={() => setShowAuth(false)} />;
