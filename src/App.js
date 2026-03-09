@@ -1049,79 +1049,90 @@ function MeridianApp({ user }) {
 
 // ── SANJU LOADER ─────────────────────────────────────────────────────────────
 function SanjuLoader() {
-  const [phase, setPhase] = useState(0);
+  const canvasRef = useRef(null);
 
   useEffect(() => {
-    const t1 = setTimeout(() => setPhase(1), 300);
-    const t2 = setTimeout(() => setPhase(2), 1600);
-    return () => { clearTimeout(t1); clearTimeout(t2); };
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    const W = canvas.width = window.innerWidth;
+    const H = canvas.height = window.innerHeight;
+
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Sanju_Samson_at_T20_World_Cup_2024.jpg/440px-Sanju_Samson_at_T20_World_Cup_2024.jpg";
+
+    const runAnim = () => {
+      const maxH = Math.min(H * 0.65, 380);
+      const ratio = img.naturalWidth / img.naturalHeight;
+      const dH = maxH;
+      const dW = dH * ratio;
+      const dX = (W - dW) / 2;
+      const dY = (H - dH) / 2 - 40;
+
+      const off = document.createElement("canvas");
+      off.width = Math.round(dW);
+      off.height = Math.round(dH);
+      const octx = off.getContext("2d");
+      octx.drawImage(img, 0, 0, off.width, off.height);
+      const imgData = octx.getImageData(0, 0, off.width, off.height);
+
+      const gap = 6;
+      const particles = [];
+      for (let y = 0; y < off.height; y += gap) {
+        for (let x = 0; x < off.width; x += gap) {
+          const i = (y * off.width + x) * 4;
+          const a = imgData.data[i+3];
+          if (a < 30) continue;
+          const r = imgData.data[i], g = imgData.data[i+1], b = imgData.data[i+2];
+          particles.push({
+            x: Math.random() * W, y: Math.random() * H,
+            tx: dX + x, ty: dY + y,
+            color: `rgb(${r},${g},${b})`,
+            size: gap - 1,
+            speed: 0.018 + Math.random() * 0.03,
+            delay: Math.floor(Math.random() * 60),
+          });
+        }
+      }
+
+      let frame = 0;
+      let animId;
+      const animate = () => {
+        ctx.fillStyle = "#0E0C0A";
+        ctx.fillRect(0, 0, W, H);
+        for (const p of particles) {
+          if (frame < p.delay) continue;
+          p.x += (p.tx - p.x) * p.speed;
+          p.y += (p.ty - p.y) * p.speed;
+          ctx.fillStyle = p.color;
+          ctx.fillRect(Math.round(p.x), Math.round(p.y), p.size, p.size);
+        }
+        if (frame > 90) {
+          const alpha = Math.min(1, (frame - 90) / 50);
+          ctx.globalAlpha = alpha;
+          ctx.fillStyle = "#C4A882";
+          ctx.font = "13px Georgia, serif";
+          ctx.textAlign = "center";
+          ctx.fillText("M E R I D I A N", W / 2, dY + dH + 44);
+          ctx.globalAlpha = 1;
+        }
+        frame++;
+        if (frame < 240) animId = requestAnimationFrame(animate);
+      };
+      animId = requestAnimationFrame(animate);
+      canvas._cleanup = () => cancelAnimationFrame(animId);
+    };
+
+    if (img.complete) runAnim();
+    else { img.onload = runAnim; img.onerror = runAnim; }
+
+    return () => { if (canvas._cleanup) canvas._cleanup(); };
   }, []);
 
-  const silhouette = [
-    // head
-    {x:50,y:4},{x:54,y:5},{x:57,y:8},{x:58,y:12},{x:57,y:16},{x:54,y:19},{x:50,y:20},{x:46,y:19},{x:43,y:16},{x:42,y:12},{x:43,y:8},{x:46,y:5},
-    // neck + body
-    {x:49,y:21},{x:50,y:23},{x:51,y:21},
-    {x:47,y:25},{x:50,y:26},{x:53,y:25},
-    {x:46,y:30},{x:48,y:31},{x:50,y:32},{x:52,y:31},{x:54,y:30},
-    {x:46,y:36},{x:48,y:37},{x:50,y:38},{x:52,y:37},{x:54,y:36},
-    {x:47,y:42},{x:49,y:43},{x:51,y:43},{x:53,y:42},
-    {x:47,y:47},{x:50,y:48},{x:53,y:47},
-    // left arm spread wide
-    {x:44,y:27},{x:40,y:28},{x:36,y:30},{x:32,y:32},{x:28,y:35},{x:24,y:38},{x:20,y:41},{x:16,y:44},{x:12,y:47},
-    {x:43,y:29},{x:39,y:31},{x:35,y:33},{x:31,y:36},{x:27,y:39},
-    // right arm spread wide
-    {x:56,y:27},{x:60,y:28},{x:64,y:30},{x:68,y:32},{x:72,y:35},{x:76,y:38},{x:80,y:41},{x:84,y:44},{x:88,y:47},
-    {x:57,y:29},{x:61,y:31},{x:65,y:33},{x:69,y:36},{x:73,y:39},
-    // left hand
-    {x:10,y:46},{x:11,y:49},{x:9,y:48},{x:12,y:47},
-    // right hand
-    {x:90,y:46},{x:89,y:49},{x:91,y:48},{x:88,y:47},
-    // left leg
-    {x:48,y:50},{x:47,y:55},{x:46,y:60},{x:45,y:65},{x:44,y:70},{x:43,y:74},
-    // right leg
-    {x:52,y:50},{x:53,y:55},{x:54,y:60},{x:55,y:65},{x:56,y:70},{x:57,y:74},
-    // feet
-    {x:41,y:76},{x:43,y:77},{x:45,y:76},{x:42,y:75},
-    {x:55,y:76},{x:57,y:77},{x:59,y:76},{x:58,y:75},
-  ];
-
-  // Give each particle a fixed random start position (memoized via index)
-  const starts = useRef(silhouette.map(() => ({
-    x: (Math.random() - 0.5) * 120,
-    y: (Math.random() - 0.5) * 120,
-  }))).current;
-
   return (
-    <div style={{ position: "fixed", inset: 0, background: "#0E0C0A", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", zIndex: 9999, overflow: "hidden" }}>
-      <div style={{ position: "relative", width: "200px", height: "180px" }}>
-        {silhouette.map((pt, i) => (
-          <div key={i} style={{
-            position: "absolute",
-            left: phase >= 1 ? `${pt.x * 2}px` : `${100 + starts[i].x * 5}px`,
-            top:  phase >= 1 ? `${pt.y * 2}px` : `${90 + starts[i].y * 5}px`,
-            width: "5px",
-            height: "5px",
-            background: "#C4A882",
-            borderRadius: "1px",
-            opacity: phase >= 1 ? 1 : 0,
-            boxShadow: phase >= 1 ? "0 0 6px #C4A88266" : "none",
-            transition: `left ${0.7 + (i % 8) * 0.05}s cubic-bezier(0.34,1.2,0.64,1) ${(i % 20) * 30}ms,
-                         top  ${0.7 + (i % 8) * 0.05}s cubic-bezier(0.34,1.2,0.64,1) ${(i % 20) * 30}ms,
-                         opacity 0.3s ease ${(i % 20) * 30}ms`,
-          }} />
-        ))}
-      </div>
-      <div style={{
-        marginTop: "16px",
-        fontSize: "13px",
-        letterSpacing: "10px",
-        color: "#C4A882",
-        textTransform: "uppercase",
-        fontFamily: "Georgia, serif",
-        opacity: phase >= 2 ? 1 : 0,
-        transition: "opacity 1s ease",
-      }}>Meridian</div>
+    <div style={{ position: "fixed", inset: 0, background: "#0E0C0A", zIndex: 9999 }}>
+      <canvas ref={canvasRef} style={{ display: "block", width: "100%", height: "100%" }} />
     </div>
   );
 }
