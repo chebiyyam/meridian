@@ -1101,15 +1101,29 @@ function SanjuLoader() {
       const animate = () => {
         ctx.fillStyle = "#0E0C0A";
         ctx.fillRect(0, 0, W, H);
-        for (const p of particles) {
-          if (frame < p.delay) continue;
-          p.x += (p.tx - p.x) * p.speed;
-          p.y += (p.ty - p.y) * p.speed;
-          ctx.fillStyle = p.color;
-          ctx.fillRect(Math.round(p.x), Math.round(p.y), p.size, p.size);
+
+        // Phase 1: particles flying in (frames 0-300)
+        if (frame < 340) {
+          for (const p of particles) {
+            if (frame < p.delay) continue;
+            p.x += (p.tx - p.x) * p.speed;
+            p.y += (p.ty - p.y) * p.speed;
+            ctx.fillStyle = p.color;
+            ctx.fillRect(Math.round(p.x), Math.round(p.y), p.size, p.size);
+          }
         }
+
+        // Phase 2: full crisp photo fades in over particles (frames 300-360)
+        if (frame >= 300) {
+          const photoAlpha = Math.min(1, (frame - 300) / 60);
+          ctx.globalAlpha = photoAlpha;
+          ctx.drawImage(img, dX, dY, dW, dH);
+          ctx.globalAlpha = 1;
+        }
+
+        // Meridian text
         if (frame > 120) {
-          const alpha = Math.min(1, (frame - 90) / 50);
+          const alpha = Math.min(1, (frame - 120) / 50);
           ctx.globalAlpha = alpha;
           ctx.fillStyle = "#C4A882";
           ctx.font = "13px Georgia, serif";
@@ -1117,8 +1131,9 @@ function SanjuLoader() {
           ctx.fillText("M E R I D I A N", W / 2, dY + dH + 44);
           ctx.globalAlpha = 1;
         }
+
         frame++;
-        if (frame < 400) animId = requestAnimationFrame(animate);
+        if (frame < 420) animId = requestAnimationFrame(animate);
       };
       animId = requestAnimationFrame(animate);
       canvas._cleanup = () => cancelAnimationFrame(animId);
