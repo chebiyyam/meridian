@@ -1108,7 +1108,7 @@ function SanjuLoader() {
           ctx.fillStyle = p.color;
           ctx.fillRect(Math.round(p.x), Math.round(p.y), p.size, p.size);
         }
-        if (frame > 90) {
+        if (frame > 120) {
           const alpha = Math.min(1, (frame - 90) / 50);
           ctx.globalAlpha = alpha;
           ctx.fillStyle = "#C4A882";
@@ -1118,7 +1118,7 @@ function SanjuLoader() {
           ctx.globalAlpha = 1;
         }
         frame++;
-        if (frame < 240) animId = requestAnimationFrame(animate);
+        if (frame < 400) animId = requestAnimationFrame(animate);
       };
       animId = requestAnimationFrame(animate);
       canvas._cleanup = () => cancelAnimationFrame(animId);
@@ -1144,7 +1144,7 @@ export default function App() {
   const [showAuth, setShowAuth] = useState(false);
 
   useEffect(() => {
-    const minDelay = new Promise(res => setTimeout(res, 3500));
+    const minDelay = new Promise(res => setTimeout(res, 6000));
     const authCheck = supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
     });
