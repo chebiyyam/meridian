@@ -1058,142 +1058,103 @@ function SanjuLoader() {
     const W = canvas.width = window.innerWidth;
     const H = canvas.height = window.innerHeight;
 
-    // Draw Sanju silhouette shape using path (kneeling, arms spread pose)
-    const cx = W / 2, cy = H / 2;
-    const scale = Math.min(W, H) / 520;
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.src = "https://tbztpvqwiutcrvecqauj.supabase.co/storage/v1/object/public/assets/sanju.jpg";
 
-    // Sample the silhouette into grid points
-    const offscreen = document.createElement("canvas");
-    offscreen.width = 300; offscreen.height = 300;
-    const octx = offscreen.getContext("2d");
+    img.onload = () => {
+      // Figure out display size (centered, max 340px tall)
+      const maxH = Math.min(H * 0.65, 340);
+      const ratio = img.width / img.height;
+      const dH = maxH;
+      const dW = dH * ratio;
+      const dX = (W - dW) / 2;
+      const dY = (H - dH) / 2 - 30;
 
-    // Draw silhouette shape
-    octx.fillStyle = "#fff";
-    octx.beginPath();
-    // Head
-    octx.arc(150, 30, 22, 0, Math.PI * 2);
-    octx.fill();
-    // Body
-    octx.beginPath();
-    octx.moveTo(125, 52);
-    octx.lineTo(108, 155);
-    octx.lineTo(142, 155);
-    octx.lineTo(150, 90);
-    octx.lineTo(158, 155);
-    octx.lineTo(192, 155);
-    octx.lineTo(175, 52);
-    octx.closePath();
-    octx.fill();
-    // Left arm (spread wide)
-    octx.beginPath();
-    octx.moveTo(125, 70);
-    octx.quadraticCurveTo(80, 90, 48, 120);
-    octx.lineTo(42, 108);
-    octx.quadraticCurveTo(78, 78, 118, 58);
-    octx.closePath();
-    octx.fill();
-    // Right arm (spread wide)
-    octx.beginPath();
-    octx.moveTo(175, 70);
-    octx.quadraticCurveTo(220, 90, 252, 120);
-    octx.lineTo(258, 108);
-    octx.quadraticCurveTo(222, 78, 182, 58);
-    octx.closePath();
-    octx.fill();
-    // Left hand fist
-    octx.beginPath();
-    octx.arc(42, 114, 10, 0, Math.PI * 2);
-    octx.fill();
-    // Right hand
-    octx.beginPath();
-    octx.arc(258, 114, 10, 0, Math.PI * 2);
-    octx.fill();
-    // Left leg (kneeling)
-    octx.beginPath();
-    octx.moveTo(108, 155);
-    octx.lineTo(96, 210);
-    octx.lineTo(116, 210);
-    octx.lineTo(125, 155);
-    octx.closePath();
-    octx.fill();
-    // Right leg (kneeling)
-    octx.beginPath();
-    octx.moveTo(175, 155);
-    octx.lineTo(184, 210);
-    octx.lineTo(204, 210);
-    octx.lineTo(192, 155);
-    octx.closePath();
-    octx.fill();
-    // Knees/feet
-    octx.beginPath();
-    octx.ellipse(106, 212, 18, 10, 0, 0, Math.PI * 2);
-    octx.fill();
-    octx.beginPath();
-    octx.ellipse(194, 212, 18, 10, 0, 0, Math.PI * 2);
-    octx.fill();
+      // Draw image to offscreen canvas to sample pixels
+      const off = document.createElement("canvas");
+      off.width = Math.round(dW);
+      off.height = Math.round(dH);
+      const octx = off.getContext("2d");
+      octx.drawImage(img, 0, 0, off.width, off.height);
+      const imgData = octx.getImageData(0, 0, off.width, off.height);
 
-    // Sample pixels into particles
-    const imgData = octx.getImageData(0, 0, 300, 300);
-    const particles = [];
-    const gap = 6;
-    for (let y = 0; y < 300; y += gap) {
-      for (let x = 0; x < 300; x += gap) {
-        const i = (y * 300 + x) * 4;
-        if (imgData.data[i] > 128) {
-          const tx = cx + (x - 150) * scale;
-          const ty = cy + (y - 110) * scale;
+      // Sample every Nth pixel as a particle
+      const gap = 5;
+      const particles = [];
+      for (let y = 0; y < off.height; y += gap) {
+        for (let x = 0; x < off.width; x += gap) {
+          const i = (y * off.width + x) * 4;
+          const r = imgData.data[i];
+          const g = imgData.data[i+1];
+          const b = imgData.data[i+2];
+          const a = imgData.data[i+3];
+          if (a < 30) continue;
+          // skip very dark background pixels
+          if (r + g + b < 30) continue;
           particles.push({
+            // start: random position scattered around screen
             x: Math.random() * W,
             y: Math.random() * H,
-            tx, ty,
-            size: (2 + Math.random() * 2) * scale,
-            speed: 0.02 + Math.random() * 0.04,
-            opacity: 0,
+            // target: correct pixel position
+            tx: dX + x,
+            ty: dY + y,
+            color: `rgb(${r},${g},${b})`,
+            size: gap - 1,
+            speed: 0.025 + Math.random() * 0.035,
+            delay: Math.random() * 40,
           });
         }
       }
-    }
 
-    let frame = 0;
-    let animId;
+      let frame = 0;
+      let animId;
 
-    const animate = () => {
-      ctx.fillStyle = "#0E0C0A";
-      ctx.fillRect(0, 0, W, H);
+      const animate = () => {
+        ctx.fillStyle = "#0E0C0A";
+        ctx.fillRect(0, 0, W, H);
 
-      let allArrived = true;
-      for (const p of particles) {
-        p.x += (p.tx - p.x) * p.speed;
-        p.y += (p.ty - p.y) * p.speed;
-        p.opacity = Math.min(1, p.opacity + 0.015);
-        const dist = Math.abs(p.x - p.tx) + Math.abs(p.y - p.ty);
-        if (dist > 2) allArrived = false;
-        ctx.globalAlpha = p.opacity;
-        ctx.fillStyle = "#C4A882";
-        ctx.fillRect(p.x, p.y, p.size, p.size);
-      }
-      ctx.globalAlpha = 1;
+        for (const p of particles) {
+          if (frame < p.delay) continue;
+          p.x += (p.tx - p.x) * p.speed;
+          p.y += (p.ty - p.y) * p.speed;
+          ctx.fillStyle = p.color;
+          ctx.fillRect(Math.round(p.x), Math.round(p.y), p.size, p.size);
+        }
 
-      // Draw MERIDIAN text once particles mostly assembled
-      if (frame > 80) {
-        const textAlpha = Math.min(1, (frame - 80) / 40);
-        ctx.globalAlpha = textAlpha;
-        ctx.fillStyle = "#C4A882";
-        ctx.font = `${Math.round(14 * scale)}px Georgia, serif`;
-        ctx.letterSpacing = "8px";
-        ctx.textAlign = "center";
-        ctx.fillText("MERIDIAN", cx, cy + 160 * scale);
-        ctx.globalAlpha = 1;
-      }
+        // MERIDIAN text fades in after frame 100
+        if (frame > 100) {
+          const alpha = Math.min(1, (frame - 100) / 50);
+          ctx.globalAlpha = alpha;
+          ctx.fillStyle = "#C4A882";
+          ctx.font = "bold 13px Georgia, serif";
+          ctx.textAlign = "center";
+          ctx.letterSpacing = "10px";
+          ctx.fillText("M E R I D I A N", W / 2, dY + dH + 42);
+          ctx.globalAlpha = 1;
+        }
 
-      frame++;
-      if (frame < 180) {
-        animId = requestAnimationFrame(animate);
-      }
+        frame++;
+        if (frame < 220) {
+          animId = requestAnimationFrame(animate);
+        }
+      };
+
+      animId = requestAnimationFrame(animate);
+      canvas._cleanup = () => cancelAnimationFrame(animId);
     };
 
-    animId = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animId);
+    img.onerror = () => {
+      // fallback if image fails
+      ctx.fillStyle = "#0E0C0A";
+      ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = "#C4A882";
+      ctx.font = "13px Georgia, serif";
+      ctx.textAlign = "center";
+      ctx.fillText("MERIDIAN", W/2, H/2);
+    };
+
+    return () => { if (canvas._cleanup) canvas._cleanup(); };
   }, []);
 
   return (
@@ -1210,10 +1171,11 @@ export default function App() {
   const [showAuth, setShowAuth] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    const minDelay = new Promise(res => setTimeout(res, 3500));
+    const authCheck = supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
-      setChecking(false);
     });
+    Promise.all([minDelay, authCheck]).then(() => setChecking(false));
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
       setUser(session?.user ?? null);
       if (session?.user) setShowAuth(false);
