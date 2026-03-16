@@ -1123,7 +1123,7 @@ function SanjuLoader() {
         }
 
         frame++;
-        if (frame < 480) animId = requestAnimationFrame(animate);
+        if (frame < 280) animId = requestAnimationFrame(animate);
       };
       animId = requestAnimationFrame(animate);
       canvas._cleanup = () => cancelAnimationFrame(animId);
@@ -1149,7 +1149,7 @@ export default function App() {
   const [showAuth, setShowAuth] = useState(false);
 
   useEffect(() => {
-    const minDelay = new Promise(res => setTimeout(res, 6000));
+    const minDelay = new Promise(res => setTimeout(res, 4000));
     const authCheck = supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
     });
