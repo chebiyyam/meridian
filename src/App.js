@@ -8,14 +8,14 @@ const supabase = createClient(
 );
 
 const MUTED_COLORS = [
-  { name: "Crimson", value: "#8B1A1A" },
-  { name: "Navy",    value: "#1A3A5C" },
-  { name: "Forest",  value: "#2C4A2E" },
-  { name: "Walnut",  value: "#4A3520" },
-  { name: "Slate",   value: "#3A4A5C" },
-  { name: "Plum",    value: "#4A2040" },
-  { name: "Moss",    value: "#3A4A2A" },
-  { name: "Sienna",  value: "#6B3A2A" },
+  { name: "Red",     value: "#E53935" },
+  { name: "Blue",    value: "#1E88E5" },
+  { name: "Green",   value: "#43A047" },
+  { name: "Orange",  value: "#FB8C00" },
+  { name: "Purple",  value: "#8E24AA" },
+  { name: "Teal",    value: "#00ACC1" },
+  { name: "Pink",    value: "#D81B60" },
+  { name: "Lime",    value: "#7CB342" },
 ];
 
 const QUOTES = [
@@ -434,7 +434,7 @@ function MeridianApp({ user }) {
   const [showAddGoal,  setShowAddGoal]  = useState(false);
   const [newTask,  setNewTask]  = useState({ text: "", goal_id: "", due: "", priority: "med", hours: "", recurring: [] });
   const [newEvent, setNewEvent] = useState({ title: "", goal_id: "", date: "", time: "" });
-  const [newGoal,  setNewGoal]  = useState({ label: "", color: "#8B1A1A" });
+  const [newGoal,  setNewGoal]  = useState({ label: "", color: "#E53935" });
   const [editEvent, setEditEvent] = useState(null);
   const [editTask, setEditTask] = useState(null);
   const [quoteIdx, setQuoteIdx] = useState(() => Math.floor(Math.random() * QUOTES.length));
@@ -480,7 +480,7 @@ function MeridianApp({ user }) {
   const addGoal = async () => {
     if (!newGoal.label.trim()) return;
     const { data } = await supabase.from("goals").insert({ ...newGoal, user_id: user.id }).select().single();
-    if (data) { setGoals([...goals, data]); setNewGoal({ label: "", color: "#8B1A1A" }); setShowAddGoal(false); }
+    if (data) { setGoals([...goals, data]); setNewGoal({ label: "", color: "#E53935" }); setShowAddGoal(false); }
   };
 
   const deleteGoal = async (id) => {
