@@ -465,7 +465,7 @@ function MeridianApp({ user }) {
         if (!task.recurring || !task.done) return false;
         try {
           const days = JSON.parse(task.recurring);
-          return Array.isArray(days) && days.includes(todayDay);
+          return Array.isArray(days) && days.length > 0 && days.includes(todayDay);
         } catch { return false; }
       });
       if (tasksToReset.length > 0) {
