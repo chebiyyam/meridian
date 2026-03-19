@@ -454,23 +454,30 @@ function MeridianApp({ user }) {
     setGoals(g || []);
     setEvents(e || []);
 
-    // Auto-reset recurring tasks that were completed before today
     const allTasks = t || [];
-    const todayDay = new Date().toLocaleDateString('en-US', { weekday: 'short' }).toLowerCase(); // "mon","tue" etc
-    const tasksToReset = allTasks.filter(task => {
-      if (!task.recurring || !task.done) return false;
-      try {
-        const days = JSON.parse(task.recurring);
-        return Array.isArray(days) && days.includes(todayDay);
-      } catch { return false; }
-    });
+    const todayStr2 = new Date().toLocaleDateString('en-CA'); // "2026-03-19"
+    const todayDay = new Date().toLocaleDateString('en-US', { weekday: 'short' }).toLowerCase();
 
-    if (tasksToReset.length > 0) {
-      await Promise.all(tasksToReset.map(task =>
-        supabase.from("tasks").update({ done: false }).eq("id", task.id)
-      ));
-      const resetIds = tasksToReset.map(t => t.id);
-      setTasks(allTasks.map(t => resetIds.includes(t.id) ? { ...t, done: false } : t));
+    // Only reset recurring tasks once per day — check last reset date in localStorage
+    const lastReset = localStorage.getItem("meridian_last_reset");
+    if (lastReset !== todayStr2) {
+      const tasksToReset = allTasks.filter(task => {
+        if (!task.recurring || !task.done) return false;
+        try {
+          const days = JSON.parse(task.recurring);
+          return Array.isArray(days) && days.includes(todayDay);
+        } catch { return false; }
+      });
+      if (tasksToReset.length > 0) {
+        await Promise.all(tasksToReset.map(task =>
+          supabase.from("tasks").update({ done: false }).eq("id", task.id)
+        ));
+        const resetIds = tasksToReset.map(t => t.id);
+        setTasks(allTasks.map(t => resetIds.includes(t.id) ? { ...t, done: false } : t));
+      } else {
+        setTasks(allTasks);
+      }
+      localStorage.setItem("meridian_last_reset", todayStr2);
     } else {
       setTasks(allTasks);
     }
