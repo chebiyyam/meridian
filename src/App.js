@@ -501,12 +501,26 @@ function MeridianApp({ user }) {
     const { data } = await supabase.from("tasks").update({ done: !task.done }).eq("id", task.id).select().single();
     if (data) {
       setTasks(tasks.map(t => t.id === task.id ? data : t));
-      // if marking as done, remove from schedule builder
+      const { data: sched } = await supabase.from("schedules").select("*").eq("user_id", user.id).maybeSingle();
       if (!task.done) {
-        const { data: sched } = await supabase.from("schedules").select("*").eq("user_id", user.id).maybeSingle();
+        // marking as done → remove from schedule builder
         if (sched && sched.items) {
           const updatedItems = sched.items.filter(item => item.name !== task.text);
           await supabase.from("schedules").update({ items: updatedItems, updated_at: new Date().toISOString() }).eq("user_id", user.id);
+        }
+      } else {
+        // marking back to pending → re-add to schedule builder if it has hours
+        if (task.hours) {
+          const schedItem = { name: task.text, hours: String(task.hours), priority: task.priority, deadline: task.due || "" };
+          if (sched) {
+            const alreadyExists = (sched.items || []).some(i => i.name === task.text);
+            if (!alreadyExists) {
+              const updatedItems = [...(sched.items || []), schedItem];
+              await supabase.from("schedules").update({ items: updatedItems, updated_at: new Date().toISOString() }).eq("user_id", user.id);
+            }
+          } else {
+            await supabase.from("schedules").insert({ user_id: user.id, items: [schedItem], result: null });
+          }
         }
       }
     }
