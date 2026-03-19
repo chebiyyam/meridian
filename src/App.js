@@ -262,7 +262,7 @@ function AuthScreen({ onBack }) {
 }
 
 // ── SMART SCHEDULER ──────────────────────────────────────────────────────────
-function AIScheduler({ user }) {
+function AIScheduler({ user, refreshKey }) {
   const [items, setItems] = useState([{ name: "", hours: "", priority: "high", deadline: "" }]);
   const [schedule, setSchedule] = useState(null);
   const [syncing, setSyncing] = useState(false);
@@ -278,7 +278,7 @@ function AIScheduler({ user }) {
       }
     };
     load();
-  }, [user.id]);
+  }, [user.id, refreshKey]);
 
   const save = async (newItems, newSchedule) => {
     setSyncing(true);
@@ -887,7 +887,7 @@ function MeridianApp({ user }) {
         {view === "scheduler" && (
           <div style={S.card}>
             <div style={S.cardTitle}>Schedule Builder</div>
-            <AIScheduler user={user} />
+            <AIScheduler user={user} refreshKey={doneTasks.length} />
           </div>
         )}
       </div>
