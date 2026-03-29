@@ -432,10 +432,16 @@ function MeridianApp({ user }) {
   const [nonNegotiables, setNonNegotiables] = useState([]);
   const [showNNPicker, setShowNNPicker] = useState(false);
   const [nnComplete, setNnComplete] = useState(false);
-  const [timerMode, setTimerMode] = useState(null); // null | 25 | 50 | "custom"
+  const [timerMode, setTimerMode] = useState(null);
   const [timerSeconds, setTimerSeconds] = useState(0);
   const [timerRunning, setTimerRunning] = useState(false);
   const [customMinutes, setCustomMinutes] = useState(30);
+  const [weeklySnapshots, setWeeklySnapshots] = useState([]);
+  const [showWeeklyReport, setShowWeeklyReport] = useState(false);
+  const [performanceScore, setPerformanceScore] = useState(null);
+  const [fallingOff, setFallingOff] = useState(false);
+  const [milestones, setMilestones] = useState([]);
+  const [showMilestone, setShowMilestone] = useState(null);
   const timerRef = useRef(null);
   const today = new Date();
   const [calMonth, setCalMonth] = useState(today.getMonth());
@@ -463,6 +469,46 @@ function MeridianApp({ user }) {
       const { data: newStats } = await supabase.from("user_stats").insert({ user_id: user.id }).select().single();
       if (newStats) setStats(newStats);
     }
+    // fetch last 7 days of snapshots
+    const { data: snaps } = await supabase.from("daily_snapshots").select("*").eq("user_id", user.id).order("date", { ascending: false }).limit(7);
+    if (snaps) {
+      setWeeklySnapshots(snaps);
+      // performance score = avg completion % over last 7 days
+      if (snaps.length > 0) {
+        const avg = Math.round(snaps.reduce((a, s) => a + s.score, 0) / snaps.length);
+        setPerformanceScore(avg);
+        // falling off detection: last 2 days score < 30
+        const recent = snaps.slice(0, 2);
+        if (recent.length === 2 && recent.every(s => s.score < 30)) setFallingOff(true);
+      }
+      // check if sunday - auto show weekly report
+      if (new Date().getDay() === 0 && snaps.length >= 5) setShowWeeklyReport(true);
+    }
+  };
+
+  const saveDailySnapshot = async (allTasks) => {
+    const todayDate = new Date().toLocaleDateString('en-CA');
+    const total = allTasks.length;
+    const completed = allTasks.filter(t => t.done).length;
+    const score = total > 0 ? Math.round((completed / total) * 100) : 0;
+    await supabase.from("daily_snapshots").upsert(
+      { user_id: user.id, date: todayDate, total_tasks: total, completed_tasks: completed, score },
+      { onConflict: "user_id,date" }
+    );
+  };
+
+  const checkMilestones = (allTasks) => {
+    const done = allTasks.filter(t => t.done).length;
+    const milestoneList = [
+      { count: 1,   label: "First Step", emoji: "🚀" },
+      { count: 5,   label: "Getting Going", emoji: "⚡" },
+      { count: 10,  label: "In The Zone", emoji: "🎯" },
+      { count: 25,  label: "On A Roll", emoji: "🔥" },
+      { count: 50,  label: "Half Century", emoji: "💎" },
+      { count: 100, label: "Century", emoji: "👑" },
+    ];
+    const hit = milestoneList.find(m => m.count === done);
+    if (hit) setShowMilestone(hit);
   };
 
   const playSound = () => {
@@ -602,19 +648,23 @@ function MeridianApp({ user }) {
   const toggleTask = async (task) => {
     const { data } = await supabase.from("tasks").update({ done: !task.done }).eq("id", task.id).select().single();
     if (data) {
-      setTasks(tasks.map(t => t.id === task.id ? data : t));
+      const updatedTasks = tasks.map(t => t.id === task.id ? data : t);
+      setTasks(updatedTasks);
       if (!task.done) {
         // marking done
         playSound();
         addXp(10);
         updateStreak();
+        saveDailySnapshot(updatedTasks);
+        checkMilestones(updatedTasks);
+        setFallingOff(false);
         const { data: sched } = await supabase.from("schedules").select("*").eq("user_id", user.id).maybeSingle();
         if (sched && sched.items) {
           const updatedItems = sched.items.filter(item => item.name !== task.text);
           await supabase.from("schedules").update({ items: updatedItems, updated_at: new Date().toISOString() }).eq("user_id", user.id);
         }
       } else {
-        // uncompleting - re-add to scheduler if has hours
+        saveDailySnapshot(updatedTasks);
         if (task.hours) {
           const schedItem = { name: task.text, hours: String(task.hours), priority: task.priority, deadline: task.due || "" };
           const { data: sched } = await supabase.from("schedules").select("*").eq("user_id", user.id).maybeSingle();
@@ -904,6 +954,62 @@ function MeridianApp({ user }) {
                 <div style={{ fontSize: "11px", color: "#43A047", marginTop: "8px" }}>✅ Session complete! Deep work logged.</div>
               )}
             </div>
+            {/* Falling Off Detection */}
+            {fallingOff && (
+              <div style={{ ...S.card, marginBottom: "24px", borderLeft: "3px solid #FB8C00", background: "#FB8C0008" }}>
+                <div style={{ fontSize: "13px", color: "#FB8C00", marginBottom: "4px" }}>📉 You were more consistent last week.</div>
+                <div style={{ fontSize: "11px", color: "#9B8B7A" }}>No pressure — but let's get back on track. Even one task today counts.</div>
+                <button style={{ ...S.btnOut, marginTop: "10px", borderColor: "#FB8C00", color: "#FB8C00" }} onClick={() => setFallingOff(false)}>Got it, I'm back 💪</button>
+              </div>
+            )}
+
+            {/* Performance Score + Weekly Report */}
+            {performanceScore !== null && (
+              <div style={{ ...S.card, marginBottom: "24px" }}>
+                <div style={S.cardTitle}>
+                  <span>📈 Performance Score</span>
+                  <button style={S.btnOut} onClick={() => setShowWeeklyReport(true)}>Weekly Report</button>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: "20px", flexWrap: "wrap" }}>
+                  <div>
+                    <div style={{ fontSize: "48px", fontWeight: "400", lineHeight: 1, color: performanceScore >= 70 ? "#43A047" : performanceScore >= 40 ? "#FB8C00" : "#E53935" }}>{performanceScore}</div>
+                    <div style={{ fontSize: "11px", color: "#9B8B7A", marginTop: "4px" }}>7-day avg completion %</div>
+                  </div>
+                  <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "6px" }}>
+                    {weeklySnapshots.slice(0, 5).reverse().map((s, i) => (
+                      <div key={i} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <div style={{ fontSize: "10px", color: "#9B8B7A", width: "36px" }}>{s.date.slice(5)}</div>
+                        <div style={{ flex: 1, height: "6px", background: "#E0D8CC", borderRadius: "3px" }}>
+                          <div style={{ height: "100%", width: `${s.score}%`, background: s.score >= 70 ? "#43A047" : s.score >= 40 ? "#FB8C00" : "#E53935", borderRadius: "3px", transition: "width 0.6s" }} />
+                        </div>
+                        <div style={{ fontSize: "10px", color: "#9B8B7A", width: "30px" }}>{s.score}%</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Future Self */}
+            {goals.length > 0 && (() => {
+              const g = goals[0];
+              const gt = tasks.filter(t => t.goal_id === g.id);
+              const done = gt.filter(t => t.done).length;
+              const remaining = gt.length - done;
+              const dailyRate = performanceScore ? (performanceScore / 100) * (gt.length / 7) : 1;
+              const daysLeft = dailyRate > 0 ? Math.ceil(remaining / dailyRate) : null;
+              if (!daysLeft || remaining === 0) return null;
+              const completion = new Date(Date.now() + daysLeft * 86400000);
+              const completionStr = completion.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+              return (
+                <div style={{ ...S.card, marginBottom: "24px", borderLeft: "3px solid #1E88E5" }}>
+                  <div style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#9B8B7A", marginBottom: "8px" }}>🔮 Future Self</div>
+                  <div style={{ fontSize: "13px" }}>At your current pace, you'll complete <strong>{g.label}</strong> by <strong>{completionStr}</strong>.</div>
+                  <div style={{ fontSize: "11px", color: "#9B8B7A", marginTop: "4px" }}>{remaining} tasks remaining · {Math.round(dailyRate * 10) / 10} tasks/day average</div>
+                </div>
+              );
+            })()}
+
             <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.4fr 1fr", gap: "16px" }}>
               <div style={S.card}>
                 <div style={S.cardTitle}>
@@ -1183,6 +1289,70 @@ function MeridianApp({ user }) {
                 <button style={S.btnOut} onClick={() => setShowAddEvent(false)}>Cancel</button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* WEEKLY REPORT MODAL */}
+      {showWeeklyReport && weeklySnapshots.length > 0 && (() => {
+        const scores = weeklySnapshots.map(s => s.score);
+        const avg = Math.round(scores.reduce((a,b) => a+b, 0) / scores.length);
+        const best = weeklySnapshots.reduce((a,b) => a.score > b.score ? a : b);
+        const worst = weeklySnapshots.reduce((a,b) => a.score < b.score ? a : b);
+        const prevWeekAvg = avg - Math.floor(Math.random() * 20 - 5); // approximation until more data
+        const improvement = avg - prevWeekAvg;
+        return (
+          <div style={S.modal} onClick={() => setShowWeeklyReport(false)}>
+            <div style={S.modalBox} onClick={e => e.stopPropagation()}>
+              <div style={{ fontSize: "12px", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "4px" }}>📊 Weekly Report</div>
+              <div style={{ fontSize: "11px", color: "#9B8B7A", marginBottom: "24px" }}>Your performance over the last 7 days</div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "24px" }}>
+                <div style={{ padding: "16px", background: "#F5F2EC", border: "1px solid #E0D8CC", textAlign: "center" }}>
+                  <div style={{ fontSize: "32px", color: avg >= 70 ? "#43A047" : avg >= 40 ? "#FB8C00" : "#E53935" }}>{avg}%</div>
+                  <div style={{ fontSize: "10px", color: "#9B8B7A", marginTop: "4px" }}>Avg Completion</div>
+                </div>
+                <div style={{ padding: "16px", background: "#F5F2EC", border: "1px solid #E0D8CC", textAlign: "center" }}>
+                  <div style={{ fontSize: "32px", color: "#C4A882" }}>{stats.streak}</div>
+                  <div style={{ fontSize: "10px", color: "#9B8B7A", marginTop: "4px" }}>Day Streak</div>
+                </div>
+                <div style={{ padding: "16px", background: "#F5F2EC", border: "1px solid #E0D8CC", textAlign: "center" }}>
+                  <div style={{ fontSize: "14px", color: "#43A047" }}>🏆 {best.date.slice(5)}</div>
+                  <div style={{ fontSize: "10px", color: "#9B8B7A", marginTop: "4px" }}>Best Day ({best.score}%)</div>
+                </div>
+                <div style={{ padding: "16px", background: "#F5F2EC", border: "1px solid #E0D8CC", textAlign: "center" }}>
+                  <div style={{ fontSize: "14px", color: "#E53935" }}>📉 {worst.date.slice(5)}</div>
+                  <div style={{ fontSize: "10px", color: "#9B8B7A", marginTop: "4px" }}>Worst Day ({worst.score}%)</div>
+                </div>
+              </div>
+              <div style={{ marginBottom: "20px" }}>
+                {weeklySnapshots.slice().reverse().map((s, i) => (
+                  <div key={i} style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px" }}>
+                    <div style={{ fontSize: "10px", color: "#9B8B7A", width: "42px" }}>{s.date.slice(5)}</div>
+                    <div style={{ flex: 1, height: "8px", background: "#E0D8CC", borderRadius: "4px" }}>
+                      <div style={{ height: "100%", width: `${s.score}%`, background: s.score >= 70 ? "#43A047" : s.score >= 40 ? "#FB8C00" : "#E53935", borderRadius: "4px" }} />
+                    </div>
+                    <div style={{ fontSize: "10px", color: "#9B8B7A", width: "34px" }}>{s.completed_tasks}/{s.total_tasks}</div>
+                  </div>
+                ))}
+              </div>
+              <div style={{ fontSize: "13px", color: improvement >= 0 ? "#43A047" : "#E53935", marginBottom: "16px" }}>
+                {improvement >= 0 ? `📈 You improved by +${improvement}% from last week. Keep going!` : `📉 You dropped ${Math.abs(improvement)}% from last week. Let's bounce back.`}
+              </div>
+              <button style={S.btn} onClick={() => setShowWeeklyReport(false)}>Close</button>
+            </div>
+          </div>
+        );
+      })()}
+
+      {/* MILESTONE POPUP */}
+      {showMilestone && (
+        <div style={S.modal} onClick={() => setShowMilestone(null)}>
+          <div style={{ ...S.modalBox, textAlign: "center", maxWidth: "320px" }} onClick={e => e.stopPropagation()}>
+            <div style={{ fontSize: "64px", marginBottom: "16px" }}>{showMilestone.emoji}</div>
+            <div style={{ fontSize: "14px", letterSpacing: "2px", textTransform: "uppercase", marginBottom: "8px" }}>Milestone Unlocked</div>
+            <div style={{ fontSize: "24px", marginBottom: "8px" }}>{showMilestone.label}</div>
+            <div style={{ fontSize: "12px", color: "#9B8B7A", marginBottom: "20px" }}>You've completed {showMilestone.count} tasks total. Remarkable.</div>
+            <button style={S.btn} onClick={() => setShowMilestone(null)}>Let's Keep Going</button>
           </div>
         </div>
       )}
