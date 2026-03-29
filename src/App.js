@@ -412,6 +412,10 @@ function AIScheduler({ user, refreshKey }) {
 
 // ── MAIN APP ─────────────────────────────────────────────────────────────────
 function MeridianApp({ user }) {
+  const [view, setView] = useState(() => {
+    const hash = window.location.hash.replace("#", "");
+    return ["dashboard","calendar","tasks","goals","scheduler"].includes(hash) ? hash : "dashboard";
+  });
   const [focusMode, setFocusMode] = useState(false);
   const [focusTask, setFocusTask] = useState(null);
   const [focusSession, setFocusSession] = useState(1);
