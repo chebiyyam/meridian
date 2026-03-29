@@ -425,6 +425,18 @@ function MeridianApp({ user }) {
   const [tasks, setTasks] = useState([]);
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState({ xp: 0, level: 1, streak: 0, deep_work_minutes: 0 });
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [xpPopup, setXpPopup] = useState(null);
+  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [nonNegotiables, setNonNegotiables] = useState([]);
+  const [showNNPicker, setShowNNPicker] = useState(false);
+  const [nnComplete, setNnComplete] = useState(false);
+  const [timerMode, setTimerMode] = useState(null); // null | 25 | 50 | "custom"
+  const [timerSeconds, setTimerSeconds] = useState(0);
+  const [timerRunning, setTimerRunning] = useState(false);
+  const [customMinutes, setCustomMinutes] = useState(30);
+  const timerRef = useRef(null);
   const today = new Date();
   const [calMonth, setCalMonth] = useState(today.getMonth());
   const [calYear, setCalYear]   = useState(today.getFullYear());
@@ -442,7 +454,97 @@ function MeridianApp({ user }) {
 
   const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,"0")}-${String(today.getDate()).padStart(2,"0")}`;
 
-  useEffect(() => { fetchAll(); }, []);
+  useEffect(() => { fetchAll(); fetchStats(); }, []);
+
+  const fetchStats = async () => {
+    const { data } = await supabase.from("user_stats").select("*").eq("user_id", user.id).maybeSingle();
+    if (data) setStats(data);
+    else {
+      const { data: newStats } = await supabase.from("user_stats").insert({ user_id: user.id }).select().single();
+      if (newStats) setStats(newStats);
+    }
+  };
+
+  const playSound = () => {
+    if (!soundEnabled) return;
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.frequency.setValueAtTime(523, ctx.currentTime);
+      o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+      o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+      o.start(); o.stop(ctx.currentTime + 0.5);
+    } catch(e) {}
+  };
+
+  const triggerXpPopup = (amount) => {
+    setXpPopup(amount);
+    setTimeout(() => setXpPopup(null), 1500);
+  };
+
+  const addXp = async (amount) => {
+    const newXp = (stats.xp || 0) + amount;
+    const newLevel = Math.floor(newXp / 100) + 1;
+    const updated = { ...stats, xp: newXp, level: newLevel };
+    setStats(updated);
+    triggerXpPopup(amount);
+    await supabase.from("user_stats").upsert({ ...updated, user_id: user.id }, { onConflict: "user_id" });
+  };
+
+  const updateStreak = async () => {
+    const todayDate = new Date().toLocaleDateString('en-CA');
+    const yesterday = new Date(Date.now() - 86400000).toLocaleDateString('en-CA');
+    let newStreak = stats.streak || 0;
+    if (stats.last_completed_date === yesterday) newStreak += 1;
+    else if (stats.last_completed_date !== todayDate) newStreak = 1;
+    const updated = { ...stats, streak: newStreak, last_completed_date: todayDate };
+    setStats(updated);
+    await supabase.from("user_stats").upsert({ ...updated, user_id: user.id }, { onConflict: "user_id" });
+  };
+
+  // Timer logic
+  useEffect(() => {
+    if (timerRunning && timerSeconds > 0) {
+      timerRef.current = setTimeout(() => setTimerSeconds(s => s - 1), 1000);
+    } else if (timerRunning && timerSeconds === 0) {
+      setTimerRunning(false);
+      playSound();
+      // add deep work minutes to stats
+      const mins = timerMode === 25 ? 25 : timerMode === 50 ? 50 : customMinutes;
+      const newMins = (stats.deep_work_minutes || 0) + mins;
+      const updated = { ...stats, deep_work_minutes: newMins };
+      setStats(updated);
+      supabase.from("user_stats").upsert({ ...updated, user_id: user.id }, { onConflict: "user_id" });
+    }
+    return () => clearTimeout(timerRef.current);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timerRunning, timerSeconds]);
+
+  const startTimer = (mins) => {
+    setTimerMode(mins);
+    setTimerSeconds((mins === "custom" ? customMinutes : mins) * 60);
+    setTimerRunning(true);
+  };
+
+  const formatTimer = (s) => `${String(Math.floor(s/60)).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`;
+
+  // Check non-negotiables completion
+  useEffect(() => {
+    if (nonNegotiables.length === 3) {
+      const allDone = nonNegotiables.every(id => tasks.find(t => t.id === id)?.done);
+      if (allDone && !nnComplete) {
+        setNnComplete(true);
+        setShowConfetti(true);
+        playSound();
+        setTimeout(() => setShowConfetti(false), 4000);
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tasks, nonNegotiables]);
 
   const fetchAll = async () => {
     setLoading(true);
@@ -501,17 +603,21 @@ function MeridianApp({ user }) {
     const { data } = await supabase.from("tasks").update({ done: !task.done }).eq("id", task.id).select().single();
     if (data) {
       setTasks(tasks.map(t => t.id === task.id ? data : t));
-      const { data: sched } = await supabase.from("schedules").select("*").eq("user_id", user.id).maybeSingle();
       if (!task.done) {
-        // marking as done → remove from schedule builder
+        // marking done
+        playSound();
+        addXp(10);
+        updateStreak();
+        const { data: sched } = await supabase.from("schedules").select("*").eq("user_id", user.id).maybeSingle();
         if (sched && sched.items) {
           const updatedItems = sched.items.filter(item => item.name !== task.text);
           await supabase.from("schedules").update({ items: updatedItems, updated_at: new Date().toISOString() }).eq("user_id", user.id);
         }
       } else {
-        // marking back to pending → re-add to schedule builder if it has hours
+        // uncompleting - re-add to scheduler if has hours
         if (task.hours) {
           const schedItem = { name: task.text, hours: String(task.hours), priority: task.priority, deadline: task.due || "" };
+          const { data: sched } = await supabase.from("schedules").select("*").eq("user_id", user.id).maybeSingle();
           if (sched) {
             const alreadyExists = (sched.items || []).some(i => i.name === task.text);
             if (!alreadyExists) {
@@ -635,6 +741,13 @@ function MeridianApp({ user }) {
 
   return (
     <div style={{ minHeight: "100vh", background: "#F5F2EC", fontFamily: "Georgia, 'Times New Roman', serif", color: "#1A1612" }}>
+      {showConfetti && <Confetti />}
+      {xpPopup && (
+        <div style={{ position: "fixed", top: "20%", left: "50%", transform: "translateX(-50%)", zIndex: 8000, background: "#1A1612", color: "#C4A882", padding: "10px 24px", fontSize: "18px", letterSpacing: "2px", fontFamily: "Georgia, serif", animation: "xpPop 1.5s ease forwards", pointerEvents: "none" }}>
+          +{xpPopup} XP
+          <style>{`@keyframes xpPop { 0%{opacity:0;transform:translateX(-50%) translateY(0)} 20%{opacity:1} 100%{opacity:0;transform:translateX(-50%) translateY(-60px)} }`}</style>
+        </div>
+      )}
 
       {/* Sidebar - desktop only */}
       {!isMobile && (
@@ -654,6 +767,15 @@ function MeridianApp({ user }) {
             <div style={{ height: "3px", background: "#2E2820", marginBottom: "14px" }}><div style={fill(completionRate, "#C4A882")} /></div>
             <button onClick={signOut} style={{ background: "none", border: "none", color: "#6B5E4E", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", padding: 0, fontFamily: "Georgia, serif" }}>Sign Out</button>
             <div style={{ fontSize: "9px", color: "#3A3028", marginTop: "12px", letterSpacing: "1px" }}>© 2026 Chebiyyam</div>
+            <div style={{ marginTop: "12px", borderTop: "1px solid #2E2820", paddingTop: "12px" }}>
+              <div style={{ fontSize: "10px", color: "#C4A882" }}>⚡ Level {stats.level} — {stats.xp % 100}/100 XP</div>
+              <div style={{ height: "2px", background: "#2E2820", marginTop: "5px", marginBottom: "8px" }}><div style={{ height: "100%", width: `${stats.xp % 100}%`, background: "#C4A882", transition: "width 0.5s" }} /></div>
+              <div style={{ fontSize: "10px", color: "#6B5E4E" }}>🔥 {stats.streak} day streak</div>
+              <div style={{ fontSize: "10px", color: "#6B5E4E", marginTop: "3px" }}>⏱ {Math.floor((stats.deep_work_minutes||0)/60)}h {(stats.deep_work_minutes||0)%60}m deep work</div>
+              <button onClick={() => setSoundEnabled(s => !s)} style={{ marginTop: "8px", background: "none", border: "none", color: soundEnabled ? "#C4A882" : "#6B5E4E", fontSize: "10px", cursor: "pointer", fontFamily: "Georgia, serif", padding: 0 }}>
+                {soundEnabled ? "🔊 Sound on" : "🔇 Sound off"}
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -699,9 +821,22 @@ function MeridianApp({ user }) {
             <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr", gap: "16px", marginBottom: "24px" }}>
               <div style={S.card}>
                 <div style={S.cardTitle}>Tasks Remaining</div>
-                <div style={{ fontSize: "48px", fontWeight: "400", lineHeight: 1 }}>{pendingTasks.length}</div>
-                <div style={{ fontSize: "11px", color: "#9B8B7A", marginTop: "8px" }}>of {tasks.length} total</div>
-                <div style={{ height: "3px", background: "#E0D8CC", marginTop: "12px" }}><div style={fill(completionRate)} /></div>
+                <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                  <div>
+                    <div style={{ fontSize: "48px", fontWeight: "400", lineHeight: 1 }}>{pendingTasks.length}</div>
+                    <div style={{ fontSize: "11px", color: "#9B8B7A", marginTop: "8px" }}>of {tasks.length} total</div>
+                  </div>
+                  {/* Completion ring */}
+                  <svg width="60" height="60" style={{ flexShrink: 0 }}>
+                    <circle cx="30" cy="30" r="24" fill="none" stroke="#E0D8CC" strokeWidth="5" />
+                    <circle cx="30" cy="30" r="24" fill="none" stroke="#C4A882" strokeWidth="5"
+                      strokeDasharray={`${2 * Math.PI * 24}`}
+                      strokeDashoffset={`${2 * Math.PI * 24 * (1 - completionRate / 100)}`}
+                      strokeLinecap="round" transform="rotate(-90 30 30)"
+                      style={{ transition: "stroke-dashoffset 0.6s ease" }} />
+                    <text x="30" y="35" textAnchor="middle" fontSize="11" fill="#1A1612" fontFamily="Georgia, serif">{completionRate}%</text>
+                  </svg>
+                </div>
               </div>
               <div style={S.card}>
                 <div style={S.cardTitle}>Today's Events</div>
@@ -714,6 +849,60 @@ function MeridianApp({ user }) {
                 <div style={{ fontSize: "48px", fontWeight: "400", lineHeight: 1 }}>{goals.length}</div>
                 <div style={{ fontSize: "11px", color: "#9B8B7A", marginTop: "8px" }}>commitments tracked</div>
               </div>
+            </div>
+
+            {/* Top 3 Non-Negotiables */}
+            <div style={{ ...S.card, marginBottom: "24px", borderLeft: nnComplete ? "3px solid #43A047" : "3px solid #C4A882" }}>
+              <div style={S.cardTitle}>
+                <span>🎯 Today's Non-Negotiables {nnComplete ? "— ✅ All Done!" : `(${nonNegotiables.filter(id => tasks.find(t=>t.id===id)?.done).length}/3)`}</span>
+                <button style={S.btnOut} onClick={() => setShowNNPicker(true)}>Pick 3</button>
+              </div>
+              {nonNegotiables.length === 0 && <div style={{ fontSize: "12px", color: "#9B8B7A" }}>Pick your 3 most important tasks for today. These are locked in — no excuses.</div>}
+              {nonNegotiables.map(id => {
+                const task = tasks.find(t => t.id === id);
+                if (!task) return null;
+                return (
+                  <div key={id} onClick={() => toggleTask(task)} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "10px 0", borderBottom: "1px solid #EDE8E0", cursor: "pointer" }}>
+                    <div style={{ ...chk(task.done), border: `1.5px solid ${task.done ? "#43A047" : "#C4A882"}`, background: task.done ? "#43A047" : "transparent" }}>
+                      {task.done && <span style={{ fontSize: "10px", color: "#fff" }}>✓</span>}
+                    </div>
+                    <div style={{ flex: 1, fontSize: "13px", textDecoration: task.done ? "line-through" : "none", color: task.done ? "#9B8B7A" : "#1A1612" }}>{task.text}</div>
+                    <div style={badge(task.priority)}>{task.priority}</div>
+                  </div>
+                );
+              })}
+              {nnComplete && <div style={{ fontSize: "12px", color: "#43A047", marginTop: "10px", letterSpacing: "1px" }}>🎉 You crushed your non-negotiables today!</div>}
+            </div>
+
+            {/* Flow Timer */}
+            <div style={{ ...S.card, marginBottom: "24px" }}>
+              <div style={S.cardTitle}>
+                <span>⏱ Flow Mode</span>
+                <span style={{ fontSize: "10px", color: "#9B8B7A" }}>{Math.floor((stats.deep_work_minutes||0)/60)}h {(stats.deep_work_minutes||0)%60}m deep work today</span>
+              </div>
+              {!timerRunning && timerSeconds === 0 && (
+                <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                  <button style={S.btnOut} onClick={() => startTimer(25)}>25 min</button>
+                  <button style={S.btnOut} onClick={() => startTimer(50)}>50 min</button>
+                  <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                    <input type="number" min="1" max="120" value={customMinutes} onChange={e => setCustomMinutes(Number(e.target.value))}
+                      style={{ ...S.input, width: "60px", padding: "8px" }} />
+                    <button style={S.btnOut} onClick={() => startTimer("custom")}>Custom</button>
+                  </div>
+                </div>
+              )}
+              {(timerRunning || timerSeconds > 0) && (
+                <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+                  <div style={{ fontSize: "48px", fontWeight: "400", color: timerRunning ? "#1A1612" : "#C4A882", letterSpacing: "2px" }}>{formatTimer(timerSeconds)}</div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <button style={S.btnOut} onClick={() => setTimerRunning(r => !r)}>{timerRunning ? "Pause" : "Resume"}</button>
+                    <button style={S.btnOut} onClick={() => { setTimerRunning(false); setTimerSeconds(0); setTimerMode(null); }}>Reset</button>
+                  </div>
+                </div>
+              )}
+              {!timerRunning && timerSeconds === 0 && timerMode && (
+                <div style={{ fontSize: "11px", color: "#43A047", marginTop: "8px" }}>✅ Session complete! Deep work logged.</div>
+              )}
             </div>
             <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.4fr 1fr", gap: "16px" }}>
               <div style={S.card}>
@@ -998,6 +1187,35 @@ function MeridianApp({ user }) {
         </div>
       )}
 
+      {/* NON-NEGOTIABLES PICKER */}
+      {showNNPicker && (
+        <div style={S.modal} onClick={() => setShowNNPicker(false)}>
+          <div style={S.modalBox} onClick={e => e.stopPropagation()}>
+            <div style={{ fontSize: "12px", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "8px" }}>Pick Your 3 Non-Negotiables</div>
+            <div style={{ fontSize: "11px", color: "#9B8B7A", marginBottom: "20px" }}>These are the 3 tasks you MUST complete today. No excuses.</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "8px", maxHeight: "300px", overflowY: "auto" }}>
+              {pendingTasks.map(task => {
+                const selected = nonNegotiables.includes(task.id);
+                return (
+                  <div key={task.id} onClick={() => {
+                    if (selected) setNonNegotiables(nonNegotiables.filter(id => id !== task.id));
+                    else if (nonNegotiables.length < 3) { setNonNegotiables([...nonNegotiables, task.id]); }
+                  }} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "10px 12px", background: selected ? "#1A161210" : "transparent", border: `1px solid ${selected ? "#C4A882" : "#E0D8CC"}`, cursor: nonNegotiables.length >= 3 && !selected ? "not-allowed" : "pointer", opacity: nonNegotiables.length >= 3 && !selected ? 0.4 : 1 }}>
+                    <div style={{ width: "14px", height: "14px", border: `1.5px solid ${selected ? "#C4A882" : "#C0B8AC"}`, background: selected ? "#C4A882" : "transparent", flexShrink: 0 }} />
+                    <div style={{ flex: 1, fontSize: "13px" }}>{task.text}</div>
+                    <div style={badge(task.priority)}>{task.priority}</div>
+                  </div>
+                );
+              })}
+            </div>
+            <div style={{ marginTop: "16px", display: "flex", gap: "12px" }}>
+              <button style={S.btn} onClick={() => { setShowNNPicker(false); setNnComplete(false); }}>Lock In ({nonNegotiables.length}/3)</button>
+              <button style={S.btnOut} onClick={() => setShowNNPicker(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* EDIT TASK MODAL */}
       {editTask && (
         <div style={S.modal} onClick={() => setEditTask(null)}>
@@ -1078,7 +1296,36 @@ function MeridianApp({ user }) {
   );
 }
 
-// ── SANJU LOADER ─────────────────────────────────────────────────────────────
+// ── CONFETTI ──────────────────────────────────────────────────────────────────
+function Confetti() {
+  const pieces = Array.from({ length: 60 }, (_, i) => ({
+    id: i,
+    x: Math.random() * 100,
+    color: ["#C4A882","#E53935","#1E88E5","#43A047","#FB8C00","#8E24AA"][i % 6],
+    delay: Math.random() * 0.5,
+    duration: 1.5 + Math.random(),
+    size: 6 + Math.random() * 6,
+  }));
+  return (
+    <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 9000, overflow: "hidden" }}>
+      {pieces.map(p => (
+        <div key={p.id} style={{
+          position: "absolute", top: "-20px", left: `${p.x}%`,
+          width: p.size, height: p.size, background: p.color, borderRadius: "2px",
+          animation: `confettiFall ${p.duration}s ${p.delay}s ease-in forwards`,
+        }} />
+      ))}
+      <style>{`
+        @keyframes confettiFall {
+          0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+          100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+      `}</style>
+    </div>
+  );
+}
+
+// ── SANJU LOADER ──────────────────────────────────────────────────────────────
 function SanjuLoader() {
   const canvasRef = useRef(null);
 
