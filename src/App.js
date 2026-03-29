@@ -412,10 +412,14 @@ function AIScheduler({ user, refreshKey }) {
 
 // ── MAIN APP ─────────────────────────────────────────────────────────────────
 function MeridianApp({ user }) {
-  const [view, setView] = useState(() => {
-    const hash = window.location.hash.replace("#", "");
-    return ["dashboard","calendar","tasks","goals","scheduler"].includes(hash) ? hash : "dashboard";
-  });
+  const [focusMode, setFocusMode] = useState(false);
+  const [focusTask, setFocusTask] = useState(null);
+  const [focusSession, setFocusSession] = useState(1);
+  const [focusSessions, setFocusSessions] = useState(4);
+  const [focusComplete, setFocusComplete] = useState(false);
+  const [focusMins, setFocusMins] = useState(25);
+  const [ambience, setAmbience] = useState(null); // null | "rain" | "library" | "white"
+  const ambienceRef = useRef(null);
 
   const navigate = (v) => {
     setView(v);
@@ -559,21 +563,59 @@ function MeridianApp({ user }) {
     } else if (timerRunning && timerSeconds === 0) {
       setTimerRunning(false);
       playSound();
-      // add deep work minutes to stats
       const mins = timerMode === 25 ? 25 : timerMode === 50 ? 50 : customMinutes;
       const newMins = (stats.deep_work_minutes || 0) + mins;
       const updated = { ...stats, deep_work_minutes: newMins };
       setStats(updated);
       supabase.from("user_stats").upsert({ ...updated, user_id: user.id }, { onConflict: "user_id" });
+      if (focusMode) { setFocusComplete(true); addXp(50); }
     }
     return () => clearTimeout(timerRef.current);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timerRunning, timerSeconds]);
 
-  const startTimer = (mins) => {
+  // Ambience audio using Web Audio API
+  useEffect(() => {
+    if (!ambience) { if (ambienceRef.current) { ambienceRef.current.stop?.(); ambienceRef.current = null; } return; }
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const bufferSize = ctx.sampleRate * 2;
+      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1);
+      const source = ctx.createBufferSource();
+      source.buffer = buffer; source.loop = true;
+      const filter = ctx.createBiquadFilter();
+      if (ambience === "rain") { filter.type = "bandpass"; filter.frequency.value = 400; filter.Q.value = 0.5; }
+      else if (ambience === "library") { filter.type = "lowpass"; filter.frequency.value = 200; filter.Q.value = 2; }
+      else { filter.type = "lowpass"; filter.frequency.value = 800; }
+      const gain = ctx.createGain(); gain.gain.value = 0.08;
+      source.connect(filter); filter.connect(gain); gain.connect(ctx.destination);
+      source.start();
+      ambienceRef.current = { stop: () => { try { source.stop(); ctx.close(); } catch(e){} } };
+    } catch(e) {}
+    return () => { if (ambienceRef.current) { ambienceRef.current.stop?.(); ambienceRef.current = null; } };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ambience]);
+
+  const enterFocusMode = (task, mins = 25) => {
+    setFocusTask(task);
+    setFocusMins(mins);
+    setFocusComplete(false);
+    setFocusMode(true);
     setTimerMode(mins);
-    setTimerSeconds((mins === "custom" ? customMinutes : mins) * 60);
+    setTimerSeconds(mins * 60);
     setTimerRunning(true);
+  };
+
+  const exitFocusMode = (earlyExit = false) => {
+    setTimerRunning(false);
+    setTimerSeconds(0);
+    setFocusMode(false);
+    setFocusTask(null);
+    setFocusComplete(false);
+    setAmbience(null);
+    if (earlyExit) addXp(-10); // distraction penalty
   };
 
   const formatTimer = (s) => `${String(Math.floor(s/60)).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`;
@@ -792,6 +834,29 @@ function MeridianApp({ user }) {
   return (
     <div style={{ minHeight: "100vh", background: "#F5F2EC", fontFamily: "Georgia, 'Times New Roman', serif", color: "#1A1612" }}>
       {showConfetti && <Confetti />}
+      {focusMode && (
+        <FocusScreen
+          task={focusTask}
+          timerSeconds={timerSeconds}
+          timerRunning={timerRunning}
+          setTimerRunning={setTimerRunning}
+          focusComplete={focusComplete}
+          focusSession={focusSession}
+          focusSessions={focusSessions}
+          deepWorkMins={stats.deep_work_minutes}
+          stats={stats}
+          nonNegotiables={nonNegotiables}
+          nonNegotiableIdx={nonNegotiables.indexOf(focusTask?.id)}
+          goalColor={goalColor}
+          goalLabel={goalLabel}
+          ambience={ambience}
+          setAmbience={setAmbience}
+          focusMins={focusMins}
+          onExit={(early) => exitFocusMode(early)}
+          onMarkComplete={() => { if (focusTask) toggleTask(focusTask); exitFocusMode(false); }}
+          onNextSession={() => { setFocusSession(s => s + 1); setFocusComplete(false); setTimerSeconds(focusMins * 60); setTimerRunning(true); }}
+        />
+      )}
       {xpPopup && (
         <div style={{ position: "fixed", top: "20%", left: "50%", transform: "translateX(-50%)", zIndex: 8000, background: "#1A1612", color: "#C4A882", padding: "10px 24px", fontSize: "18px", letterSpacing: "2px", fontFamily: "Georgia, serif", animation: "xpPop 1.5s ease forwards", pointerEvents: "none" }}>
           +{xpPopup} XP
@@ -1120,6 +1185,7 @@ function MeridianApp({ user }) {
                   </div>
                   <div style={badge(task.priority)}>{task.priority}</div>
                   <button onClick={() => setEditTask({...task})} style={{background:"none",border:"none",color:"#9B8B7A",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>Edit</button>
+                  <button onClick={() => enterFocusMode(task, 25)} style={{background:"none",border:"none",color:"#1E88E5",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>Focus</button>
                   <button onClick={() => deleteTask(task.id)} style={{background:"none",border:"none",color:"#8B1A1A",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>x</button>
                 </div>
               ))}
@@ -1491,6 +1557,95 @@ function Confetti() {
           100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
         }
       `}</style>
+    </div>
+  );
+}
+
+// ── FOCUS MODE ────────────────────────────────────────────────────────────────
+function FocusScreen({ task, timerSeconds, timerRunning, setTimerRunning, focusComplete, focusSession, focusSessions, deepWorkMins, stats, nonNegotiables, nonNegotiableIdx, goalColor, goalLabel, ambience, setAmbience, onExit, onMarkComplete, onNextSession, focusMins }) {
+  const fmt = (s) => `${String(Math.floor(s/60)).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`;
+  const totalSecs = focusMins * 60;
+  const pct = totalSecs > 0 ? ((totalSecs - timerSeconds) / totalSecs) * 100 : 0;
+  const halfway = pct >= 50 && pct < 55;
+  const nnIdx = nonNegotiables.indexOf(task?.id);
+  const accent = task ? goalColor(task.goal_id) : "#C4A882";
+
+  if (focusComplete) return (
+    <div style={{ position: "fixed", inset: 0, background: "#0E0C0A", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", zIndex: 5000, fontFamily: "Georgia, serif", color: "#F5F2EC", textAlign: "center", padding: "40px" }}>
+      <div style={{ fontSize: "72px", marginBottom: "16px" }}>✅</div>
+      <div style={{ fontSize: "11px", letterSpacing: "4px", textTransform: "uppercase", color: "#C4A882", marginBottom: "12px" }}>Session Complete</div>
+      <div style={{ fontSize: "48px", color: "#C4A882", marginBottom: "4px" }}>+50 XP</div>
+      <div style={{ fontSize: "14px", color: "#9B8B7A", marginBottom: "8px" }}>{focusMins} minutes of deep work logged.</div>
+      <div style={{ fontSize: "12px", color: "#6B5E4E", marginBottom: "40px" }}>Session {focusSession} of {focusSessions} today · {Math.floor((stats.deep_work_minutes||0)/60)}h {(stats.deep_work_minutes||0)%60}m total</div>
+      <div style={{ display: "flex", gap: "16px", flexWrap: "wrap", justifyContent: "center" }}>
+        <button onClick={onMarkComplete} style={{ padding: "14px 28px", background: "#C4A882", color: "#0E0C0A", border: "none", fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" }}>Mark Task Complete</button>
+        <button onClick={onNextSession} style={{ padding: "14px 28px", background: "transparent", color: "#C4A882", border: "1px solid #C4A882", fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" }}>Start Next Session</button>
+        <button onClick={() => onExit(false)} style={{ padding: "14px 28px", background: "transparent", color: "#6B5E4E", border: "1px solid #3A3028", fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" }}>Back to App</button>
+      </div>
+    </div>
+  );
+
+  return (
+    <div style={{ position: "fixed", inset: 0, background: "#F5F2EC", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", zIndex: 5000, fontFamily: "Georgia, 'Times New Roman', serif", color: "#1A1612" }}>
+      {/* Edge blur */}
+      <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at center, transparent 40%, rgba(26,22,18,0.18) 100%)", pointerEvents: "none" }} />
+
+      {/* Top lock-in section */}
+      <div style={{ position: "absolute", top: "32px", left: 0, right: 0, textAlign: "center" }}>
+        {nnIdx >= 0 && (
+          <div style={{ fontSize: "10px", letterSpacing: "3px", textTransform: "uppercase", color: accent }}>
+            🎯 Non-Negotiable #{nnIdx + 1} of 3
+          </div>
+        )}
+        {task && <div style={{ fontSize: "11px", color: "#9B8B7A", marginTop: "4px", letterSpacing: "1px" }}>{goalLabel(task.goal_id)}</div>}
+      </div>
+
+      {/* Main timer */}
+      <div style={{ textAlign: "center", position: "relative", zIndex: 1 }}>
+        {/* SVG ring */}
+        <svg width="280" height="280" style={{ display: "block", margin: "0 auto" }}>
+          <circle cx="140" cy="140" r="120" fill="none" stroke="#E0D8CC" strokeWidth="6" />
+          <circle cx="140" cy="140" r="120" fill="none" stroke={accent} strokeWidth="6"
+            strokeDasharray={`${2 * Math.PI * 120}`}
+            strokeDashoffset={`${2 * Math.PI * 120 * (1 - pct / 100)}`}
+            strokeLinecap="round" transform="rotate(-90 140 140)"
+            style={{ transition: "stroke-dashoffset 1s linear" }} />
+          <text x="140" y="130" textAnchor="middle" fontSize="52" fill="#1A1612" fontFamily="Georgia, serif" fontWeight="400">{fmt(timerSeconds)}</text>
+          <text x="140" y="158" textAnchor="middle" fontSize="11" fill="#9B8B7A" fontFamily="Georgia, serif" letterSpacing="2">{timerRunning ? "FOCUS" : "PAUSED"}</text>
+        </svg>
+
+        {/* Task name */}
+        <div style={{ fontSize: "20px", fontWeight: "400", marginTop: "8px", maxWidth: "480px", textAlign: "center" }}>{task?.text || "Deep Work"}</div>
+
+        {/* Halfway message */}
+        {halfway && <div style={{ fontSize: "11px", color: accent, letterSpacing: "2px", marginTop: "12px", textTransform: "uppercase" }}>You're locked in. Keep going.</div>}
+
+        {/* Stats row */}
+        <div style={{ display: "flex", gap: "32px", justifyContent: "center", marginTop: "24px", fontSize: "11px", color: "#9B8B7A", letterSpacing: "1px" }}>
+          <span>⏳ Session {focusSession} of {focusSessions}</span>
+          <span>⚡ {Math.floor((stats.deep_work_minutes||0)/60)}h {(stats.deep_work_minutes||0)%60}m deep work</span>
+        </div>
+
+        {/* Controls */}
+        <div style={{ display: "flex", gap: "12px", justifyContent: "center", marginTop: "28px" }}>
+          <button onClick={() => setTimerRunning(r => !r)} style={{ padding: "12px 32px", background: "#1A1612", color: "#F5F2EC", border: "none", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" }}>
+            {timerRunning ? "Pause" : "Resume"}
+          </button>
+          <button onClick={() => onExit(true)} style={{ padding: "12px 24px", background: "transparent", color: "#9B8B7A", border: "1px solid #C0B8AC", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" }}>
+            Exit Early
+          </button>
+        </div>
+
+        {/* Ambience */}
+        <div style={{ display: "flex", gap: "8px", justifyContent: "center", marginTop: "24px" }}>
+          {[["🌧️","rain"],["📚","library"],["🌫️","white"],["🔇","off"]].map(([icon, val]) => (
+            <button key={val} onClick={() => setAmbience(ambience === val || val === "off" ? null : val)}
+              style={{ padding: "6px 14px", background: ambience === val ? "#1A1612" : "transparent", color: ambience === val ? "#C4A882" : "#9B8B7A", border: "1px solid #E0D8CC", fontSize: "12px", cursor: "pointer", fontFamily: "Georgia, serif" }}>
+              {icon}
+            </button>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
