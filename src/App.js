@@ -1568,7 +1568,16 @@ function MeridianApp({ user }) {
               ))}
             </div>
             <div style={S.card}>
-              <div style={S.cardTitle}>Completed ({doneTasks.length})</div>
+              <div style={S.cardTitle}>
+                <span>Completed ({doneTasks.length})</span>
+                {doneTasks.length > 0 && (
+                  <button style={{ ...S.btnOut, color: "#E53935", borderColor: "#E53935", fontSize: "9px" }} onClick={async () => {
+                    if (!window.confirm("Delete all completed tasks?")) return;
+                    await supabase.from("tasks").delete().eq("user_id", user.id).eq("done", true);
+                    setTasks(tasks.filter(t => !t.done));
+                  }}>Clear All</button>
+                )}
+              </div>
               {doneTasks.length===0 && <div style={{fontSize:"13px",color:"#9B8B7A"}}>Nothing yet.</div>}
               {doneTasks.map(task=>(
                 <div key={task.id} style={taskRow(true)}>
