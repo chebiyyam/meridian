@@ -472,8 +472,13 @@ function MeridianApp({ user }) {
 
   const fetchStats = async () => {
     const { data } = await supabase.from("user_stats").select("*").eq("user_id", user.id).maybeSingle();
-    if (data) setStats(data);
-    else {
+    if (data) {
+      setStats(data);
+      // restore non-negotiables — only keep ones that still exist as pending tasks
+      if (data.non_negotiables && Array.isArray(data.non_negotiables)) {
+        setNonNegotiables(data.non_negotiables);
+      }
+    } else {
       const { data: newStats } = await supabase.from("user_stats").insert({ user_id: user.id }).select().single();
       if (newStats) setStats(newStats);
     }
@@ -481,15 +486,12 @@ function MeridianApp({ user }) {
     const { data: snaps } = await supabase.from("daily_snapshots").select("*").eq("user_id", user.id).order("date", { ascending: false }).limit(7);
     if (snaps) {
       setWeeklySnapshots(snaps);
-      // performance score = avg completion % over last 7 days
       if (snaps.length > 0) {
         const avg = Math.round(snaps.reduce((a, s) => a + s.score, 0) / snaps.length);
         setPerformanceScore(avg);
-        // falling off detection: last 2 days score < 30
         const recent = snaps.slice(0, 2);
         if (recent.length === 2 && recent.every(s => s.score < 30)) setFallingOff(true);
       }
-      // check if sunday - auto show weekly report
       if (new Date().getDay() === 0 && snaps.length >= 5) setShowWeeklyReport(true);
     }
   };
@@ -619,7 +621,6 @@ function MeridianApp({ user }) {
     setFocusTask(null);
     setFocusComplete(false);
     setAmbience(null);
-    if (earlyExit) addXp(-10); // distraction penalty
   };
 
   const formatTimer = (s) => `${String(Math.floor(s/60)).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`;
@@ -1061,20 +1062,29 @@ function MeridianApp({ user }) {
 
             {/* Future Self */}
             {goals.length > 0 && (() => {
-              const g = goals[0];
+              // show for the goal with most tasks
+              const g = goals.reduce((best, g) => {
+                const count = tasks.filter(t => t.goal_id === g.id).length;
+                return count > tasks.filter(t => t.goal_id === best.id).length ? g : best;
+              }, goals[0]);
               const gt = tasks.filter(t => t.goal_id === g.id);
               const done = gt.filter(t => t.done).length;
               const remaining = gt.length - done;
-              const dailyRate = performanceScore ? (performanceScore / 100) * (gt.length / 7) : 1;
-              const daysLeft = dailyRate > 0 ? Math.ceil(remaining / dailyRate) : null;
-              if (!daysLeft || remaining === 0) return null;
+              if (remaining === 0 || gt.length === 0) return null;
+              // assume 2 tasks completed per day as baseline (no snapshots needed)
+              const dailyRate = Math.max(1, done > 0 ? done / 7 : 2);
+              const daysLeft = Math.ceil(remaining / dailyRate);
               const completion = new Date(Date.now() + daysLeft * 86400000);
               const completionStr = completion.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+              const pct = Math.round((done / gt.length) * 100);
               return (
                 <div style={{ ...S.card, marginBottom: "24px", borderLeft: "3px solid #1E88E5" }}>
-                  <div style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#9B8B7A", marginBottom: "8px" }}>🔮 Future Self</div>
-                  <div style={{ fontSize: "13px" }}>At your current pace, you'll complete <strong>{g.label}</strong> by <strong>{completionStr}</strong>.</div>
-                  <div style={{ fontSize: "11px", color: "#9B8B7A", marginTop: "4px" }}>{remaining} tasks remaining · {Math.round(dailyRate * 10) / 10} tasks/day average</div>
+                  <div style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#9B8B7A", marginBottom: "10px" }}>🔮 Future Self</div>
+                  <div style={{ fontSize: "14px", marginBottom: "6px" }}>Keep going — you'll finish <strong style={{ color: goalColor(g.id) }}>{g.label}</strong> by <strong>{completionStr}</strong>.</div>
+                  <div style={{ fontSize: "11px", color: "#9B8B7A", marginBottom: "10px" }}>{done} of {gt.length} tasks done · {remaining} remaining</div>
+                  <div style={{ height: "4px", background: "#E0D8CC", borderRadius: "2px" }}>
+                    <div style={{ height: "100%", width: `${pct}%`, background: goalColor(g.id), borderRadius: "2px", transition: "width 0.6s" }} />
+                  </div>
                 </div>
               );
             })()}
@@ -1449,7 +1459,11 @@ function MeridianApp({ user }) {
               })}
             </div>
             <div style={{ marginTop: "16px", display: "flex", gap: "12px" }}>
-              <button style={S.btn} onClick={() => { setShowNNPicker(false); setNnComplete(false); }}>Lock In ({nonNegotiables.length}/3)</button>
+              <button style={S.btn} onClick={() => {
+                setShowNNPicker(false);
+                setNnComplete(false);
+                supabase.from("user_stats").upsert({ ...stats, user_id: user.id, non_negotiables: nonNegotiables }, { onConflict: "user_id" });
+              }}>Lock In ({nonNegotiables.length}/3)</button>
               <button style={S.btnOut} onClick={() => setShowNNPicker(false)}>Cancel</button>
             </div>
           </div>
