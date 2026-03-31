@@ -450,7 +450,11 @@ function MeridianApp({ user }) {
   const [xpPopup, setXpPopup] = useState(null);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [nonNegotiables, setNonNegotiables] = useState([]);
-  const [showNNPicker, setShowNNPicker] = useState(false);
+  const [showImport, setShowImport] = useState(false);
+  const [importText, setImportText] = useState("");
+  const [importParsed, setImportParsed] = useState(null);
+  const [importLoading, setImportLoading] = useState(false);
+  const [importError, setImportError] = useState("");
   const [nnComplete, setNnComplete] = useState(false);
   const [timerMode, setTimerMode] = useState(null);
   const [timerSeconds, setTimerSeconds] = useState(0);
@@ -705,6 +709,76 @@ function MeridianApp({ user }) {
     if (data) { setGoals([...goals, data]); setNewGoal({ label: "", color: "#E53935", deadline: "" }); setShowAddGoal(false); }
   };
 
+  const parseWithClaude = async () => {
+    if (!importText.trim()) return;
+    setImportLoading(true);
+    setImportError("");
+    setImportParsed(null);
+    try {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 1000,
+          system: `You are a planner assistant. The user will paste a plan or schedule. Extract goals and tasks from it. Respond ONLY with valid JSON in this exact format, no markdown, no explanation:
+{
+  "goals": [
+    { "label": "Goal Name", "color": "#E53935", "deadline": "2026-05-01" }
+  ],
+  "tasks": [
+    { "text": "Task description", "goal": "Goal Name", "priority": "high", "due": "2026-04-10" }
+  ]
+}
+Rules:
+- priority must be "high", "med", or "low"
+- deadline and due are optional, use null if not mentioned
+- color pick from: #E53935 #1E88E5 #43A047 #FB8C00 #8E24AA #00ACC1 #D81B60 #7CB342 #3949AB #FFB300 #00BCD4 #F4511E #6D4C41 #C4A882 #FF6B6B #26A69A #7986CB #EC407A #29B6F6 #8D9B6A
+- assign different colors to different goals
+- match tasks to their correct goal by name exactly`,
+          messages: [{ role: "user", content: importText }],
+        }),
+      });
+      const data = await res.json();
+      const text = data.content?.[0]?.text || "";
+      const clean = text.replace(/```json|```/g, "").trim();
+      const parsed = JSON.parse(clean);
+      setImportParsed(parsed);
+    } catch(e) {
+      setImportError("Couldn't parse your plan. Try being more specific about goals and tasks.");
+    }
+    setImportLoading(false);
+  };
+
+  const importAll = async () => {
+    if (!importParsed) return;
+    setImportLoading(true);
+    // create goals first
+    const goalMap = {};
+    for (const g of importParsed.goals) {
+      const existing = goals.find(eg => eg.label.toLowerCase() === g.label.toLowerCase());
+      if (existing) { goalMap[g.label] = existing.id; continue; }
+      const { data } = await supabase.from("goals").insert({ label: g.label, color: g.color, deadline: g.deadline || null, user_id: user.id }).select().single();
+      if (data) goalMap[g.label] = data.id;
+    }
+    // reload goals
+    const { data: newGoals } = await supabase.from("goals").select("*").order("created_at");
+    if (newGoals) setGoals(newGoals);
+    // create tasks
+    const newTasksArr = [];
+    for (const t of importParsed.tasks) {
+      const goal_id = goalMap[t.goal];
+      if (!goal_id) continue;
+      const { data } = await supabase.from("tasks").insert({ text: t.text, goal_id, priority: t.priority || "med", due: t.due || null, done: false, user_id: user.id }).select().single();
+      if (data) newTasksArr.push(data);
+    }
+    setTasks(prev => [...prev, ...newTasksArr]);
+    setImportLoading(false);
+    setShowImport(false);
+    setImportText("");
+    setImportParsed(null);
+  };
+
   const deleteGoal = async (id) => {
     await supabase.from("goals").delete().eq("id", id);
     setGoals(goals.filter(g => g.id !== id));
@@ -900,6 +974,7 @@ function MeridianApp({ user }) {
             {[["dashboard","Dashboard"],["calendar","Calendar"],["tasks","Tasks"],["goals","Goals"],["scheduler","Schedule Builder"]].map(([id,lbl]) => (
               <button key={id} style={navBtn(view===id)} onClick={() => navigate(id)}>{lbl}</button>
             ))}
+            <button style={{ ...navBtn(false), color: "#C4A882", marginTop: "8px", borderTop: "1px solid #2E2820", paddingTop: "20px" }} onClick={() => setShowImport(true)}>⚡ Import from Claude</button>
           </nav>
           <div style={{ padding: "16px 28px", borderTop: "1px solid #2E2820" }}>
             <div style={{ fontSize: "10px", color: "#6B5E4E", marginBottom: "4px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.email}</div>
@@ -1334,6 +1409,61 @@ function MeridianApp({ user }) {
           </div>
         )}
       </div>
+
+      {/* CLAUDE IMPORT MODAL */}
+      {showImport && (
+        <div style={S.modal} onClick={() => { setShowImport(false); setImportParsed(null); setImportText(""); }}>
+          <div style={{ ...S.modalBox, width: "560px" }} onClick={e => e.stopPropagation()}>
+            <div style={{ fontSize: "12px", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "4px" }}>⚡ Import from Claude</div>
+            <div style={{ fontSize: "11px", color: "#9B8B7A", marginBottom: "20px" }}>Paste any plan, schedule, or list from Claude. We'll extract your goals and tasks automatically.</div>
+
+            {!importParsed ? (
+              <>
+                <textarea
+                  style={{ ...S.input, minHeight: "180px", resize: "vertical", lineHeight: "1.6" }}
+                  placeholder={`Paste your Claude plan here. For example:\n\n"Goal: UT Transfer Application\n- Research TAMU professors (high priority, due April 10)\n- Write personal statement (high priority, due April 20)\n\nGoal: Cricket Fitness\n- Wrist curls daily (medium priority)\n- Dumbbell routine Mon/Wed/Fri"`}
+                  value={importText}
+                  onChange={e => setImportText(e.target.value)}
+                />
+                {importError && <div style={{ fontSize: "11px", color: "#E53935", marginTop: "8px" }}>{importError}</div>}
+                <div style={{ display: "flex", gap: "12px", marginTop: "16px" }}>
+                  <button style={S.btn} onClick={parseWithClaude} disabled={importLoading}>
+                    {importLoading ? "Parsing..." : "Parse Plan"}
+                  </button>
+                  <button style={S.btnOut} onClick={() => { setShowImport(false); setImportText(""); }}>Cancel</button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div style={{ fontSize: "11px", color: "#43A047", marginBottom: "16px" }}>✅ Found {importParsed.goals.length} goal{importParsed.goals.length !== 1 ? "s" : ""} and {importParsed.tasks.length} task{importParsed.tasks.length !== 1 ? "s" : ""}. Review below:</div>
+                <div style={{ maxHeight: "320px", overflowY: "auto", marginBottom: "16px" }}>
+                  {importParsed.goals.map((g, i) => (
+                    <div key={i} style={{ marginBottom: "16px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px" }}>
+                        <div style={{ width: "12px", height: "12px", borderRadius: "50%", background: g.color, flexShrink: 0 }} />
+                        <div style={{ fontSize: "13px", fontWeight: "600" }}>{g.label}</div>
+                        {g.deadline && <div style={{ fontSize: "10px", color: "#9B8B7A" }}>due {g.deadline}</div>}
+                      </div>
+                      {importParsed.tasks.filter(t => t.goal === g.label).map((t, j) => (
+                        <div key={j} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "6px 12px", background: "#F5F2EC", marginBottom: "4px", marginLeft: "22px" }}>
+                          <div style={{ fontSize: "12px", flex: 1 }}>{t.text}</div>
+                          <div style={{ fontSize: "9px", padding: "2px 6px", background: t.priority === "high" ? "#E5393520" : t.priority === "med" ? "#FB8C0020" : "#43A04720", color: t.priority === "high" ? "#E53935" : t.priority === "med" ? "#FB8C00" : "#43A047" }}>{t.priority}</div>
+                          {t.due && <div style={{ fontSize: "10px", color: "#9B8B7A" }}>{t.due}</div>}
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+                <div style={{ display: "flex", gap: "12px" }}>
+                  <button style={S.btn} onClick={importAll} disabled={importLoading}>{importLoading ? "Importing..." : `Import All`}</button>
+                  <button style={S.btnOut} onClick={() => setImportParsed(null)}>Re-parse</button>
+                  <button style={S.btnOut} onClick={() => { setShowImport(false); setImportParsed(null); setImportText(""); }}>Cancel</button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* ADD GOAL MODAL */}
       {showAddGoal && (
