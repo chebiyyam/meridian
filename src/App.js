@@ -476,8 +476,16 @@ function MeridianApp({ user }) {
       setStats(data);
       // restore non-negotiables — only keep ones that still exist as pending tasks
       if (data.non_negotiables && Array.isArray(data.non_negotiables)) {
-        setNonNegotiables(data.non_negotiables);
-      }
+          // only restore if saved today
+          const todayDate = new Date().toLocaleDateString('en-CA');
+          if (data.nn_date === todayDate) {
+            setNonNegotiables(data.non_negotiables);
+          } else {
+            // new day — clear non-negotiables
+            setNonNegotiables([]);
+            supabase.from("user_stats").update({ non_negotiables: [], nn_date: null }).eq("user_id", user.id);
+          }
+        }
     } else {
       const { data: newStats } = await supabase.from("user_stats").insert({ user_id: user.id }).select().single();
       if (newStats) setStats(newStats);
@@ -978,6 +986,9 @@ function MeridianApp({ user }) {
                 <button style={S.btnOut} onClick={() => setShowNNPicker(true)}>Pick 3</button>
               </div>
               {nonNegotiables.length === 0 && <div style={{ fontSize: "12px", color: "#9B8B7A" }}>Pick your 3 most important tasks for today. These are locked in — no excuses.</div>}
+              {nonNegotiables.length > 0 && nonNegotiables.every(id => !tasks.find(t => t.id === id)) && (
+                <div style={{ fontSize: "12px", color: "#9B8B7A" }}>Loading your non-negotiables...</div>
+              )}
               {nonNegotiables.map(id => {
                 const task = tasks.find(t => t.id === id);
                 if (!task) return null;
@@ -1462,7 +1473,7 @@ function MeridianApp({ user }) {
               <button style={S.btn} onClick={() => {
                 setShowNNPicker(false);
                 setNnComplete(false);
-                supabase.from("user_stats").upsert({ ...stats, user_id: user.id, non_negotiables: nonNegotiables }, { onConflict: "user_id" });
+                supabase.from("user_stats").upsert({ ...stats, user_id: user.id, non_negotiables: nonNegotiables, nn_date: new Date().toLocaleDateString('en-CA') }, { onConflict: "user_id" });
               }}>Lock In ({nonNegotiables.length}/3)</button>
               <button style={S.btnOut} onClick={() => setShowNNPicker(false)}>Cancel</button>
             </div>
