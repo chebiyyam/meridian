@@ -8,14 +8,26 @@ const supabase = createClient(
 );
 
 const MUTED_COLORS = [
-  { name: "Red",     value: "#E53935" },
-  { name: "Blue",    value: "#1E88E5" },
-  { name: "Green",   value: "#43A047" },
-  { name: "Orange",  value: "#FB8C00" },
-  { name: "Purple",  value: "#8E24AA" },
-  { name: "Teal",    value: "#00ACC1" },
-  { name: "Pink",    value: "#D81B60" },
-  { name: "Lime",    value: "#7CB342" },
+  { name: "Red",        value: "#E53935" },
+  { name: "Blue",       value: "#1E88E5" },
+  { name: "Green",      value: "#43A047" },
+  { name: "Orange",     value: "#FB8C00" },
+  { name: "Purple",     value: "#8E24AA" },
+  { name: "Teal",       value: "#00ACC1" },
+  { name: "Pink",       value: "#D81B60" },
+  { name: "Lime",       value: "#7CB342" },
+  { name: "Indigo",     value: "#3949AB" },
+  { name: "Amber",      value: "#FFB300" },
+  { name: "Cyan",       value: "#00BCD4" },
+  { name: "Deep Orange",value: "#F4511E" },
+  { name: "Brown",      value: "#6D4C41" },
+  { name: "Gold",       value: "#C4A882" },
+  { name: "Coral",      value: "#FF6B6B" },
+  { name: "Mint",       value: "#26A69A" },
+  { name: "Lavender",   value: "#7986CB" },
+  { name: "Rose",       value: "#EC407A" },
+  { name: "Sky",        value: "#29B6F6" },
+  { name: "Sage",       value: "#8D9B6A" },
 ];
 
 const QUOTES = [
@@ -1073,7 +1085,6 @@ function MeridianApp({ user }) {
 
             {/* Future Self */}
             {goals.length > 0 && (() => {
-              // show for the goal with most tasks
               const g = goals.reduce((best, g) => {
                 const count = tasks.filter(t => t.goal_id === g.id).length;
                 return count > tasks.filter(t => t.goal_id === best.id).length ? g : best;
@@ -1082,19 +1093,26 @@ function MeridianApp({ user }) {
               const done = gt.filter(t => t.done).length;
               const remaining = gt.length - done;
               if (remaining === 0 || gt.length === 0) return null;
-              // assume 2 tasks completed per day as baseline (no snapshots needed)
-              const dailyRate = Math.max(1, done > 0 ? done / 7 : 2);
-              const daysLeft = Math.ceil(remaining / dailyRate);
+              const pct = Math.round((done / gt.length) * 100);
+              // estimate: if you do 2 tasks/day you finish in X days
+              const daysLeft = Math.ceil(remaining / 2);
               const completion = new Date(Date.now() + daysLeft * 86400000);
               const completionStr = completion.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
-              const pct = Math.round((done / gt.length) * 100);
               return (
-                <div style={{ ...S.card, marginBottom: "24px", borderLeft: "3px solid #1E88E5" }}>
-                  <div style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#9B8B7A", marginBottom: "10px" }}>🔮 Future Self</div>
-                  <div style={{ fontSize: "14px", marginBottom: "6px" }}>Keep going — you'll finish <strong style={{ color: goalColor(g.id) }}>{g.label}</strong> by <strong>{completionStr}</strong>.</div>
-                  <div style={{ fontSize: "11px", color: "#9B8B7A", marginBottom: "10px" }}>{done} of {gt.length} tasks done · {remaining} remaining</div>
-                  <div style={{ height: "4px", background: "#E0D8CC", borderRadius: "2px" }}>
-                    <div style={{ height: "100%", width: `${pct}%`, background: goalColor(g.id), borderRadius: "2px", transition: "width 0.6s" }} />
+                <div style={{ ...S.card, marginBottom: "24px", borderLeft: `3px solid ${goalColor(g.id)}` }}>
+                  <div style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#9B8B7A", marginBottom: "10px" }}>🔮 Goal Forecast</div>
+                  <div style={{ fontSize: "14px", marginBottom: "4px" }}>
+                    You're <strong>{pct}%</strong> through <strong style={{ color: goalColor(g.id) }}>{g.label}</strong>
+                  </div>
+                  <div style={{ fontSize: "12px", color: "#9B8B7A", marginBottom: "12px" }}>
+                    {remaining} tasks left. If you complete 2 tasks/day, you'll be done by <strong style={{ color: "#1A1612" }}>{completionStr}</strong>.
+                  </div>
+                  <div style={{ height: "6px", background: "#E0D8CC", borderRadius: "3px" }}>
+                    <div style={{ height: "100%", width: `${pct}%`, background: goalColor(g.id), borderRadius: "3px", transition: "width 0.6s" }} />
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginTop: "6px", fontSize: "10px", color: "#9B8B7A" }}>
+                    <span>{done} done</span>
+                    <span>{remaining} to go</span>
                   </div>
                 </div>
               );
