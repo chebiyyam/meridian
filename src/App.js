@@ -451,6 +451,7 @@ function MeridianApp({ user }) {
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [nonNegotiables, setNonNegotiables] = useState([]);
   const [showImport, setShowImport] = useState(false);
+  const [showNNPicker, setShowNNPicker] = useState(false);
   const [importText, setImportText] = useState("");
   const [importParsed, setImportParsed] = useState(null);
   const [importLoading, setImportLoading] = useState(false);
