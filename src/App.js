@@ -1206,35 +1206,74 @@ function MeridianApp({ user }) {
               </div>
             )}
             <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr", gap: "16px", marginBottom: "24px" }}>
-              <div style={S.card}>
-                <div style={S.cardTitle}>Tasks Remaining</div>
+              {/* Tasks card */}
+              <div style={{ ...S.card, borderLeft: `3px solid ${pendingTasks.length === 0 ? "#43A047" : pendingTasks.filter(t=>t.due&&t.due<=todayStr).length > 0 ? "#E53935" : "#C4A882"}` }}>
+                <div style={S.cardTitle}>
+                  {pendingTasks.filter(t=>t.due&&t.due<=todayStr).length > 0
+                    ? <span style={{color:"#E53935"}}>⚠️ {pendingTasks.filter(t=>t.due&&t.due<=todayStr).length} overdue</span>
+                    : pendingTasks.length === 0 ? <span style={{color:"#43A047"}}>✅ All clear</span>
+                    : "Tasks Remaining"}
+                </div>
                 <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
                   <div>
                     <div style={{ fontSize: "48px", fontWeight: "400", lineHeight: 1 }}>{pendingTasks.length}</div>
                     <div style={{ fontSize: "11px", color: "#9B8B7A", marginTop: "8px" }}>of {tasks.length} total</div>
                   </div>
-                  {/* Completion ring */}
                   <svg width="60" height="60" style={{ flexShrink: 0 }}>
                     <circle cx="30" cy="30" r="24" fill="none" stroke="#E0D8CC" strokeWidth="5" />
-                    <circle cx="30" cy="30" r="24" fill="none" stroke="#C4A882" strokeWidth="5"
+                    <circle cx="30" cy="30" r="24" fill="none" stroke={completionRate === 100 ? "#43A047" : "#C4A882"} strokeWidth="5"
                       strokeDasharray={`${2 * Math.PI * 24}`}
                       strokeDashoffset={`${2 * Math.PI * 24 * (1 - completionRate / 100)}`}
                       strokeLinecap="round" transform="rotate(-90 30 30)"
-                      style={{ transition: "stroke-dashoffset 0.6s ease" }} />
+                      style={{ transition: "stroke-dashoffset 0.8s ease" }} />
                     <text x="30" y="35" textAnchor="middle" fontSize="11" fill="#1A1612" fontFamily="Georgia, serif">{completionRate}%</text>
                   </svg>
                 </div>
               </div>
-              <div style={S.card}>
-                <div style={S.cardTitle}>Today's Events</div>
-                <div style={{ fontSize: "48px", fontWeight: "400", lineHeight: 1 }}>{todayEvents.length}</div>
-                <div style={{ fontSize: "11px", color: "#9B8B7A", marginTop: "8px" }}>scheduled today</div>
-                {todayEvents.map(e => <div key={e.id} style={{ fontSize: "11px", color: "#6B5E4E", marginTop: "6px" }}>{e.time} - {e.title}</div>)}
+
+              {/* Today card */}
+              <div style={{ ...S.card, borderLeft: `3px solid ${todayEvents.length > 0 ? "#1E88E5" : "#E0D8CC"}` }}>
+                <div style={S.cardTitle}>Today</div>
+                <div style={{ fontSize: "11px", color: "#9B8B7A", marginBottom: "8px" }}>
+                  {DAYS[today.getDay()]}, {MONTHS[today.getMonth()]} {today.getDate()}
+                </div>
+                {todayEvents.length === 0
+                  ? <div style={{ fontSize: "12px", color: "#C0B8AC" }}>No events today</div>
+                  : todayEvents.map(e => (
+                    <div key={e.id} style={{ display: "flex", alignItems: "center", gap: "8px", padding: "5px 0", borderBottom: "1px solid #EDE8E0" }}>
+                      <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: goalColor(e.goal_id), flexShrink: 0 }} />
+                      <div style={{ fontSize: "11px", flex: 1 }}>{e.title}</div>
+                      <div style={{ fontSize: "10px", color: "#9B8B7A" }}>{e.time}</div>
+                    </div>
+                  ))}
+                {/* Tasks due today */}
+                {tasks.filter(t=>t.due===todayStr&&!t.done).slice(0,2).map(t => (
+                  <div key={t.id} style={{ display: "flex", alignItems: "center", gap: "8px", padding: "5px 0", borderBottom: "1px solid #EDE8E0" }}>
+                    <div style={{ width: "6px", height: "6px", borderRadius: "1px", background: goalColor(t.goal_id), flexShrink: 0 }} />
+                    <div style={{ fontSize: "11px", flex: 1, color: "#E53935" }}>{t.text}</div>
+                    <div style={{ fontSize: "10px", color: "#E53935" }}>due</div>
+                  </div>
+                ))}
               </div>
-              <div style={S.card}>
-                <div style={S.cardTitle}>Active Goals</div>
-                <div style={{ fontSize: "48px", fontWeight: "400", lineHeight: 1 }}>{goals.length}</div>
-                <div style={{ fontSize: "11px", color: "#9B8B7A", marginTop: "8px" }}>commitments tracked</div>
+
+              {/* Goals card */}
+              <div style={{ ...S.card, borderLeft: "3px solid #E0D8CC" }}>
+                <div style={S.cardTitle}>Goals</div>
+                <div style={{ fontSize: "48px", fontWeight: "400", lineHeight: 1, marginBottom: "8px" }}>{goals.length}</div>
+                <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+                  {goals.slice(0, 4).map(g => {
+                    const gt = tasks.filter(t => t.goal_id === g.id);
+                    const pct = gt.length ? Math.round((gt.filter(t=>t.done).length / gt.length) * 100) : 0;
+                    return (
+                      <div key={g.id} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: g.color, flexShrink: 0 }} />
+                        <div style={{ fontSize: "10px", flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{g.label}</div>
+                        <div style={{ fontSize: "10px", color: "#9B8B7A" }}>{pct}%</div>
+                      </div>
+                    );
+                  })}
+                  {goals.length > 4 && <div style={{ fontSize: "10px", color: "#9B8B7A" }}>+{goals.length - 4} more</div>}
+                </div>
               </div>
             </div>
 
@@ -1451,11 +1490,15 @@ function MeridianApp({ user }) {
                 {Array.from({length:firstDay}).map((_,i)=><div key={`e${i}`}/>)}
                 {Array.from({length:daysInMonth}).map((_,i)=>{
                   const day=i+1, ds=calDs(day), evs=eventsForDate(ds), isToday=ds===todayStr, isSel=ds===selectedDate;
+                  const dueTasks = tasks.filter(t => t.due === ds && !t.done);
+                  const goalDeadlines = goals.filter(g => g.deadline === ds);
                   return (
                     <div key={day} style={dayCell(isToday,isSel)} onClick={()=>setSelectedDate(isSel?null:ds)}>
                       <span>{day}</span>
-                      <div style={{display:"flex",gap:"2px",flexWrap:"wrap",justifyContent:"center"}}>
-                        {evs.slice(0,3).map(e=><div key={e.id} style={{width:"4px",height:"4px",borderRadius:"50%",background:isToday?"#C4A882":goalColor(e.goal_id),marginTop:"2px"}}/>)}
+                      <div style={{display:"flex",gap:"2px",flexWrap:"wrap",justifyContent:"center",marginTop:"2px"}}>
+                        {evs.slice(0,2).map(e=><div key={e.id} style={{width:"4px",height:"4px",borderRadius:"50%",background:isToday?"#C4A882":goalColor(e.goal_id)}}/>)}
+                        {dueTasks.slice(0,2).map(t=><div key={t.id} style={{width:"4px",height:"4px",borderRadius:"1px",background:isToday?"#F5F2EC":goalColor(t.goal_id)}}/>)}
+                        {goalDeadlines.slice(0,1).map(g=><div key={g.id} style={{width:"5px",height:"5px",borderRadius:"50%",background:g.color,border:`1px solid ${isToday?"#F5F2EC":"#1A1612"}`}}/>)}
                       </div>
                     </div>
                   );
@@ -1464,6 +1507,21 @@ function MeridianApp({ user }) {
             </div>
             <div style={S.card}>
               <div style={S.cardTitle}>{selectedDate || "Upcoming Events"}</div>
+              {/* Goal deadlines */}
+              {selectedDate && goals.filter(g => g.deadline === selectedDate).map(g => (
+                <div key={g.id} style={{...chip(g.id), flexDirection:"column", gap:"2px", alignItems:"flex-start", marginBottom:"8px", borderLeft:`3px solid ${g.color}`}}>
+                  <div style={{fontWeight:"600", fontSize:"12px"}}>🏁 {g.label} deadline</div>
+                  <div style={{fontSize:"10px", opacity:0.7}}>Goal deadline</div>
+                </div>
+              ))}
+              {/* Task due dates */}
+              {selectedDate && tasks.filter(t => t.due === selectedDate && !t.done).map(t => (
+                <div key={t.id} style={{...chip(t.goal_id), flexDirection:"column", gap:"2px", alignItems:"flex-start", marginBottom:"8px"}}>
+                  <div style={{fontWeight:"600", fontSize:"12px"}}>📌 {t.text}</div>
+                  <div style={{fontSize:"10px", opacity:0.7}}>Task due · {goalLabel(t.goal_id)}</div>
+                </div>
+              ))}
+              {/* Events */}
               {(selectedDate ? eventsForDate(selectedDate) : [...futureEvents].sort((a,b)=>a.date.localeCompare(b.date))).map(e=>(
                 <div key={e.id} style={{...chip(e.goal_id),flexDirection:"column",gap:"2px",alignItems:"flex-start",marginBottom:"8px"}}>
                   <div style={{display:"flex",justifyContent:"space-between",width:"100%",alignItems:"center"}}>
@@ -1473,8 +1531,14 @@ function MeridianApp({ user }) {
                   <div style={{fontSize:"10px",opacity:0.7}}>{e.date} at {e.time} - {goalLabel(e.goal_id)}</div>
                 </div>
               ))}
-              {futureEvents.length===0 && <div style={{fontSize:"12px",color:"#C0B8AC"}}>No upcoming events.</div>}
-              {selectedDate && eventsForDate(selectedDate).length===0 && <div style={{fontSize:"12px",color:"#C0B8AC"}}>No events on this day</div>}
+              {futureEvents.length===0 && !selectedDate && <div style={{fontSize:"12px",color:"#C0B8AC"}}>No upcoming events.</div>}
+              {selectedDate && eventsForDate(selectedDate).length===0 && tasks.filter(t=>t.due===selectedDate&&!t.done).length===0 && goals.filter(g=>g.deadline===selectedDate).length===0 && <div style={{fontSize:"12px",color:"#C0B8AC"}}>Nothing on this day.</div>}
+              {/* Legend */}
+              <div style={{marginTop:"16px", paddingTop:"12px", borderTop:"1px solid #EDE8E0", display:"flex", gap:"16px", flexWrap:"wrap"}}>
+                <div style={{display:"flex",alignItems:"center",gap:"5px",fontSize:"10px",color:"#9B8B7A"}}><div style={{width:"8px",height:"8px",borderRadius:"50%",background:"#C4A882"}}/> Event</div>
+                <div style={{display:"flex",alignItems:"center",gap:"5px",fontSize:"10px",color:"#9B8B7A"}}><div style={{width:"8px",height:"8px",borderRadius:"1px",background:"#9B8B7A"}}/> Task due</div>
+                <div style={{display:"flex",alignItems:"center",gap:"5px",fontSize:"10px",color:"#9B8B7A"}}><div style={{width:"8px",height:"8px",borderRadius:"50%",border:"1.5px solid #9B8B7A"}}/> Goal deadline</div>
+              </div>
             </div>
           </div>
         )}
@@ -1590,7 +1654,7 @@ function MeridianApp({ user }) {
             <div style={{ fontSize: "11px", color: "#9B8B7A", marginBottom: "20px" }}>Paste any plan, schedule, or list from Claude. We'll extract your goals and tasks automatically.</div>
             <div style={{ ...S.card, marginBottom: "16px", borderLeft: "3px solid #C4A882", padding: "16px" }}>
               <div style={{ fontSize: "11px", color: "#C4A882", marginBottom: "8px", letterSpacing: "1px" }}>⚡ QUICK LOAD</div>
-              <div style={{ fontSize: "12px", color: "#6B5E4E", marginBottom: "12px" }}>Load your full study plan (12 goals, 63 tasks) in one click.</div>
+              <div style={{ fontSize: "12px", color: "#6B5E4E", marginBottom: "12px" }}>Instantly load your saved plan — all goals and tasks in one click.</div>
               <button style={S.btn} onClick={seedData} disabled={importLoading}>{importLoading ? "Loading..." : "Load My Full Plan"}</button>
             </div>
 
