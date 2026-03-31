@@ -649,6 +649,12 @@ function MeridianApp({ user }) {
 
   const formatTimer = (s) => `${String(Math.floor(s/60)).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`;
 
+  const startTimer = (mins) => {
+    setTimerMode(mins);
+    setTimerSeconds((mins === "custom" ? customMinutes : mins) * 60);
+    setTimerRunning(true);
+  };
+
   // Check non-negotiables completion
   useEffect(() => {
     if (nonNegotiables.length === 3) {
