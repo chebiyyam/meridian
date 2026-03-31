@@ -472,7 +472,7 @@ function MeridianApp({ user }) {
   const [showAddGoal,  setShowAddGoal]  = useState(false);
   const [newTask,  setNewTask]  = useState({ text: "", goal_id: "", due: "", priority: "med", hours: "", recurring: [] });
   const [newEvent, setNewEvent] = useState({ title: "", goal_id: "", date: "", time: "" });
-  const [newGoal,  setNewGoal]  = useState({ label: "", color: "#E53935" });
+  const [newGoal,  setNewGoal]  = useState({ label: "", color: "#E53935", deadline: "" });
   const [editEvent, setEditEvent] = useState(null);
   const [editTask, setEditTask] = useState(null);
   const [quoteIdx, setQuoteIdx] = useState(() => Math.floor(Math.random() * QUOTES.length));
@@ -702,7 +702,7 @@ function MeridianApp({ user }) {
   const addGoal = async () => {
     if (!newGoal.label.trim()) return;
     const { data } = await supabase.from("goals").insert({ ...newGoal, user_id: user.id }).select().single();
-    if (data) { setGoals([...goals, data]); setNewGoal({ label: "", color: "#E53935" }); setShowAddGoal(false); }
+    if (data) { setGoals([...goals, data]); setNewGoal({ label: "", color: "#E53935", deadline: "" }); setShowAddGoal(false); }
   };
 
   const deleteGoal = async (id) => {
@@ -1083,7 +1083,7 @@ function MeridianApp({ user }) {
               </div>
             )}
 
-            {/* Future Self */}
+            {/* Goal Forecast */}
             {goals.length > 0 && (() => {
               const g = goals.reduce((best, g) => {
                 const count = tasks.filter(t => t.goal_id === g.id).length;
@@ -1094,25 +1094,48 @@ function MeridianApp({ user }) {
               const remaining = gt.length - done;
               if (remaining === 0 || gt.length === 0) return null;
               const pct = Math.round((done / gt.length) * 100);
-              // estimate: if you do 2 tasks/day you finish in X days
-              const daysLeft = Math.ceil(remaining / 2);
-              const completion = new Date(Date.now() + daysLeft * 86400000);
-              const completionStr = completion.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+
+              let forecastLine = null;
+              let urgencyColor = "#1E88E5";
+
+              if (g.deadline) {
+                const deadlineDate = new Date(g.deadline);
+                const daysUntilDeadline = Math.ceil((deadlineDate - Date.now()) / 86400000);
+                const tasksPerDay = daysUntilDeadline > 0 ? (remaining / daysUntilDeadline).toFixed(1) : null;
+                const deadlineStr = deadlineDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+
+                if (daysUntilDeadline <= 0) {
+                  urgencyColor = "#E53935";
+                  forecastLine = `⚠️ Deadline passed. ${remaining} tasks still remaining.`;
+                } else if (daysUntilDeadline <= 7) {
+                  urgencyColor = "#E53935";
+                  forecastLine = `🔴 ${daysUntilDeadline} days until deadline (${deadlineStr}). You need to complete ${tasksPerDay} tasks/day to finish on time.`;
+                } else if (daysUntilDeadline <= 14) {
+                  urgencyColor = "#FB8C00";
+                  forecastLine = `🟠 ${daysUntilDeadline} days until deadline (${deadlineStr}). At ${tasksPerDay} tasks/day you'll make it.`;
+                } else {
+                  urgencyColor = "#43A047";
+                  forecastLine = `🟢 Deadline is ${deadlineStr} — ${daysUntilDeadline} days away. Complete ${tasksPerDay} tasks/day to finish comfortably.`;
+                }
+              } else {
+                const daysLeft = Math.ceil(remaining / 2);
+                const completion = new Date(Date.now() + daysLeft * 86400000);
+                const completionStr = completion.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+                forecastLine = `At 2 tasks/day, you'll finish by ${completionStr}. Add a deadline to get a precise forecast.`;
+              }
+
               return (
-                <div style={{ ...S.card, marginBottom: "24px", borderLeft: `3px solid ${goalColor(g.id)}` }}>
+                <div style={{ ...S.card, marginBottom: "24px", borderLeft: `3px solid ${urgencyColor}` }}>
                   <div style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#9B8B7A", marginBottom: "10px" }}>🔮 Goal Forecast</div>
                   <div style={{ fontSize: "14px", marginBottom: "4px" }}>
                     You're <strong>{pct}%</strong> through <strong style={{ color: goalColor(g.id) }}>{g.label}</strong>
                   </div>
-                  <div style={{ fontSize: "12px", color: "#9B8B7A", marginBottom: "12px" }}>
-                    {remaining} tasks left. If you complete 2 tasks/day, you'll be done by <strong style={{ color: "#1A1612" }}>{completionStr}</strong>.
-                  </div>
+                  <div style={{ fontSize: "12px", color: "#6B5E4E", marginBottom: "12px", lineHeight: "1.6" }}>{forecastLine}</div>
                   <div style={{ height: "6px", background: "#E0D8CC", borderRadius: "3px" }}>
-                    <div style={{ height: "100%", width: `${pct}%`, background: goalColor(g.id), borderRadius: "3px", transition: "width 0.6s" }} />
+                    <div style={{ height: "100%", width: `${pct}%`, background: urgencyColor, borderRadius: "3px", transition: "width 0.6s" }} />
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between", marginTop: "6px", fontSize: "10px", color: "#9B8B7A" }}>
-                    <span>{done} done</span>
-                    <span>{remaining} to go</span>
+                    <span>{done} done</span><span>{remaining} to go</span>
                   </div>
                 </div>
               );
@@ -1273,7 +1296,9 @@ function MeridianApp({ user }) {
                       <div style={{ fontSize: "14px", letterSpacing: "1px" }}>{g.label}</div>
                       <button onClick={() => deleteGoal(g.id)} style={{ background: "none", border: "none", color: "#C0B8AC", fontSize: "18px", cursor: "pointer", padding: "0 0 0 8px", lineHeight: 1 }}>x</button>
                     </div>
-                    <div style={{ fontSize: "10px", color: "#9B8B7A", marginBottom: "20px" }}>Active commitment</div>
+                    <div style={{ fontSize: "10px", color: "#9B8B7A", marginBottom: "20px" }}>
+                      {g.deadline ? `Due ${new Date(g.deadline).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}` : "No deadline set"}
+                    </div>
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "20px" }}>
                       {[{label:"Tasks Done",val:`${d}/${gt.length}`},{label:"Progress",val:`${p}%`}].map(stat=>(
                         <div key={stat.label} style={{textAlign:"center"}}>
@@ -1317,6 +1342,11 @@ function MeridianApp({ user }) {
             <div style={{ fontSize: "12px", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "24px" }}>New Goal</div>
             <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
               <input style={S.input} placeholder="Goal name (e.g. Oxford Internship)" value={newGoal.label} onChange={e => setNewGoal({...newGoal, label: e.target.value})} />
+              <div>
+                <div style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#9B8B7A", marginBottom: "6px" }}>Deadline (optional)</div>
+                <input style={S.input} type="date" value={newGoal.deadline} onChange={e => setNewGoal({...newGoal, deadline: e.target.value})} />
+                <div style={{ fontSize: "10px", color: "#9B8B7A", marginTop: "4px" }}>Used to calculate your Goal Forecast on the dashboard.</div>
+              </div>
               <div>
                 <div style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#9B8B7A", marginBottom: "10px" }}>Color</div>
                 <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
