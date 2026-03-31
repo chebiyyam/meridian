@@ -815,6 +815,142 @@ function MeridianApp({ user }) {
     setImportParsed(null);
   };
 
+  const seedData = async () => {
+    setImportLoading(true);
+    const colors = ["#E53935","#1E88E5","#43A047","#FB8C00","#8E24AA","#00ACC1","#D81B60","#7CB342","#3949AB","#FFB300","#00BCD4","#F4511E"];
+    const goalDefs = [
+      { label: "AP Gov",            color: colors[0],  deadline: "2026-05-05" },
+      { label: "AP Macro",          color: colors[1],  deadline: "2026-05-08" },
+      { label: "AP Calc BC",        color: colors[2],  deadline: "2026-05-11" },
+      { label: "AP Physics C Mech", color: colors[3],  deadline: "2026-05-13" },
+      { label: "AP Physics C E&M",  color: colors[4],  deadline: "2026-05-14" },
+      { label: "Oxford Research",   color: colors[5],  deadline: "2026-05-20" },
+      { label: "PHYS 206",          color: colors[6],  deadline: "2026-08-24" },
+      { label: "MATH 251",          color: colors[7],  deadline: "2026-08-24" },
+      { label: "STAT 211",          color: colors[8],  deadline: "2026-08-24" },
+      { label: "ENGR 102",          color: colors[9],  deadline: "2026-08-24" },
+      { label: "POLS 207",          color: colors[10], deadline: "2026-08-24" },
+      { label: "Discipline",        color: colors[11], deadline: null },
+    ];
+    const taskDefs = [
+      // AP Gov
+      { goal: "AP Gov", text: "Unit 4 review",      due: "2026-04-05", priority: "med" },
+      { goal: "AP Gov", text: "Unit 5 review",      due: "2026-04-10", priority: "med" },
+      { goal: "AP Gov", text: "Units 1-3 revision", due: "2026-04-12", priority: "high" },
+      { goal: "AP Gov", text: "Past exam 1",        due: "2026-04-15", priority: "high" },
+      { goal: "AP Gov", text: "Past exam 2",        due: "2026-04-20", priority: "high" },
+      { goal: "AP Gov", text: "Past exam 3",        due: "2026-04-25", priority: "high" },
+      { goal: "AP Gov", text: "Past exam 4",        due: "2026-05-01", priority: "high" },
+      // AP Macro
+      { goal: "AP Macro", text: "Unit 1 review",   due: "2026-04-03", priority: "med" },
+      { goal: "AP Macro", text: "Unit 2 review",   due: "2026-04-05", priority: "med" },
+      { goal: "AP Macro", text: "Unit 3 review",   due: "2026-04-07", priority: "med" },
+      { goal: "AP Macro", text: "Unit 4 review",   due: "2026-04-09", priority: "med" },
+      { goal: "AP Macro", text: "Unit 5 review",   due: "2026-04-11", priority: "med" },
+      { goal: "AP Macro", text: "Unit 6 review",   due: "2026-04-13", priority: "med" },
+      { goal: "AP Macro", text: "Past exam 1",     due: "2026-04-15", priority: "high" },
+      { goal: "AP Macro", text: "Past exam 2",     due: "2026-04-20", priority: "high" },
+      { goal: "AP Macro", text: "Past exam 3",     due: "2026-04-25", priority: "high" },
+      { goal: "AP Macro", text: "Past exam 4",     due: "2026-05-05", priority: "high" },
+      // AP Calc BC
+      { goal: "AP Calc BC", text: "Practice test 1", due: "2026-04-03", priority: "high" },
+      { goal: "AP Calc BC", text: "Practice test 2", due: "2026-04-08", priority: "high" },
+      { goal: "AP Calc BC", text: "Practice test 3", due: "2026-04-13", priority: "high" },
+      { goal: "AP Calc BC", text: "Practice test 4", due: "2026-04-18", priority: "high" },
+      { goal: "AP Calc BC", text: "Practice test 5", due: "2026-04-25", priority: "high" },
+      { goal: "AP Calc BC", text: "Practice test 6", due: "2026-05-05", priority: "high" },
+      // AP Physics C Mech
+      { goal: "AP Physics C Mech", text: "Work and energy theorem",        due: "2026-04-03", priority: "med" },
+      { goal: "AP Physics C Mech", text: "Potential energy and conservation", due: "2026-04-05", priority: "med" },
+      { goal: "AP Physics C Mech", text: "Conservation of linear momentum",  due: "2026-04-07", priority: "med" },
+      { goal: "AP Physics C Mech", text: "Rotational motion",               due: "2026-04-09", priority: "med" },
+      { goal: "AP Physics C Mech", text: "Torque and angular momentum",     due: "2026-04-11", priority: "med" },
+      { goal: "AP Physics C Mech", text: "Harmonic motion",                 due: "2026-04-13", priority: "med" },
+      { goal: "AP Physics C Mech", text: "Past exam 1",                     due: "2026-04-15", priority: "high" },
+      { goal: "AP Physics C Mech", text: "Past exam 2",                     due: "2026-04-20", priority: "high" },
+      { goal: "AP Physics C Mech", text: "Past exam 3",                     due: "2026-04-25", priority: "high" },
+      { goal: "AP Physics C Mech", text: "Past exam 4",                     due: "2026-05-01", priority: "high" },
+      { goal: "AP Physics C Mech", text: "Past exam 5",                     due: "2026-05-08", priority: "high" },
+      // AP Physics C E&M
+      { goal: "AP Physics C E&M", text: "Past exam 1", due: "2026-04-03", priority: "high" },
+      { goal: "AP Physics C E&M", text: "Past exam 2", due: "2026-04-08", priority: "high" },
+      { goal: "AP Physics C E&M", text: "Past exam 3", due: "2026-04-13", priority: "high" },
+      { goal: "AP Physics C E&M", text: "Past exam 4", due: "2026-04-20", priority: "high" },
+      { goal: "AP Physics C E&M", text: "Past exam 5", due: "2026-05-01", priority: "high" },
+      { goal: "AP Physics C E&M", text: "Past exam 6", due: "2026-05-08", priority: "high" },
+      // Oxford Research
+      { goal: "Oxford Research", text: "Finish 3B1B neural networks",    due: "2026-04-10", priority: "high" },
+      { goal: "Oxford Research", text: "StatQuest CNN series complete",   due: "2026-04-25", priority: "high" },
+      { goal: "Oxford Research", text: "Read Oxford paper 1",             due: "2026-05-01", priority: "med" },
+      { goal: "Oxford Research", text: "Read Oxford paper 2",             due: "2026-05-05", priority: "med" },
+      { goal: "Oxford Research", text: "Read Oxford paper 3",             due: "2026-05-08", priority: "med" },
+      { goal: "Oxford Research", text: "Read Oxford paper 4",             due: "2026-05-10", priority: "med" },
+      { goal: "Oxford Research", text: "Email Dr. He",                    due: "2026-05-20", priority: "high" },
+      // PHYS 206
+      { goal: "PHYS 206", text: "Erukhimova 1D/2D/Newton's review", due: "2026-05-25", priority: "med" },
+      { goal: "PHYS 206", text: "Erukhimova Work/Energy",           due: "2026-06-05", priority: "med" },
+      { goal: "PHYS 206", text: "Erukhimova Momentum",              due: "2026-06-15", priority: "med" },
+      { goal: "PHYS 206", text: "Erukhimova Rotation/Torque",       due: "2026-06-25", priority: "med" },
+      { goal: "PHYS 206", text: "Erukhimova Harmonic Motion",       due: "2026-07-05", priority: "med" },
+      { goal: "PHYS 206", text: "Erukhimova E&M full series",       due: "2026-07-15", priority: "med" },
+      { goal: "PHYS 206", text: "Past exam 1",                      due: "2026-07-20", priority: "high" },
+      { goal: "PHYS 206", text: "Past exam 2",                      due: "2026-07-27", priority: "high" },
+      { goal: "PHYS 206", text: "Past exam 3",                      due: "2026-08-05", priority: "high" },
+      { goal: "PHYS 206", text: "Past exam 4",                      due: "2026-08-10", priority: "high" },
+      // MATH 251
+      { goal: "MATH 251", text: "Stewart Ch 12 + Leonard videos", due: "2026-06-05", priority: "med" },
+      { goal: "MATH 251", text: "Stewart Ch 13 + Leonard videos", due: "2026-06-20", priority: "med" },
+      { goal: "MATH 251", text: "Stewart Ch 14 + Leonard videos", due: "2026-07-10", priority: "med" },
+      { goal: "MATH 251", text: "Stewart Ch 15 + Leonard videos", due: "2026-07-25", priority: "med" },
+      { goal: "MATH 251", text: "Zelenko past exam 1",            due: "2026-07-28", priority: "high" },
+      { goal: "MATH 251", text: "Zelenko past exam 2",            due: "2026-08-05", priority: "high" },
+      { goal: "MATH 251", text: "Zelenko past exam 3",            due: "2026-08-10", priority: "high" },
+      // STAT 211
+      { goal: "STAT 211", text: "StatQuest probability basics", due: "2026-06-20", priority: "med" },
+      { goal: "STAT 211", text: "Distributions",                due: "2026-07-05", priority: "med" },
+      { goal: "STAT 211", text: "Hypothesis testing",           due: "2026-07-20", priority: "med" },
+      { goal: "STAT 211", text: "Past exam 1",                  due: "2026-08-01", priority: "high" },
+      { goal: "STAT 211", text: "Past exam 2",                  due: "2026-08-10", priority: "high" },
+      // ENGR 102
+      { goal: "ENGR 102", text: "Bro Code Python basics",            due: "2026-06-15", priority: "med" },
+      { goal: "ENGR 102", text: "Variables/conditionals/loops",       due: "2026-06-30", priority: "med" },
+      { goal: "ENGR 102", text: "Functions/lists/file handling",      due: "2026-07-15", priority: "med" },
+      { goal: "ENGR 102", text: "NumPy and Matplotlib",               due: "2026-07-31", priority: "med" },
+      { goal: "ENGR 102", text: "Build 3 small engineering scripts",  due: "2026-08-10", priority: "high" },
+      // POLS 207
+      { goal: "POLS 207", text: "Set reminders for all tests", due: "2026-08-24", priority: "high" },
+      { goal: "POLS 207", text: "Never miss a deadline",       due: null,          priority: "med", recurring: JSON.stringify(["mon","tue","wed","thu","fri"]) },
+      // Discipline
+      { goal: "Discipline", text: "No PMO today",           due: null, priority: "high", recurring: JSON.stringify(["mon","tue","wed","thu","fri","sat","sun"]) },
+      { goal: "Discipline", text: "Lights out 12am",        due: null, priority: "high", recurring: JSON.stringify(["mon","tue","wed","thu","fri","sat","sun"]) },
+      { goal: "Discipline", text: "CNN Oxford prep 30 min", due: null, priority: "high", recurring: JSON.stringify(["mon","tue","wed","thu","fri","sat","sun"]) },
+    ];
+
+    // insert goals
+    const goalMap = {};
+    for (const g of goalDefs) {
+      const existing = goals.find(eg => eg.label === g.label);
+      if (existing) { goalMap[g.label] = existing.id; continue; }
+      const { data } = await supabase.from("goals").insert({ label: g.label, color: g.color, deadline: g.deadline, user_id: user.id }).select().single();
+      if (data) goalMap[g.label] = data.id;
+    }
+    // insert tasks
+    const insertedTasks = [];
+    for (const t of taskDefs) {
+      const goal_id = goalMap[t.goal];
+      if (!goal_id) continue;
+      const { data } = await supabase.from("tasks").insert({ text: t.text, goal_id, priority: t.priority, due: t.due || null, done: false, recurring: t.recurring || null, user_id: user.id }).select().single();
+      if (data) insertedTasks.push(data);
+    }
+    // reload everything
+    const { data: newGoals } = await supabase.from("goals").select("*").order("created_at");
+    const { data: newTasks } = await supabase.from("tasks").select("*").order("created_at");
+    if (newGoals) setGoals(newGoals);
+    if (newTasks) setTasks(newTasks);
+    setImportLoading(false);
+    setShowImport(false);
+  };
+
   const deleteGoal = async (id) => {
     await supabase.from("goals").delete().eq("id", id);
     setGoals(goals.filter(g => g.id !== id));
@@ -1452,6 +1588,11 @@ function MeridianApp({ user }) {
           <div style={{ ...S.modalBox, width: "560px" }} onClick={e => e.stopPropagation()}>
             <div style={{ fontSize: "12px", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "4px" }}>⚡ Import from Claude</div>
             <div style={{ fontSize: "11px", color: "#9B8B7A", marginBottom: "20px" }}>Paste any plan, schedule, or list from Claude. We'll extract your goals and tasks automatically.</div>
+            <div style={{ ...S.card, marginBottom: "16px", borderLeft: "3px solid #C4A882", padding: "16px" }}>
+              <div style={{ fontSize: "11px", color: "#C4A882", marginBottom: "8px", letterSpacing: "1px" }}>⚡ QUICK LOAD</div>
+              <div style={{ fontSize: "12px", color: "#6B5E4E", marginBottom: "12px" }}>Load your full study plan (12 goals, 63 tasks) in one click.</div>
+              <button style={S.btn} onClick={seedData} disabled={importLoading}>{importLoading ? "Loading..." : "Load My Full Plan"}</button>
+            </div>
 
             {!importParsed ? (
               <>
