@@ -721,38 +721,67 @@ function MeridianApp({ user }) {
     setImportLoading(true);
     setImportError("");
     setImportParsed(null);
+
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 1000,
-          system: `You are a planner assistant. The user will paste a plan or schedule. Extract goals and tasks from it. Respond ONLY with valid JSON in this exact format, no markdown, no explanation:
-{
-  "goals": [
-    { "label": "Goal Name", "color": "#E53935", "deadline": "2026-05-01" }
-  ],
-  "tasks": [
-    { "text": "Task description", "goal": "Goal Name", "priority": "high", "due": "2026-04-10" }
-  ]
-}
-Rules:
-- priority must be "high", "med", or "low"
-- deadline and due are optional, use null if not mentioned
-- color pick from: #E53935 #1E88E5 #43A047 #FB8C00 #8E24AA #00ACC1 #D81B60 #7CB342 #3949AB #FFB300 #00BCD4 #F4511E #6D4C41 #C4A882 #FF6B6B #26A69A #7986CB #EC407A #29B6F6 #8D9B6A
-- assign different colors to different goals
-- match tasks to their correct goal by name exactly`,
-          messages: [{ role: "user", content: importText }],
-        }),
-      });
-      const data = await res.json();
-      const text = data.content?.[0]?.text || "";
-      const clean = text.replace(/```json|```/g, "").trim();
-      const parsed = JSON.parse(clean);
-      setImportParsed(parsed);
+      const colors = ["#E53935","#1E88E5","#43A047","#FB8C00","#8E24AA","#00ACC1","#D81B60","#7CB342","#3949AB","#FFB300","#00BCD4","#F4511E","#26A69A","#7986CB","#EC407A","#29B6F6","#8D9B6A","#C4A882","#FF6B6B","#6D4C41"];
+      const goals = [];
+      const tasks = [];
+      let currentGoal = null;
+      let colorIdx = 0;
+
+      const lines = importText.split("\n").map(l => l.trim()).filter(Boolean);
+
+      for (const line of lines) {
+        // detect goal line: doesn't start with bullet, ends with colon, or has "Goal:" prefix
+        const isGoalLine = (
+          line.startsWith("Goal:") ||
+          (!line.startsWith("*") && !line.startsWith("-") && !line.startsWith("•") && line.endsWith(":")) ||
+          (!line.startsWith("*") && !line.startsWith("-") && !line.startsWith("•") && !line.includes("due") && line.length < 60 && line.includes("—"))
+        );
+
+        if (isGoalLine) {
+          const label = line.replace(/^Goal:\s*/i, "").replace(/:$/, "").replace(/\s*—.*$/, "").trim();
+          if (label) {
+            currentGoal = { label, color: colors[colorIdx % colors.length], deadline: null };
+            colorIdx++;
+            if (!goals.find(g => g.label === label)) goals.push(currentGoal);
+          }
+          continue;
+        }
+
+        // detect task line
+        const isTaskLine = line.startsWith("*") || line.startsWith("-") || line.startsWith("•");
+        if (isTaskLine && currentGoal) {
+          let text = line.replace(/^[*\-•]\s*/, "").trim();
+
+          // extract due date
+          let due = null;
+          const dueMatch = text.match(/—\s*due\s+([A-Za-z]+\s+\d+)/i) || text.match(/due\s+([A-Za-z]+\s+\d+)/i);
+          if (dueMatch) {
+            const parsed = new Date(`${dueMatch[1]} 2026`);
+            if (!isNaN(parsed)) due = parsed.toLocaleDateString('en-CA');
+            text = text.replace(/\s*—?\s*due\s+[A-Za-z]+\s+\d+/i, "").trim();
+          }
+
+          // detect priority
+          let priority = "med";
+          if (/high priority/i.test(text)) { priority = "high"; text = text.replace(/,?\s*high priority/i, "").trim(); }
+          else if (/low priority/i.test(text)) { priority = "low"; text = text.replace(/,?\s*low priority/i, "").trim(); }
+          else if (/past exam|practice test/i.test(text)) priority = "high";
+
+          if (text) tasks.push({ text, goal: currentGoal.label, priority, due });
+        }
+      }
+
+      if (goals.length === 0) {
+        setImportError("Couldn't detect any goals. Make sure each goal is on its own line ending with a colon (e.g. 'AP Calc BC:') and tasks are bullet points below it.");
+        setImportLoading(false);
+        return;
+      }
+
+      setImportParsed({ goals, tasks });
     } catch(e) {
-      setImportError("Couldn't parse your plan. Try being more specific about goals and tasks.");
+      setImportError("Something went wrong parsing. Try again.");
     }
     setImportLoading(false);
   };
@@ -1428,7 +1457,7 @@ Rules:
               <>
                 <textarea
                   style={{ ...S.input, minHeight: "180px", resize: "vertical", lineHeight: "1.6" }}
-                  placeholder={`Paste your Claude plan here. For example:\n\n"Goal: UT Transfer Application\n- Research TAMU professors (high priority, due April 10)\n- Write personal statement (high priority, due April 20)\n\nGoal: Cricket Fitness\n- Wrist curls daily (medium priority)\n- Dumbbell routine Mon/Wed/Fri"`}
+                  placeholder={`Paste your Claude plan here. For example:\n\n"Goal: UT Application\n- Research UT professors (high priority, due April 10)\n- Write personal statement (high priority, due April 20)\n\nGoal: Exercise\n- Morning workout (medium priority, every Monday)\n- Evening run (low priority, due April 15)"`}
                   value={importText}
                   onChange={e => setImportText(e.target.value)}
                 />
