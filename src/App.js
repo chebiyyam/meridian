@@ -656,6 +656,8 @@ function MeridianApp({ user }) {
     setTimerRunning(true);
   };
 
+  const [allTasksComplete, setAllTasksComplete] = useState(false);
+
   // Check non-negotiables completion
   useEffect(() => {
     if (nonNegotiables.length === 3) {
@@ -669,6 +671,20 @@ function MeridianApp({ user }) {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tasks, nonNegotiables]);
+
+  // Check all today's tasks complete
+  useEffect(() => {
+    const todayTasks = tasks.filter(t => t.due === todayStr);
+    if (todayTasks.length > 0 && todayTasks.every(t => t.done) && !allTasksComplete) {
+      setAllTasksComplete(true);
+      setShowConfetti(true);
+      playSound();
+      setTimeout(() => setShowConfetti(false), 4000);
+    } else if (!todayTasks.every(t => t.done)) {
+      setAllTasksComplete(false);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tasks]);
 
   const fetchAll = async () => {
     setLoading(true);
@@ -1545,48 +1561,78 @@ function MeridianApp({ user }) {
 
         {/* TASKS */}
         {view === "tasks" && (
-          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "16px" }}>
-            <div style={S.card}>
-              <div style={S.cardTitle}>
-                <span>Pending ({pendingTasks.length})</span>
-                <button style={S.btnOut} onClick={() => { if(noGoals){navigate("goals");setShowAddGoal(true);}else{ setNewTask({ text: "", goal_id: "", due: "", priority: "med", hours: "", recurring: [] }); setShowAddTask(true); }}}>+ Task</button>
-              </div>
-              {pendingTasks.length===0 && <div style={{fontSize:"13px",color:"#9B8B7A"}}>{noGoals?"Create a goal first.":"All caught up. Remarkable."}</div>}
-              {pendingTasks.map(task=>(
-                <div key={task.id} style={taskRow(false)}>
-                  <div style={chk(false)} onClick={()=>toggleTask(task)}/>
-                  <div style={dot(task.goal_id)}/>
-                  <div style={{flex:1}} onClick={()=>toggleTask(task)}>
-                    <div style={{fontSize:"13px"}}>{task.text} {task.recurring && (() => { try { const d = JSON.parse(task.recurring); return <span style={{fontSize:"9px",color:"#C4A882",letterSpacing:"1px",textTransform:"uppercase",marginLeft:"6px"}}>↻ {d.join(", ")}</span>; } catch { return null; } })()}</div>
-                    <div style={{fontSize:"10px",color:"#9B8B7A",marginTop:"2px"}}>{goalLabel(task.goal_id)}{task.due?` - due ${task.due}`:""}</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+
+            {/* Today's tasks */}
+            {(() => {
+              const todayTasks = pendingTasks.filter(t => t.due === todayStr);
+              if (todayTasks.length === 0) return null;
+              return (
+                <div style={{ ...S.card, borderLeft: "3px solid #C4A882" }}>
+                  <div style={S.cardTitle}>
+                    <span>📅 Today — {DAYS[today.getDay()]}, {MONTHS[today.getMonth()]} {today.getDate()} ({todayTasks.length})</span>
                   </div>
-                  <div style={badge(task.priority)}>{task.priority}</div>
-                  <button onClick={() => setEditTask({...task})} style={{background:"none",border:"none",color:"#9B8B7A",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>Edit</button>
-                  <button onClick={() => enterFocusMode(task, 25)} style={{background:"none",border:"none",color:"#1E88E5",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>Focus</button>
-                  <button onClick={() => deleteTask(task.id)} style={{background:"none",border:"none",color:"#8B1A1A",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>x</button>
+                  {todayTasks.map(task => (
+                    <div key={task.id} style={taskRow(false)}>
+                      <div style={chk(false)} onClick={() => toggleTask(task)} />
+                      <div style={dot(task.goal_id)} />
+                      <div style={{ flex: 1 }} onClick={() => toggleTask(task)}>
+                        <div style={{ fontSize: "13px" }}>{task.text}</div>
+                        <div style={{ fontSize: "10px", color: "#9B8B7A", marginTop: "2px" }}>{goalLabel(task.goal_id)}</div>
+                      </div>
+                      <div style={badge(task.priority)}>{task.priority}</div>
+                      <button onClick={() => setEditTask({...task})} style={{background:"none",border:"none",color:"#9B8B7A",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>Edit</button>
+                      <button onClick={() => enterFocusMode(task, 25)} style={{background:"none",border:"none",color:"#1E88E5",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>Focus</button>
+                      <button onClick={() => deleteTask(task.id)} style={{background:"none",border:"none",color:"#8B1A1A",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>x</button>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-            <div style={S.card}>
-              <div style={S.cardTitle}>
-                <span>Completed ({doneTasks.length})</span>
-                {doneTasks.length > 0 && (
-                  <button style={{ ...S.btnOut, color: "#E53935", borderColor: "#E53935", fontSize: "9px" }} onClick={async () => {
-                    if (!window.confirm("Delete all completed tasks?")) return;
-                    await supabase.from("tasks").delete().eq("user_id", user.id).eq("done", true);
-                    setTasks(tasks.filter(t => !t.done));
-                  }}>Clear All</button>
-                )}
+              );
+            })()}
+
+            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "16px" }}>
+              <div style={S.card}>
+                <div style={S.cardTitle}>
+                  <span>All Pending ({pendingTasks.length})</span>
+                  <button style={S.btnOut} onClick={() => { if(noGoals){navigate("goals");setShowAddGoal(true);}else{ setNewTask({ text: "", goal_id: "", due: "", priority: "med", hours: "", recurring: [] }); setShowAddTask(true); }}}>+ Task</button>
+                </div>
+                {pendingTasks.length===0 && <div style={{fontSize:"13px",color:"#9B8B7A"}}>{noGoals?"Create a goal first.":"All caught up. Remarkable."}</div>}
+                {pendingTasks.map(task=>(
+                  <div key={task.id} style={taskRow(false)}>
+                    <div style={chk(false)} onClick={()=>toggleTask(task)}/>
+                    <div style={dot(task.goal_id)}/>
+                    <div style={{flex:1}} onClick={()=>toggleTask(task)}>
+                      <div style={{fontSize:"13px"}}>{task.text} {task.recurring && (() => { try { const d = JSON.parse(task.recurring); return <span style={{fontSize:"9px",color:"#C4A882",letterSpacing:"1px",textTransform:"uppercase",marginLeft:"6px"}}>↻ {d.join(", ")}</span>; } catch { return null; } })()}</div>
+                      <div style={{fontSize:"10px",color:"#9B8B7A",marginTop:"2px"}}>{goalLabel(task.goal_id)}{task.due?` - due ${task.due}`:""}</div>
+                    </div>
+                    <div style={badge(task.priority)}>{task.priority}</div>
+                    <button onClick={() => setEditTask({...task})} style={{background:"none",border:"none",color:"#9B8B7A",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>Edit</button>
+                    <button onClick={() => enterFocusMode(task, 25)} style={{background:"none",border:"none",color:"#1E88E5",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>Focus</button>
+                    <button onClick={() => deleteTask(task.id)} style={{background:"none",border:"none",color:"#8B1A1A",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>x</button>
+                  </div>
+                ))}
               </div>
-              {doneTasks.length===0 && <div style={{fontSize:"13px",color:"#9B8B7A"}}>Nothing yet.</div>}
-              {doneTasks.map(task=>(
-                <div key={task.id} style={taskRow(true)}>
-                  <div style={chk(true)} onClick={()=>toggleTask(task)}><span style={{fontSize:"10px",color:"#FDFAF6"}}>v</span></div>
-                  <div style={dot(task.goal_id)}/>
-                  <div style={{fontSize:"13px",textDecoration:"line-through",color:"#9B8B7A",flex:1}} onClick={()=>toggleTask(task)}>{task.text}</div>
-                  <button onClick={() => deleteTask(task.id)} style={{background:"none",border:"none",color:"#8B1A1A",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>x</button>
+              <div style={S.card}>
+                <div style={S.cardTitle}>
+                  <span>Completed ({doneTasks.length})</span>
+                  {doneTasks.length > 0 && (
+                    <button style={{ ...S.btnOut, color: "#E53935", borderColor: "#E53935", fontSize: "9px" }} onClick={async () => {
+                      if (!window.confirm("Delete all completed tasks?")) return;
+                      await supabase.from("tasks").delete().eq("user_id", user.id).eq("done", true);
+                      setTasks(tasks.filter(t => !t.done));
+                    }}>Clear All</button>
+                  )}
                 </div>
-              ))}
+                {doneTasks.length===0 && <div style={{fontSize:"13px",color:"#9B8B7A"}}>Nothing yet.</div>}
+                {doneTasks.map(task=>(
+                  <div key={task.id} style={taskRow(true)}>
+                    <div style={chk(true)} onClick={()=>toggleTask(task)}><span style={{fontSize:"10px",color:"#FDFAF6"}}>v</span></div>
+                    <div style={dot(task.goal_id)}/>
+                    <div style={{fontSize:"13px",textDecoration:"line-through",color:"#9B8B7A",flex:1}} onClick={()=>toggleTask(task)}>{task.text}</div>
+                    <button onClick={() => deleteTask(task.id)} style={{background:"none",border:"none",color:"#8B1A1A",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>x</button>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         )}
@@ -1882,16 +1928,39 @@ function MeridianApp({ user }) {
           <div style={S.modalBox} onClick={e => e.stopPropagation()}>
             <div style={{ fontSize: "12px", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "8px" }}>Pick Your 3 Non-Negotiables</div>
             <div style={{ fontSize: "11px", color: "#9B8B7A", marginBottom: "20px" }}>These are the 3 tasks you MUST complete today. No excuses.</div>
-            <div style={{ display: "flex", flexDirection: "column", gap: "8px", maxHeight: "300px", overflowY: "auto" }}>
-              {pendingTasks.map(task => {
+            <div style={{ display: "flex", flexDirection: "column", gap: "8px", maxHeight: "360px", overflowY: "auto" }}>
+              {/* Today's tasks first */}
+              {pendingTasks.filter(t => t.due === todayStr).length > 0 && (
+                <div style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#C4A882", marginBottom: "4px" }}>📅 Scheduled for today</div>
+              )}
+              {pendingTasks.filter(t => t.due === todayStr).map(task => {
                 const selected = nonNegotiables.includes(task.id);
                 return (
                   <div key={task.id} onClick={() => {
                     if (selected) setNonNegotiables(nonNegotiables.filter(id => id !== task.id));
-                    else if (nonNegotiables.length < 3) { setNonNegotiables([...nonNegotiables, task.id]); }
+                    else if (nonNegotiables.length < 3) setNonNegotiables([...nonNegotiables, task.id]);
+                  }} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "10px 12px", background: selected ? "#C4A88215" : "#F5F2EC", border: `1px solid ${selected ? "#C4A882" : "#C4A88255"}`, cursor: nonNegotiables.length >= 3 && !selected ? "not-allowed" : "pointer", opacity: nonNegotiables.length >= 3 && !selected ? 0.4 : 1 }}>
+                    <div style={{ width: "14px", height: "14px", border: `1.5px solid ${selected ? "#C4A882" : "#C0B8AC"}`, background: selected ? "#C4A882" : "transparent", flexShrink: 0 }} />
+                    <div style={{ flex: 1, fontSize: "13px" }}>{task.text}</div>
+                    <div style={{ fontSize: "10px", color: "#9B8B7A" }}>{goalLabel(task.goal_id)}</div>
+                    <div style={badge(task.priority)}>{task.priority}</div>
+                  </div>
+                );
+              })}
+              {/* All other pending tasks */}
+              {pendingTasks.filter(t => t.due !== todayStr).length > 0 && (
+                <div style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#9B8B7A", marginTop: "8px", marginBottom: "4px" }}>All other tasks</div>
+              )}
+              {pendingTasks.filter(t => t.due !== todayStr).map(task => {
+                const selected = nonNegotiables.includes(task.id);
+                return (
+                  <div key={task.id} onClick={() => {
+                    if (selected) setNonNegotiables(nonNegotiables.filter(id => id !== task.id));
+                    else if (nonNegotiables.length < 3) setNonNegotiables([...nonNegotiables, task.id]);
                   }} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "10px 12px", background: selected ? "#1A161210" : "transparent", border: `1px solid ${selected ? "#C4A882" : "#E0D8CC"}`, cursor: nonNegotiables.length >= 3 && !selected ? "not-allowed" : "pointer", opacity: nonNegotiables.length >= 3 && !selected ? 0.4 : 1 }}>
                     <div style={{ width: "14px", height: "14px", border: `1.5px solid ${selected ? "#C4A882" : "#C0B8AC"}`, background: selected ? "#C4A882" : "transparent", flexShrink: 0 }} />
                     <div style={{ flex: 1, fontSize: "13px" }}>{task.text}</div>
+                    <div style={{ fontSize: "10px", color: "#9B8B7A" }}>{task.due || ""}</div>
                     <div style={badge(task.priority)}>{task.priority}</div>
                   </div>
                 );
