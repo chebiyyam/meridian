@@ -968,6 +968,85 @@ function MeridianApp({ user }) {
     setShowImport(false);
   };
 
+  const seedSubtasks = async () => {
+    setImportLoading(true);
+    const subtasks = [
+      // AP Macro
+      { goal: "AP Macro", text: "Watch Unit 1 video",          due: "2026-04-01", priority: "med" },
+      { goal: "AP Macro", text: "Unit 1 notes + practice MCQs", due: "2026-04-02", priority: "med" },
+      { goal: "AP Macro", text: "Unit 1 review",               due: "2026-04-03", priority: "high" },
+      { goal: "AP Macro", text: "Watch Unit 2 video",          due: "2026-04-04", priority: "med" },
+      { goal: "AP Macro", text: "Unit 2 practice MCQs",        due: "2026-04-05", priority: "high" },
+      { goal: "AP Macro", text: "Watch Unit 3 video",          due: "2026-04-06", priority: "med" },
+      { goal: "AP Macro", text: "Unit 3 practice MCQs",        due: "2026-04-07", priority: "high" },
+      { goal: "AP Macro", text: "Watch Unit 4 video",          due: "2026-04-08", priority: "med" },
+      { goal: "AP Macro", text: "Unit 4 practice MCQs",        due: "2026-04-09", priority: "high" },
+      { goal: "AP Macro", text: "Watch Unit 5 video",          due: "2026-04-10", priority: "med" },
+      { goal: "AP Macro", text: "Unit 5 practice MCQs",        due: "2026-04-11", priority: "high" },
+      { goal: "AP Macro", text: "Watch Unit 6 video",          due: "2026-04-12", priority: "med" },
+      { goal: "AP Macro", text: "Unit 6 practice MCQs",        due: "2026-04-13", priority: "high" },
+      // AP Physics C Mech
+      { goal: "AP Physics C Mech", text: "Erukhimova Work/Energy video + problems", due: "2026-04-01", priority: "med" },
+      { goal: "AP Physics C Mech", text: "Work/Energy more problems",               due: "2026-04-02", priority: "med" },
+      { goal: "AP Physics C Mech", text: "Work/Energy cold problems",               due: "2026-04-03", priority: "high" },
+      { goal: "AP Physics C Mech", text: "Erukhimova Potential Energy + problems",  due: "2026-04-04", priority: "med" },
+      { goal: "AP Physics C Mech", text: "Potential Energy cold problems",          due: "2026-04-05", priority: "high" },
+      { goal: "AP Physics C Mech", text: "Erukhimova Momentum + problems",         due: "2026-04-06", priority: "med" },
+      { goal: "AP Physics C Mech", text: "Momentum cold problems",                 due: "2026-04-07", priority: "high" },
+      { goal: "AP Physics C Mech", text: "Erukhimova Rotational Motion + problems",due: "2026-04-08", priority: "med" },
+      { goal: "AP Physics C Mech", text: "Rotational Motion cold problems",        due: "2026-04-09", priority: "high" },
+      { goal: "AP Physics C Mech", text: "Erukhimova Torque + problems",           due: "2026-04-10", priority: "med" },
+      { goal: "AP Physics C Mech", text: "Torque cold problems",                   due: "2026-04-11", priority: "high" },
+      { goal: "AP Physics C Mech", text: "Erukhimova Harmonic Motion + problems",  due: "2026-04-12", priority: "med" },
+      { goal: "AP Physics C Mech", text: "Harmonic Motion cold problems",          due: "2026-04-13", priority: "high" },
+      // AP Gov
+      { goal: "AP Gov", text: "Watch/read Unit 4",          due: "2026-04-03", priority: "med" },
+      { goal: "AP Gov", text: "Unit 4 notes + MCQs",        due: "2026-04-04", priority: "med" },
+      { goal: "AP Gov", text: "Unit 4 done",                due: "2026-04-05", priority: "high" },
+      { goal: "AP Gov", text: "Watch/read Unit 5",          due: "2026-04-08", priority: "med" },
+      { goal: "AP Gov", text: "Unit 5 notes + MCQs",        due: "2026-04-09", priority: "med" },
+      { goal: "AP Gov", text: "Unit 5 done",                due: "2026-04-10", priority: "high" },
+      { goal: "AP Gov", text: "Units 1-2 revision",         due: "2026-04-11", priority: "med" },
+      { goal: "AP Gov", text: "Unit 3 revision",            due: "2026-04-12", priority: "high" },
+      // AP Calc BC
+      { goal: "AP Calc BC", text: "Practice test 1 — full timed", due: "2026-04-03", priority: "high" },
+      { goal: "AP Calc BC", text: "Practice test 2 — full timed", due: "2026-04-08", priority: "high" },
+      { goal: "AP Calc BC", text: "Practice test 3 — full timed", due: "2026-04-13", priority: "high" },
+      // AP Physics C E&M
+      { goal: "AP Physics C E&M", text: "Past exam 1 — full timed", due: "2026-04-02", priority: "high" },
+      { goal: "AP Physics C E&M", text: "Past exam 2 — full timed", due: "2026-04-07", priority: "high" },
+      { goal: "AP Physics C E&M", text: "Past exam 3 — full timed", due: "2026-04-12", priority: "high" },
+      // Oxford Research
+      { goal: "Oxford Research", text: "3B1B neural networks — 30 min", due: null, priority: "high", recurring: JSON.stringify(["mon","tue","wed","thu","fri","sat","sun"]) },
+    ];
+
+    // find existing goal IDs
+    const { data: currentGoals } = await supabase.from("goals").select("*").eq("user_id", user.id);
+    const findGoal = (name) => {
+      if (!currentGoals) return null;
+      return currentGoals.find(g =>
+        g.label.toLowerCase() === name.toLowerCase() ||
+        name.toLowerCase().includes(g.label.toLowerCase().split(" ").filter(w=>w.length>2)[0] || "")
+      );
+    };
+
+    const inserted = [];
+    for (const t of subtasks) {
+      const goal = findGoal(t.goal);
+      if (!goal) continue;
+      const { data } = await supabase.from("tasks").insert({
+        text: t.text, goal_id: goal.id, priority: t.priority,
+        due: t.due || null, done: false, recurring: t.recurring || null, user_id: user.id
+      }).select().single();
+      if (data) inserted.push(data);
+    }
+
+    const { data: newTasks } = await supabase.from("tasks").select("*").order("created_at");
+    if (newTasks) setTasks(newTasks);
+    setImportLoading(false);
+    setShowImport(false);
+  };
+
   const deleteGoal = async (id) => {
     await supabase.from("goals").delete().eq("id", id);
     setGoals(goals.filter(g => g.id !== id));
@@ -1714,6 +1793,11 @@ function MeridianApp({ user }) {
               <div style={{ fontSize: "11px", color: "#C4A882", marginBottom: "8px", letterSpacing: "1px" }}>⚡ QUICK LOAD</div>
               <div style={{ fontSize: "12px", color: "#6B5E4E", marginBottom: "12px" }}>Instantly load your saved plan — all goals and tasks in one click.</div>
               <button style={S.btn} onClick={seedData} disabled={importLoading}>{importLoading ? "Loading..." : "Load My Full Plan"}</button>
+            </div>
+            <div style={{ ...S.card, marginBottom: "16px", borderLeft: "3px solid #1E88E5", padding: "16px" }}>
+              <div style={{ fontSize: "11px", color: "#1E88E5", marginBottom: "8px", letterSpacing: "1px" }}>📅 LOAD SUBTASKS</div>
+              <div style={{ fontSize: "12px", color: "#6B5E4E", marginBottom: "12px" }}>Load your daily breakdown tasks into existing goals.</div>
+              <button style={S.btnOut} onClick={seedSubtasks} disabled={importLoading}>{importLoading ? "Loading..." : "Load Subtasks"}</button>
             </div>
 
             {!importParsed ? (
