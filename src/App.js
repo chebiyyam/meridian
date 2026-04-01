@@ -466,7 +466,7 @@ function MeridianApp({ user }) {
   const [performanceScore, setPerformanceScore] = useState(null);
   const [fallingOff, setFallingOff] = useState(false);
   const [milestones, setMilestones] = useState([]);
-  const [showMilestone, setShowMilestone] = useState(null);
+  const [showAllGoals, setShowAllGoals] = useState(false);
   const timerRef = useRef(null);
   const today = new Date();
   const [calMonth, setCalMonth] = useState(today.getMonth());
@@ -1382,17 +1382,23 @@ function MeridianApp({ user }) {
 
             {/* Today's Tasks */}
             {(() => {
-              const todayTasks = tasks.filter(t => t.due === todayStr);
-              const doneTodayCount = todayTasks.filter(t => t.done).length;
-              const allDoneToday = todayTasks.length > 0 && doneTodayCount === todayTasks.length;
+              const todayDay = today.toLocaleDateString('en-US', { weekday: 'short' }).toLowerCase();
+              const recurringToday = tasks.filter(t => {
+                if (!t.recurring) return false;
+                try { const d = JSON.parse(t.recurring); return Array.isArray(d) && d.includes(todayDay); } catch { return false; }
+              });
+              const todayTasks = [...tasks.filter(t => t.due === todayStr), ...recurringToday.filter(t => !tasks.find(t2 => t2.id === t.id && t2.due === todayStr))];
+              const uniqueTodayTasks = [...new Map(todayTasks.map(t => [t.id, t])).values()];
+              const doneTodayCount = uniqueTodayTasks.filter(t => t.done).length;
+              const allDoneToday = uniqueTodayTasks.length > 0 && doneTodayCount === uniqueTodayTasks.length;
               return (
                 <div style={{ ...S.card, marginBottom: "24px", borderLeft: allDoneToday ? "3px solid #43A047" : "3px solid #C4A882" }}>
                   <div style={S.cardTitle}>
-                    <span>🎯 Today's Tasks {todayTasks.length > 0 ? `(${doneTodayCount}/${todayTasks.length})` : ""} {allDoneToday ? "— ✅ Done!" : ""}</span>
+                    <span>🎯 Today's Tasks {uniqueTodayTasks.length > 0 ? `(${doneTodayCount}/${uniqueTodayTasks.length})` : ""} {allDoneToday ? "— ✅ Done!" : ""}</span>
                     <button style={S.btnOut} onClick={() => { setNewTask({ text: "", goal_id: "", due: todayStr, priority: "high", hours: "", recurring: [] }); setShowAddTask(true); }}>+ Add</button>
                   </div>
-                  {todayTasks.length === 0 && <div style={{ fontSize: "12px", color: "#9B8B7A" }}>No tasks due today. Add one or check your upcoming tasks below.</div>}
-                  {todayTasks.map(task => (
+                  {uniqueTodayTasks.length === 0 && <div style={{ fontSize: "12px", color: "#9B8B7A" }}>No tasks due today. Add one or check your upcoming tasks below.</div>}
+                  {uniqueTodayTasks.map(task => (
                     <div key={task.id} onClick={() => toggleTask(task)} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "10px 0", borderBottom: "1px solid #EDE8E0", cursor: "pointer" }}>
                       <div style={{ ...chk(task.done), border: `1.5px solid ${task.done ? "#43A047" : "#C4A882"}`, background: task.done ? "#43A047" : "transparent" }}>
                         {task.done && <span style={{ fontSize: "10px", color: "#fff" }}>✓</span>}
@@ -1477,17 +1483,23 @@ function MeridianApp({ user }) {
             {/* Goal Forecast */}
             {goals.length > 0 && (
               <div style={{ ...S.card, marginBottom: "24px" }}>
-                <div style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#9B8B7A", marginBottom: "14px" }}>🔮 Goal Forecast</div>
+                <div style={{ ...S.cardTitle, marginBottom: "14px" }}>
+                  <span style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#9B8B7A" }}>🔮 Goal Forecast</span>
+                  {goals.filter(g => tasks.filter(t=>t.goal_id===g.id&&!t.done).length > 0).length > 5 && (
+                    <button style={{ background: "none", border: "none", fontSize: "10px", color: "#C4A882", cursor: "pointer", fontFamily: "Georgia, serif", letterSpacing: "1px" }} onClick={() => setShowAllGoals(s => !s)}>
+                      {showAllGoals ? "Show less" : `See all (${goals.filter(g => tasks.filter(t=>t.goal_id===g.id&&!t.done).length > 0).length})`}
+                    </button>
+                  )}
+                </div>
                 {goals.filter(g => {
                   const gt = tasks.filter(t => t.goal_id === g.id);
                   return gt.length > 0 && gt.filter(t => !t.done).length > 0;
                 }).sort((a, b) => {
-                  // sort by deadline urgency
                   if (a.deadline && b.deadline) return new Date(a.deadline) - new Date(b.deadline);
                   if (a.deadline) return -1;
                   if (b.deadline) return 1;
                   return 0;
-                }).map(g => {
+                }).filter((_, i) => showAllGoals || i < 5).map(g => {
                   const gt = tasks.filter(t => t.goal_id === g.id);
                   const done = gt.filter(t => t.done).length;
                   const remaining = gt.length - done;
