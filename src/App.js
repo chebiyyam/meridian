@@ -568,21 +568,23 @@ function MeridianApp({ user }) {
   };
 
   const addXp = async (amount) => {
-    const newXp = (stats.xp || 0) + amount;
+    const newXp = Math.max(0, (stats.xp || 0) + amount);
     const newLevel = Math.floor(newXp / 100) + 1;
     const updated = { ...stats, xp: newXp, level: newLevel };
     setStats(updated);
     triggerXpPopup(amount);
     await supabase.from("user_stats").upsert({ ...updated, user_id: user.id }, { onConflict: "user_id" });
+    return updated;
   };
 
-  const updateStreak = async () => {
+  const updateStreak = async (currentStats) => {
+    const base = currentStats || stats;
     const todayDate = new Date().toLocaleDateString('en-CA');
     const yesterday = new Date(Date.now() - 86400000).toLocaleDateString('en-CA');
-    let newStreak = stats.streak || 0;
-    if (stats.last_completed_date === yesterday) newStreak += 1;
-    else if (stats.last_completed_date !== todayDate) newStreak = 1;
-    const updated = { ...stats, streak: newStreak, last_completed_date: todayDate };
+    let newStreak = base.streak || 0;
+    if (base.last_completed_date === yesterday) newStreak += 1;
+    else if (base.last_completed_date !== todayDate) newStreak = 1;
+    const updated = { ...base, streak: newStreak, last_completed_date: todayDate };
     setStats(updated);
     await supabase.from("user_stats").upsert({ ...updated, user_id: user.id }, { onConflict: "user_id" });
   };
@@ -1024,10 +1026,15 @@ function MeridianApp({ user }) {
     const { data: currentGoals } = await supabase.from("goals").select("*").eq("user_id", user.id);
     const findGoal = (name) => {
       if (!currentGoals) return null;
-      return currentGoals.find(g =>
-        g.label.toLowerCase() === name.toLowerCase() ||
-        name.toLowerCase().includes(g.label.toLowerCase().split(" ").filter(w=>w.length>2)[0] || "")
-      );
+      // exact match first
+      const exact = currentGoals.find(g => g.label.toLowerCase() === name.toLowerCase());
+      if (exact) return exact;
+      // only fuzzy match if no exact match, and be strict - all significant words must match
+      const words = name.toLowerCase().split(/\s+/).filter(w => w.length > 2);
+      return currentGoals.find(g => {
+        const gl = g.label.toLowerCase();
+        return words.every(w => gl.includes(w));
+      });
     };
 
     const inserted = [];
@@ -1062,8 +1069,8 @@ function MeridianApp({ user }) {
       if (!task.done) {
         // marking done
         playSound();
-        addXp(10);
-        updateStreak();
+        const updatedStats = await addXp(10);
+        await updateStreak(updatedStats);
         saveDailySnapshot(updatedTasks);
         checkMilestones(updatedTasks);
         setFallingOff(false);
@@ -1590,12 +1597,14 @@ function MeridianApp({ user }) {
                   const day=i+1, ds=calDs(day), evs=eventsForDate(ds), isToday=ds===todayStr, isSel=ds===selectedDate;
                   const dueTasks = tasks.filter(t => t.due === ds && !t.done);
                   const goalDeadlines = goals.filter(g => g.deadline === ds);
+                  // get unique goal colors for due tasks
+                  const uniqueGoalColors = [...new Set(dueTasks.map(t => goalColor(t.goal_id)))].slice(0, 4);
                   return (
                     <div key={day} style={dayCell(isToday,isSel)} onClick={()=>setSelectedDate(isSel?null:ds)}>
                       <span>{day}</span>
                       <div style={{display:"flex",gap:"2px",flexWrap:"wrap",justifyContent:"center",marginTop:"2px"}}>
                         {evs.slice(0,2).map(e=><div key={e.id} style={{width:"4px",height:"4px",borderRadius:"50%",background:isToday?"#C4A882":goalColor(e.goal_id)}}/>)}
-                        {dueTasks.slice(0,2).map(t=><div key={t.id} style={{width:"4px",height:"4px",borderRadius:"1px",background:isToday?"#F5F2EC":goalColor(t.goal_id)}}/>)}
+                        {uniqueGoalColors.map((c,i)=><div key={i} style={{width:"4px",height:"4px",borderRadius:"1px",background:isToday?"#F5F2EC":c}}/>)}
                         {goalDeadlines.slice(0,1).map(g=><div key={g.id} style={{width:"5px",height:"5px",borderRadius:"50%",background:g.color,border:`1px solid ${isToday?"#F5F2EC":"#1A1612"}`}}/>)}
                       </div>
                     </div>
