@@ -467,6 +467,7 @@ function MeridianApp({ user }) {
   const [fallingOff, setFallingOff] = useState(false);
   const [milestones, setMilestones] = useState([]);
   const [showAllGoals, setShowAllGoals] = useState(false);
+  const [showMilestone, setShowMilestone] = useState(null);
   const timerRef = useRef(null);
   const today = new Date();
   const [calMonth, setCalMonth] = useState(today.getMonth());
