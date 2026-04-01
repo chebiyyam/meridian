@@ -1310,10 +1310,10 @@ function MeridianApp({ user }) {
             )}
             <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr", gap: "16px", marginBottom: "24px" }}>
               {/* Tasks card */}
-              <div style={{ ...S.card, borderLeft: `3px solid ${pendingTasks.length === 0 ? "#43A047" : pendingTasks.filter(t=>t.due&&t.due<=todayStr).length > 0 ? "#E53935" : "#C4A882"}` }}>
+              <div style={{ ...S.card, borderLeft: `3px solid ${pendingTasks.length === 0 ? "#43A047" : pendingTasks.filter(t=>t.due&&t.due<todayStr).length > 0 ? "#E53935" : "#C4A882"}` }}>
                 <div style={S.cardTitle}>
-                  {pendingTasks.filter(t=>t.due&&t.due<=todayStr).length > 0
-                    ? <span style={{color:"#E53935"}}>⚠️ {pendingTasks.filter(t=>t.due&&t.due<=todayStr).length} overdue</span>
+                  {pendingTasks.filter(t=>t.due&&t.due<todayStr).length > 0
+                    ? <span style={{color:"#E53935"}}>⚠️ {pendingTasks.filter(t=>t.due&&t.due<todayStr).length} overdue</span>
                     : pendingTasks.length === 0 ? <span style={{color:"#43A047"}}>✅ All clear</span>
                     : "Tasks Remaining"}
                 </div>
@@ -1475,62 +1475,61 @@ function MeridianApp({ user }) {
             )}
 
             {/* Goal Forecast */}
-            {goals.length > 0 && (() => {
-              const g = goals.reduce((best, g) => {
-                const count = tasks.filter(t => t.goal_id === g.id).length;
-                return count > tasks.filter(t => t.goal_id === best.id).length ? g : best;
-              }, goals[0]);
-              const gt = tasks.filter(t => t.goal_id === g.id);
-              const done = gt.filter(t => t.done).length;
-              const remaining = gt.length - done;
-              if (remaining === 0 || gt.length === 0) return null;
-              const pct = Math.round((done / gt.length) * 100);
+            {goals.length > 0 && (
+              <div style={{ ...S.card, marginBottom: "24px" }}>
+                <div style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#9B8B7A", marginBottom: "14px" }}>🔮 Goal Forecast</div>
+                {goals.filter(g => {
+                  const gt = tasks.filter(t => t.goal_id === g.id);
+                  return gt.length > 0 && gt.filter(t => !t.done).length > 0;
+                }).sort((a, b) => {
+                  // sort by deadline urgency
+                  if (a.deadline && b.deadline) return new Date(a.deadline) - new Date(b.deadline);
+                  if (a.deadline) return -1;
+                  if (b.deadline) return 1;
+                  return 0;
+                }).map(g => {
+                  const gt = tasks.filter(t => t.goal_id === g.id);
+                  const done = gt.filter(t => t.done).length;
+                  const remaining = gt.length - done;
+                  const pct = Math.round((done / gt.length) * 100);
+                  let urgencyColor = goalColor(g.id);
+                  let forecastLine = null;
 
-              let forecastLine = null;
-              let urgencyColor = "#1E88E5";
+                  if (g.deadline) {
+                    const deadlineDate = new Date(g.deadline);
+                    const daysLeft = Math.ceil((deadlineDate - Date.now()) / 86400000);
+                    const tasksPerDay = daysLeft > 0 ? (remaining / daysLeft).toFixed(1) : null;
+                    const deadlineStr = deadlineDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                    if (daysLeft <= 0) { urgencyColor = "#E53935"; forecastLine = `⚠️ Deadline passed — ${remaining} left`; }
+                    else if (daysLeft <= 7) { urgencyColor = "#E53935"; forecastLine = `🔴 ${daysLeft}d left (${deadlineStr}) · ${tasksPerDay}/day needed`; }
+                    else if (daysLeft <= 14) { urgencyColor = "#FB8C00"; forecastLine = `🟠 ${daysLeft}d until ${deadlineStr} · ${tasksPerDay}/day`; }
+                    else { urgencyColor = "#43A047"; forecastLine = `🟢 ${daysLeft}d until ${deadlineStr} · ${tasksPerDay}/day`; }
+                  } else {
+                    const daysLeft = Math.ceil(remaining / 2);
+                    const completionStr = new Date(Date.now() + daysLeft * 86400000).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                    forecastLine = `~${completionStr} at 2/day`;
+                  }
 
-              if (g.deadline) {
-                const deadlineDate = new Date(g.deadline);
-                const daysUntilDeadline = Math.ceil((deadlineDate - Date.now()) / 86400000);
-                const tasksPerDay = daysUntilDeadline > 0 ? (remaining / daysUntilDeadline).toFixed(1) : null;
-                const deadlineStr = deadlineDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
-
-                if (daysUntilDeadline <= 0) {
-                  urgencyColor = "#E53935";
-                  forecastLine = `⚠️ Deadline passed. ${remaining} tasks still remaining.`;
-                } else if (daysUntilDeadline <= 7) {
-                  urgencyColor = "#E53935";
-                  forecastLine = `🔴 ${daysUntilDeadline} days until deadline (${deadlineStr}). You need to complete ${tasksPerDay} tasks/day to finish on time.`;
-                } else if (daysUntilDeadline <= 14) {
-                  urgencyColor = "#FB8C00";
-                  forecastLine = `🟠 ${daysUntilDeadline} days until deadline (${deadlineStr}). At ${tasksPerDay} tasks/day you'll make it.`;
-                } else {
-                  urgencyColor = "#43A047";
-                  forecastLine = `🟢 Deadline is ${deadlineStr} — ${daysUntilDeadline} days away. Complete ${tasksPerDay} tasks/day to finish comfortably.`;
-                }
-              } else {
-                const daysLeft = Math.ceil(remaining / 2);
-                const completion = new Date(Date.now() + daysLeft * 86400000);
-                const completionStr = completion.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
-                forecastLine = `At 2 tasks/day, you'll finish by ${completionStr}. Add a deadline to get a precise forecast.`;
-              }
-
-              return (
-                <div style={{ ...S.card, marginBottom: "24px", borderLeft: `3px solid ${urgencyColor}` }}>
-                  <div style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#9B8B7A", marginBottom: "10px" }}>🔮 Goal Forecast</div>
-                  <div style={{ fontSize: "14px", marginBottom: "4px" }}>
-                    You're <strong>{pct}%</strong> through <strong style={{ color: goalColor(g.id) }}>{g.label}</strong>
-                  </div>
-                  <div style={{ fontSize: "12px", color: "#6B5E4E", marginBottom: "12px", lineHeight: "1.6" }}>{forecastLine}</div>
-                  <div style={{ height: "6px", background: "#E0D8CC", borderRadius: "3px" }}>
-                    <div style={{ height: "100%", width: `${pct}%`, background: urgencyColor, borderRadius: "3px", transition: "width 0.6s" }} />
-                  </div>
-                  <div style={{ display: "flex", justifyContent: "space-between", marginTop: "6px", fontSize: "10px", color: "#9B8B7A" }}>
-                    <span>{done} done</span><span>{remaining} to go</span>
-                  </div>
-                </div>
-              );
-            })()}
+                  return (
+                    <div key={g.id} style={{ marginBottom: "14px", paddingBottom: "14px", borderBottom: "1px solid #EDE8E0" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                          <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: g.color, flexShrink: 0 }} />
+                          <div style={{ fontSize: "12px", fontWeight: "600" }}>{g.label}</div>
+                        </div>
+                        <div style={{ fontSize: "10px", color: urgencyColor }}>{forecastLine}</div>
+                      </div>
+                      <div style={{ height: "4px", background: "#E0D8CC", borderRadius: "2px" }}>
+                        <div style={{ height: "100%", width: `${pct}%`, background: g.color, borderRadius: "2px", transition: "width 0.6s" }} />
+                      </div>
+                      <div style={{ display: "flex", justifyContent: "space-between", marginTop: "4px", fontSize: "10px", color: "#9B8B7A" }}>
+                        <span>{pct}% done</span><span>{remaining} remaining</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
 
             <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.4fr 1fr", gap: "16px" }}>
               <div style={S.card}>
