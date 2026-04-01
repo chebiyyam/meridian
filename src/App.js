@@ -738,7 +738,7 @@ function MeridianApp({ user }) {
         const isGoalLine = (
           line.startsWith("Goal:") ||
           (!line.startsWith("*") && !line.startsWith("-") && !line.startsWith("•") && line.endsWith(":")) ||
-          (!line.startsWith("*") && !line.startsWith("-") && !line.startsWith("•") && !line.includes("due") && line.length < 60 && line.includes("—"))
+          (!line.startsWith("*") && !line.startsWith("-") && !line.startsWith("•") && line.includes("—") && line.length < 80)
         );
 
         if (isGoalLine) {
@@ -791,10 +791,25 @@ function MeridianApp({ user }) {
   const importAll = async () => {
     if (!importParsed) return;
     setImportLoading(true);
-    // create goals first
+
+    // fuzzy match: find existing goal that contains any word from parsed goal name
+    const fuzzyMatch = (parsedLabel) => {
+      const words = parsedLabel.toLowerCase().split(/\s+/).filter(w => w.length > 2);
+      return goals.find(eg => {
+        const el = eg.label.toLowerCase();
+        // exact match first
+        if (el === parsedLabel.toLowerCase()) return true;
+        // check if existing goal label is contained in parsed label or vice versa
+        if (parsedLabel.toLowerCase().includes(el)) return true;
+        if (el.includes(parsedLabel.toLowerCase())) return true;
+        // check keyword overlap (e.g. "MACRO" matches "AP Macro", "MECH" matches "AP Physics C Mech")
+        return words.some(w => el.includes(w));
+      });
+    };
+
     const goalMap = {};
     for (const g of importParsed.goals) {
-      const existing = goals.find(eg => eg.label.toLowerCase() === g.label.toLowerCase());
+      const existing = fuzzyMatch(g.label);
       if (existing) { goalMap[g.label] = existing.id; continue; }
       const { data } = await supabase.from("goals").insert({ label: g.label, color: g.color, deadline: g.deadline || null, user_id: user.id }).select().single();
       if (data) goalMap[g.label] = data.id;
