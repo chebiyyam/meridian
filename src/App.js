@@ -1700,12 +1700,6 @@ function MeridianApp({ user }) {
                 </div>
               );
             })()}
-                      <button onClick={() => deleteTask(task.id)} style={{background:"none",border:"none",color:"#8B1A1A",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>x</button>
-                    </div>
-                  ))}
-                </div>
-              );
-            })()}
 
             <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "16px" }}>
               <div style={S.card}>
