@@ -599,10 +599,12 @@ function MeridianApp({ user }) {
       playSound();
       const mins = timerMode === 25 ? 25 : timerMode === 50 ? 50 : customMinutes;
       const newMins = (stats.deep_work_minutes || 0) + mins;
-      const updated = { ...stats, deep_work_minutes: newMins };
+      const newXp = focusMode ? Math.max(0, (stats.xp || 0) + 50) : (stats.xp || 0);
+      const newLevel = Math.floor(newXp / 100) + 1;
+      const updated = { ...stats, deep_work_minutes: newMins, xp: newXp, level: newLevel };
       setStats(updated);
+      if (focusMode) { triggerXpPopup(50); setFocusComplete(true); }
       supabase.from("user_stats").upsert({ ...updated, user_id: user.id }, { onConflict: "user_id" });
-      if (focusMode) { setFocusComplete(true); addXp(50); }
     }
     return () => clearTimeout(timerRef.current);
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1668,7 +1670,13 @@ function MeridianApp({ user }) {
 
             {/* Today's tasks */}
             {(() => {
-              const todayTasks = pendingTasks.filter(t => t.due === todayStr);
+              const todayDay = today.toLocaleDateString('en-US', { weekday: 'short' }).toLowerCase();
+              const recurringToday = pendingTasks.filter(t => {
+                if (!t.recurring) return false;
+                try { const d = JSON.parse(t.recurring); return Array.isArray(d) && d.includes(todayDay); } catch { return false; }
+              });
+              const dueTodayTasks = pendingTasks.filter(t => t.due === todayStr);
+              const todayTasks = [...new Map([...dueTodayTasks, ...recurringToday].map(t => [t.id, t])).values()];
               if (todayTasks.length === 0) return null;
               return (
                 <div style={{ ...S.card, borderLeft: "3px solid #C4A882" }}>
@@ -1680,12 +1688,18 @@ function MeridianApp({ user }) {
                       <div style={chk(false)} onClick={() => toggleTask(task)} />
                       <div style={dot(task.goal_id)} />
                       <div style={{ flex: 1 }} onClick={() => toggleTask(task)}>
-                        <div style={{ fontSize: "13px" }}>{task.text}</div>
+                        <div style={{ fontSize: "13px" }}>{task.text} {task.recurring && <span style={{fontSize:"9px",color:"#C4A882",marginLeft:"6px"}}>↻</span>}</div>
                         <div style={{ fontSize: "10px", color: "#9B8B7A", marginTop: "2px" }}>{goalLabel(task.goal_id)}</div>
                       </div>
                       <div style={badge(task.priority)}>{task.priority}</div>
                       <button onClick={() => setEditTask({...task})} style={{background:"none",border:"none",color:"#9B8B7A",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>Edit</button>
                       <button onClick={() => enterFocusMode(task, 25)} style={{background:"none",border:"none",color:"#1E88E5",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>Focus</button>
+                      <button onClick={() => deleteTask(task.id)} style={{background:"none",border:"none",color:"#8B1A1A",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>x</button>
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
                       <button onClick={() => deleteTask(task.id)} style={{background:"none",border:"none",color:"#8B1A1A",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>x</button>
                     </div>
                   ))}
