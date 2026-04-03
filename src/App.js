@@ -551,15 +551,19 @@ function MeridianApp({ user }) {
     if (!soundEnabled) return;
     try {
       const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      const o = ctx.createOscillator();
-      const g = ctx.createGain();
-      o.connect(g); g.connect(ctx.destination);
-      o.frequency.setValueAtTime(523, ctx.currentTime);
-      o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
-      o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
-      g.gain.setValueAtTime(0.3, ctx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
-      o.start(); o.stop(ctx.currentTime + 0.5);
+      const notes = [392, 440, 523]; // G4, A4, C5 — soft ascending chime
+      notes.forEach((freq, i) => {
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.connect(g); g.connect(ctx.destination);
+        o.type = "sine";
+        o.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.15);
+        g.gain.setValueAtTime(0, ctx.currentTime + i * 0.15);
+        g.gain.linearRampToValueAtTime(0.18, ctx.currentTime + i * 0.15 + 0.05);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.15 + 0.6);
+        o.start(ctx.currentTime + i * 0.15);
+        o.stop(ctx.currentTime + i * 0.15 + 0.6);
+      });
     } catch(e) {}
   };
 
@@ -1425,21 +1429,12 @@ function MeridianApp({ user }) {
               </div>
               {!timerRunning && timerSeconds === 0 && (
                 <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-                  <button style={S.btnOut} onClick={() => startTimer(25)}>25 min</button>
-                  <button style={S.btnOut} onClick={() => startTimer(50)}>50 min</button>
+                  <button style={S.btn} onClick={() => enterFocusMode(null, 25)}>25 min</button>
+                  <button style={S.btn} onClick={() => enterFocusMode(null, 50)}>50 min</button>
                   <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
                     <input type="number" min="1" max="120" value={customMinutes} onChange={e => setCustomMinutes(Number(e.target.value))}
                       style={{ ...S.input, width: "60px", padding: "8px" }} />
-                    <button style={S.btnOut} onClick={() => startTimer("custom")}>Custom</button>
-                  </div>
-                </div>
-              )}
-              {(timerRunning || timerSeconds > 0) && (
-                <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-                  <div style={{ fontSize: "48px", fontWeight: "400", color: timerRunning ? "#1A1612" : "#C4A882", letterSpacing: "2px" }}>{formatTimer(timerSeconds)}</div>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                    <button style={S.btnOut} onClick={() => setTimerRunning(r => !r)}>{timerRunning ? "Pause" : "Resume"}</button>
-                    <button style={S.btnOut} onClick={() => { setTimerRunning(false); setTimerSeconds(0); setTimerMode(null); }}>Reset</button>
+                    <button style={S.btn} onClick={() => enterFocusMode(null, customMinutes)}>Custom</button>
                   </div>
                 </div>
               )}
@@ -1460,22 +1455,25 @@ function MeridianApp({ user }) {
             {performanceScore !== null && (
               <div style={{ ...S.card, marginBottom: "24px" }}>
                 <div style={S.cardTitle}>
-                  <span>📈 Performance Score</span>
+                  <span>📈 Daily Performance</span>
                   <button style={S.btnOut} onClick={() => setShowWeeklyReport(true)}>Weekly Report</button>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: "20px", flexWrap: "wrap" }}>
                   <div>
-                    <div style={{ fontSize: "48px", fontWeight: "400", lineHeight: 1, color: performanceScore >= 70 ? "#43A047" : performanceScore >= 40 ? "#FB8C00" : "#E53935" }}>{performanceScore}</div>
-                    <div style={{ fontSize: "11px", color: "#9B8B7A", marginTop: "4px" }}>7-day avg completion %</div>
+                    <div style={{ fontSize: "48px", fontWeight: "400", lineHeight: 1, color: performanceScore >= 70 ? "#43A047" : performanceScore >= 40 ? "#FB8C00" : "#C4A882" }}>{performanceScore}</div>
+                    <div style={{ fontSize: "11px", color: "#9B8B7A", marginTop: "4px" }}>7-day avg</div>
+                    <div style={{ fontSize: "10px", color: "#9B8B7A", marginTop: "2px" }}>
+                      {performanceScore < 30 ? "You're just getting started 💪" : performanceScore < 60 ? "Building momentum 🔥" : "You're on a roll ⚡"}
+                    </div>
                   </div>
                   <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "6px" }}>
                     {weeklySnapshots.slice(0, 5).reverse().map((s, i) => (
                       <div key={i} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                         <div style={{ fontSize: "10px", color: "#9B8B7A", width: "36px" }}>{s.date.slice(5)}</div>
                         <div style={{ flex: 1, height: "6px", background: "#E0D8CC", borderRadius: "3px" }}>
-                          <div style={{ height: "100%", width: `${s.score}%`, background: s.score >= 70 ? "#43A047" : s.score >= 40 ? "#FB8C00" : "#E53935", borderRadius: "3px", transition: "width 0.6s" }} />
+                          <div style={{ height: "100%", width: `${s.score}%`, background: "#C4A882", borderRadius: "3px", transition: "width 0.6s" }} />
                         </div>
-                        <div style={{ fontSize: "10px", color: "#9B8B7A", width: "30px" }}>{s.score}%</div>
+                        <div style={{ fontSize: "10px", color: "#9B8B7A", width: "50px" }}>{s.completed_tasks}/{s.total_tasks}</div>
                       </div>
                     ))}
                   </div>
