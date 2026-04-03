@@ -524,8 +524,15 @@ function MeridianApp({ user }) {
 
   const saveDailySnapshot = async (allTasks) => {
     const todayDate = new Date().toLocaleDateString('en-CA');
-    const total = allTasks.length;
-    const completed = allTasks.filter(t => t.done).length;
+    const todayDay = new Date().toLocaleDateString('en-US', { weekday: 'short' }).toLowerCase();
+    // only count tasks due today OR recurring today
+    const todayTasks = allTasks.filter(t => {
+      if (t.due === todayDate) return true;
+      if (!t.recurring) return false;
+      try { const d = JSON.parse(t.recurring); return Array.isArray(d) && d.includes(todayDay); } catch { return false; }
+    });
+    const total = todayTasks.length;
+    const completed = todayTasks.filter(t => t.done).length;
     const score = total > 0 ? Math.round((completed / total) * 100) : 0;
     await supabase.from("daily_snapshots").upsert(
       { user_id: user.id, date: todayDate, total_tasks: total, completed_tasks: completed, score },
