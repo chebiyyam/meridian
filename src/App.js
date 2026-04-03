@@ -434,7 +434,7 @@ function MeridianApp({ user }) {
   const [focusSessions, setFocusSessions] = useState(4);
   const [focusComplete, setFocusComplete] = useState(false);
   const [focusMins, setFocusMins] = useState(25);
-  const [ambience, setAmbience] = useState(null); // null | "rain" | "library" | "white"
+  const [ambience, setAmbience] = useState(null); // null | "brown" | "white" | "pink"
   const ambienceRef = useRef(null);
 
   const navigate = (v) => {
@@ -626,18 +626,39 @@ function MeridianApp({ user }) {
     if (!ambience) { if (ambienceRef.current) { ambienceRef.current.stop?.(); ambienceRef.current = null; } return; }
     try {
       const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      const bufferSize = ctx.sampleRate * 2;
+      const bufferSize = ctx.sampleRate * 3;
       const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
       const data = buffer.getChannelData(0);
-      for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1);
+
+      if (ambience === "white") {
+        // White noise — equal energy at all frequencies
+        for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+      } else if (ambience === "brown") {
+        // Brown noise — deeper, rumbling, like rain on a roof
+        let lastOut = 0;
+        for (let i = 0; i < bufferSize; i++) {
+          const white = Math.random() * 2 - 1;
+          data[i] = (lastOut + (0.02 * white)) / 1.02;
+          lastOut = data[i];
+          data[i] *= 3.5;
+        }
+      } else if (ambience === "pink") {
+        // Pink noise — balanced, not too harsh, great for focus
+        let b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0;
+        for (let i = 0; i < bufferSize; i++) {
+          const white = Math.random() * 2 - 1;
+          b0 = 0.99886*b0 + white*0.0555179; b1 = 0.99332*b1 + white*0.0750759;
+          b2 = 0.96900*b2 + white*0.1538520; b3 = 0.86650*b3 + white*0.3104856;
+          b4 = 0.55000*b4 + white*0.5329522; b5 = -0.7616*b5 - white*0.0168980;
+          data[i] = (b0+b1+b2+b3+b4+b5+b6+white*0.5362) * 0.11;
+          b6 = white * 0.115926;
+        }
+      }
+
       const source = ctx.createBufferSource();
       source.buffer = buffer; source.loop = true;
-      const filter = ctx.createBiquadFilter();
-      if (ambience === "rain") { filter.type = "bandpass"; filter.frequency.value = 400; filter.Q.value = 0.5; }
-      else if (ambience === "library") { filter.type = "lowpass"; filter.frequency.value = 200; filter.Q.value = 2; }
-      else { filter.type = "lowpass"; filter.frequency.value = 800; }
-      const gain = ctx.createGain(); gain.gain.value = 0.08;
-      source.connect(filter); filter.connect(gain); gain.connect(ctx.destination);
+      const gain = ctx.createGain(); gain.gain.value = 0.6;
+      source.connect(gain); gain.connect(ctx.destination);
       source.start();
       ambienceRef.current = { stop: () => { try { source.stop(); ctx.close(); } catch(e){} } };
     } catch(e) {}
@@ -2285,10 +2306,10 @@ function FocusScreen({ task, timerSeconds, timerRunning, setTimerRunning, focusC
 
         {/* Ambience */}
         <div style={{ display: "flex", gap: "8px", justifyContent: "center", marginTop: "24px" }}>
-          {[["🌧️","rain"],["📚","library"],["🌫️","white"],["🔇","off"]].map(([icon, val]) => (
+          {[["🟤","brown"],["⬜","white"],["🩷","pink"],["🔇","off"]].map(([icon, val]) => (
             <button key={val} onClick={() => setAmbience(ambience === val || val === "off" ? null : val)}
-              style={{ padding: "6px 14px", background: ambience === val ? "#1A1612" : "transparent", color: ambience === val ? "#C4A882" : "#9B8B7A", border: "1px solid #E0D8CC", fontSize: "12px", cursor: "pointer", fontFamily: "Georgia, serif" }}>
-              {icon}
+              style={{ padding: "6px 14px", background: ambience === val ? "#1A1612" : "transparent", color: ambience === val ? "#C4A882" : "#9B8B7A", border: "1px solid #E0D8CC", fontSize: "11px", cursor: "pointer", fontFamily: "Georgia, serif" }}>
+              {icon} {val === "off" ? "Off" : val.charAt(0).toUpperCase() + val.slice(1)}
             </button>
           ))}
         </div>
