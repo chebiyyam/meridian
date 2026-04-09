@@ -491,8 +491,15 @@ function MeridianApp({ user }) {
   const fetchStats = async () => {
     const { data } = await supabase.from("user_stats").select("*").eq("user_id", user.id).maybeSingle();
     if (data) {
-      setStats(data);
-      // restore non-negotiables — only keep ones that still exist as pending tasks
+      // reset deep work today if it's a new day
+      const todayDate = new Date().toLocaleDateString('en-CA');
+      if (data.deep_work_date !== todayDate) {
+        const updated = { ...data, deep_work_today: 0, deep_work_date: todayDate };
+        setStats(updated);
+        supabase.from("user_stats").update({ deep_work_today: 0, deep_work_date: todayDate }).eq("user_id", user.id);
+      } else {
+        setStats(data);
+      }
       if (data.non_negotiables && Array.isArray(data.non_negotiables)) {
           // only restore if saved today
           const todayDate = new Date().toLocaleDateString('en-CA');
@@ -608,11 +615,13 @@ function MeridianApp({ user }) {
     } else if (timerRunning && timerSeconds === 0) {
       setTimerRunning(false);
       playSound();
-      const mins = timerMode === 25 ? 25 : timerMode === 50 ? 50 : customMinutes;
-      const newMins = (stats.deep_work_minutes || 0) + mins;
+      const mins = timerMode === 25 ? 25 : timerMode === 50 ? 50 : focusMins;
+      const newMinsTotal = (stats.deep_work_minutes || 0) + mins;
+      const newMinsToday = (stats.deep_work_today || 0) + mins;
       const newXp = focusMode ? Math.max(0, (stats.xp || 0) + 50) : (stats.xp || 0);
       const newLevel = Math.floor(newXp / 100) + 1;
-      const updated = { ...stats, deep_work_minutes: newMins, xp: newXp, level: newLevel };
+      const todayDate = new Date().toLocaleDateString('en-CA');
+      const updated = { ...stats, deep_work_minutes: newMinsTotal, deep_work_today: newMinsToday, deep_work_date: todayDate, xp: newXp, level: newLevel };
       setStats(updated);
       if (focusMode) { triggerXpPopup(50); setFocusComplete(true); }
       supabase.from("user_stats").upsert({ ...updated, user_id: user.id }, { onConflict: "user_id" });
@@ -675,6 +684,20 @@ function MeridianApp({ user }) {
     setTimerSeconds(mins * 60);
     setTimerRunning(true);
   };
+
+  const [showFocusPicker, setShowFocusPicker] = useState(false);
+  const [focusPickerTask, setFocusPickerTask] = useState(null);
+  const [focusPickerMins, setFocusPickerMins] = useState(25);
+
+  // Update browser tab title with timer
+  useEffect(() => {
+    if (timerRunning && timerSeconds > 0) {
+      document.title = `${formatTimer(timerSeconds)} — Meridian`;
+    } else {
+      document.title = "Meridian";
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timerSeconds, timerRunning]);
 
   const exitFocusMode = (earlyExit = false) => {
     setTimerRunning(false);
@@ -1453,7 +1476,7 @@ function MeridianApp({ user }) {
             <div style={{ ...S.card, marginBottom: "24px" }}>
               <div style={S.cardTitle}>
                 <span>⏱ Flow Mode</span>
-                <span style={{ fontSize: "10px", color: "#9B8B7A" }}>{Math.floor((stats.deep_work_minutes||0)/60)}h {(stats.deep_work_minutes||0)%60}m deep work today</span>
+                <span style={{ fontSize: "10px", color: "#9B8B7A" }}>{Math.floor((stats.deep_work_today||0)/60)}h {(stats.deep_work_today||0)%60}m deep work today</span>
               </div>
               {!timerRunning && timerSeconds === 0 && (
                 <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
@@ -1719,7 +1742,7 @@ function MeridianApp({ user }) {
                       </div>
                       <div style={badge(task.priority)}>{task.priority}</div>
                       <button onClick={() => setEditTask({...task})} style={{background:"none",border:"none",color:"#9B8B7A",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>Edit</button>
-                      <button onClick={() => enterFocusMode(task, 25)} style={{background:"none",border:"none",color:"#1E88E5",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>Focus</button>
+                      <button onClick={() => { setFocusPickerTask(task); setFocusPickerMins(25); setShowFocusPicker(true); }} style={{background:"none",border:"none",color:"#1E88E5",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>Focus</button>
                       <button onClick={() => deleteTask(task.id)} style={{background:"none",border:"none",color:"#8B1A1A",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>x</button>
                     </div>
                   ))}
@@ -1744,7 +1767,7 @@ function MeridianApp({ user }) {
                     </div>
                     <div style={badge(task.priority)}>{task.priority}</div>
                     <button onClick={() => setEditTask({...task})} style={{background:"none",border:"none",color:"#9B8B7A",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>Edit</button>
-                    <button onClick={() => enterFocusMode(task, 25)} style={{background:"none",border:"none",color:"#1E88E5",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>Focus</button>
+                    <button onClick={() => { setFocusPickerTask(task); setFocusPickerMins(25); setShowFocusPicker(true); }} style={{background:"none",border:"none",color:"#1E88E5",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>Focus</button>
                     <button onClick={() => deleteTask(task.id)} style={{background:"none",border:"none",color:"#8B1A1A",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>x</button>
                   </div>
                 ))}
@@ -2120,6 +2143,31 @@ function MeridianApp({ user }) {
         </div>
       )}
 
+      {/* FOCUS DURATION PICKER */}
+      {showFocusPicker && (
+        <div style={S.modal} onClick={() => setShowFocusPicker(false)}>
+          <div style={{ ...S.modalBox, width: "320px" }} onClick={e => e.stopPropagation()}>
+            <div style={{ fontSize: "12px", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "8px" }}>Focus Duration</div>
+            {focusPickerTask && <div style={{ fontSize: "12px", color: "#9B8B7A", marginBottom: "20px" }}>{focusPickerTask.text}</div>}
+            <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginBottom: "16px" }}>
+              {[25, 50, 90, 120].map(m => (
+                <button key={m} style={{ ...S.btnOut, background: focusPickerMins === m ? "#1A1612" : "transparent", color: focusPickerMins === m ? "#F5F2EC" : "#1A1612" }}
+                  onClick={() => setFocusPickerMins(m)}>{m} min</button>
+              ))}
+            </div>
+            <div style={{ display: "flex", gap: "8px", alignItems: "center", marginBottom: "20px" }}>
+              <input type="number" min="1" max="240" value={focusPickerMins} onChange={e => setFocusPickerMins(Number(e.target.value))}
+                style={{ ...S.input, width: "80px" }} />
+              <div style={{ fontSize: "11px", color: "#9B8B7A" }}>custom minutes</div>
+            </div>
+            <div style={{ display: "flex", gap: "12px" }}>
+              <button style={S.btn} onClick={() => { setShowFocusPicker(false); enterFocusMode(focusPickerTask, focusPickerMins); }}>Start Focus</button>
+              <button style={S.btnOut} onClick={() => setShowFocusPicker(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* EDIT TASK MODAL */}
       {editTask && (
         <div style={S.modal} onClick={() => setEditTask(null)}>
@@ -2291,7 +2339,7 @@ function FocusScreen({ task, timerSeconds, timerRunning, setTimerRunning, focusC
         {/* Stats row */}
         <div style={{ display: "flex", gap: "32px", justifyContent: "center", marginTop: "24px", fontSize: "11px", color: "#9B8B7A", letterSpacing: "1px" }}>
           <span>⏳ Session {focusSession} of {focusSessions}</span>
-          <span>⚡ {Math.floor((stats.deep_work_minutes||0)/60)}h {(stats.deep_work_minutes||0)%60}m deep work</span>
+          <span>⚡ {Math.floor((stats.deep_work_today||0)/60)}h {(stats.deep_work_today||0)%60}m today</span>
         </div>
 
         {/* Controls */}
