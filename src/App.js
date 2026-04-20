@@ -107,13 +107,13 @@ function LandingPage({ onLogin }) {
   ];
 
   return (
-    <div style={{ minHeight: "100vh", background: "#2C2720", fontFamily: "Georgia, serif", color: "#F0EFED" }}>
+    <div style={{ minHeight: "100vh", background: "#2C2720", fontFamily: "'Rajdhani', sans-serif", color: "#F0EFED" }}>
 
       {/* Nav */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "24px 48px", borderBottom: "1px solid #222222" }}>
         <div style={{ fontSize: "20px", letterSpacing: "5px", color: "#BF5700", textTransform: "uppercase" }}>Meridian</div>
         <button onClick={onLogin}
-          style={{ padding: "10px 24px", background: "transparent", border: "1px solid #BF5700", color: "#BF5700", fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" }}>
+          style={{ padding: "10px 24px", background: "transparent", border: "1px solid #BF5700", color: "#BF5700", fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'Rajdhani', sans-serif" }}>
           Sign In
         </button>
       </div>
@@ -129,11 +129,11 @@ function LandingPage({ onLogin }) {
         </div>
         <div style={{ display: "flex", gap: "16px" }}>
           <button onClick={onLogin}
-            style={{ padding: "14px 36px", background: "#BF5700", color: "#0E0C0A", border: "none", fontSize: "11px", letterSpacing: "3px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" }}>
+            style={{ padding: "14px 36px", background: "#BF5700", color: "#0E0C0A", border: "none", fontSize: "11px", letterSpacing: "3px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'Rajdhani', sans-serif" }}>
             Get Started
           </button>
           <button onClick={onLogin}
-            style={{ padding: "14px 36px", background: "transparent", border: "1px solid #222222", color: "#C4B090", fontSize: "11px", letterSpacing: "3px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" }}>
+            style={{ padding: "14px 36px", background: "transparent", border: "1px solid #222222", color: "#C4B090", fontSize: "11px", letterSpacing: "3px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'Rajdhani', sans-serif" }}>
             Sign In
           </button>
         </div>
@@ -197,7 +197,7 @@ function LandingPage({ onLogin }) {
           <div style={{ fontSize: "13px", letterSpacing: "3px", textTransform: "uppercase", color: "#BF5700", marginBottom: "12px" }}>Your dashboard awaits</div>
           <div style={{ fontSize: "15px", color: "#F0EFED", marginBottom: "28px" }}>Sign in to access your personal Meridian.</div>
           <button onClick={onLogin}
-            style={{ padding: "14px 40px", background: "#BF5700", color: "#0E0C0A", border: "none", fontSize: "11px", letterSpacing: "3px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" }}>
+            style={{ padding: "14px 40px", background: "#BF5700", color: "#0E0C0A", border: "none", fontSize: "11px", letterSpacing: "3px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'Rajdhani', sans-serif" }}>
             Sign In / Sign Up
           </button>
         </div>
@@ -246,7 +246,7 @@ function AuthScreen({ onBack }) {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "#2C2720", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Georgia, serif" }}>
+    <div style={{ minHeight: "100vh", background: "#2C2720", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Rajdhani', sans-serif" }}>
       <div style={{ width: "400px", padding: "48px", background: "#352E25", border: "1px solid #222222" }}>
         <div style={{ fontSize: "28px", letterSpacing: "6px", color: "#BF5700", textTransform: "uppercase", marginBottom: "6px" }}>Meridian</div>
         <div style={{ fontSize: "11px", color: "#D4C8B8", letterSpacing: "2px", textTransform: "uppercase", marginBottom: "40px" }}>Your operating system</div>
@@ -256,11 +256,11 @@ function AuthScreen({ onBack }) {
           <div key={lbl}>
             <div style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#C4B090", marginBottom: "6px" }}>{lbl}</div>
             <input type={type} value={val} onChange={e => set(e.target.value)} onKeyDown={e => e.key === "Enter" && handle()}
-              style={{ width: "100%", padding: "12px 14px", background: "#2C2720", border: "1px solid #222222", color: "#F0EFED", fontSize: "13px", fontFamily: "Georgia, serif", outline: "none", boxSizing: "border-box", marginBottom: "16px" }} />
+              style={{ width: "100%", padding: "12px 14px", background: "#2C2720", border: "1px solid #222222", color: "#F0EFED", fontSize: "13px", fontFamily: "'Rajdhani', sans-serif", outline: "none", boxSizing: "border-box", marginBottom: "16px" }} />
           </div>
         ))}
         <button onClick={handle} disabled={loading}
-          style={{ width: "100%", padding: "14px", background: "#BF5700", color: "#0E0C0A", border: "none", fontSize: "11px", letterSpacing: "3px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif", marginTop: "8px" }}>
+          style={{ width: "100%", padding: "14px", background: "#BF5700", color: "#0E0C0A", border: "none", fontSize: "11px", letterSpacing: "3px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'Rajdhani', sans-serif", marginTop: "8px" }}>
           {loading ? "..." : mode === "login" ? "Sign In" : "Create Account"}
         </button>
         <div onClick={() => { setMode(mode === "login" ? "signup" : "login"); setError(""); setMessage(""); }}
@@ -349,10 +349,10 @@ function AIScheduler({ user, refreshKey }) {
   };
 
   const S = {
-    input:  { width: "100%", padding: "8px 10px", border: "1px solid #333333", background: "#3A322A", fontSize: "12px", fontFamily: "Georgia, serif", color: "#F0EFED", outline: "none", boxSizing: "border-box" },
-    select: { width: "100%", padding: "8px 10px", border: "1px solid #333333", background: "#3A322A", fontSize: "12px", fontFamily: "Georgia, serif", color: "#F0EFED", outline: "none", cursor: "pointer" },
-    btn:    { padding: "10px 20px", background: "#352E25", color: "#F0EFED", border: "none", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" },
-    btnOut: { padding: "8px 14px", background: "transparent", color: "#F0EFED", border: "1px solid #555555", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" },
+    input:  { width: "100%", padding: "8px 10px", border: "1px solid #333333", background: "#3A322A", fontSize: "12px", fontFamily: "'Rajdhani', sans-serif", color: "#F0EFED", outline: "none", boxSizing: "border-box" },
+    select: { width: "100%", padding: "8px 10px", border: "1px solid #333333", background: "#3A322A", fontSize: "12px", fontFamily: "'Rajdhani', sans-serif", color: "#F0EFED", outline: "none", cursor: "pointer" },
+    btn:    { padding: "10px 20px", background: "#352E25", color: "#F0EFED", border: "none", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'Rajdhani', sans-serif" },
+    btnOut: { padding: "8px 14px", background: "transparent", color: "#F0EFED", border: "1px solid #555555", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'Rajdhani', sans-serif" },
   };
 
   const priorityColor = (p) => p === "high" ? "#8B1A1A" : p === "med" ? "#4A3520" : "#2C4A2E";
@@ -736,6 +736,82 @@ function MeridianApp({ user }) {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tasks]);
+
+
+  // ── EXAM NOTIFICATIONS ────────────────────────────────────────────────────
+  const [examNotifs, setExamNotifs] = useState([]);
+  const [notifDismissed, setNotifDismissed] = useState(false);
+  const [nextExam, setNextExam] = useState(null);
+
+  const isExamEvent = (title) => {
+    const t = (title || "").toLowerCase();
+    return t.includes("exam") || t.includes("test") || t.includes("ap ") || t.includes("final") || t.includes("quiz");
+  };
+
+  useEffect(() => {
+    if (!events.length) return;
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const todayStr2 = today.toLocaleDateString('en-CA');
+
+    // Check if already dismissed today
+    const lastDismissed = localStorage.getItem("meridian_notif_dismissed");
+    if (lastDismissed === todayStr2) { setNotifDismissed(true); }
+
+    // Only show in morning (before noon) and once per day
+    const hour = new Date().getHours();
+    const alreadyShown = localStorage.getItem("meridian_notif_shown");
+
+    // Find exams in next 15 days
+    const upcoming = events.filter(e => {
+      if (!isExamEvent(e.title)) return false;
+      const d = new Date(e.date + "T00:00:00");
+      const diff = Math.ceil((d - today) / 86400000);
+      return diff >= 0 && diff <= 15;
+    });
+
+    // Group by date
+    const byDate = {};
+    upcoming.forEach(e => {
+      if (!byDate[e.date]) byDate[e.date] = [];
+      byDate[e.date].push(e);
+    });
+
+    const notifs = Object.entries(byDate).map(([date, evs]) => {
+      const d = new Date(date + "T00:00:00");
+      const diff = Math.ceil((d - today) / 86400000);
+      return { date, events: evs, daysLeft: diff };
+    }).sort((a,b) => a.daysLeft - b.daysLeft);
+
+    setExamNotifs(notifs);
+
+    // Next exam for countdown
+    const allExams = events.filter(e => {
+      if (!isExamEvent(e.title)) return false;
+      const d = new Date(e.date + "T00:00:00");
+      return d >= today;
+    }).sort((a,b) => a.date.localeCompare(b.date));
+    if (allExams.length) {
+      const next = allExams[0];
+      const d = new Date(next.date + "T00:00:00");
+      const diff = Math.ceil((d - today) / 86400000);
+      setNextExam({ ...next, daysLeft: diff });
+    } else {
+      setNextExam(null);
+    }
+
+    // Show notification once per day in morning
+    if (notifs.length > 0 && (hour < 12 || true) && alreadyShown !== todayStr2) {
+      localStorage.setItem("meridian_notif_shown", todayStr2);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [events]);
+
+  const dismissNotif = () => {
+    const todayStr2 = new Date().toLocaleDateString('en-CA');
+    localStorage.setItem("meridian_notif_dismissed", todayStr2);
+    setNotifDismissed(true);
+  };
 
   const fetchAll = async () => {
     setLoading(true);
@@ -1235,11 +1311,11 @@ function MeridianApp({ user }) {
   const S = {
     card:      { background: "#3A322A", border: "1px solid #333333", padding: "24px" },
     cardTitle: { fontSize: "10px", letterSpacing: "3px", textTransform: "uppercase", color: "#C4B090", marginBottom: "16px", display: "flex", justifyContent: "space-between", alignItems: "center" },
-    btn:       { padding: "10px 20px", background: "#352E25", color: "#F0EFED", border: "none", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" },
-    btnOut:    { padding: "8px 16px", background: "transparent", color: "#F0EFED", border: "1px solid #555555", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" },
-    btnDanger: { padding: "8px 16px", background: "transparent", color: "#8B1A1A", border: "1px solid #8B1A1A", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" },
-    input:     { width: "100%", padding: "10px 12px", border: "1px solid #333333", background: "#3A322A", fontSize: "13px", fontFamily: "Georgia, serif", color: "#F0EFED", outline: "none", boxSizing: "border-box" },
-    select:    { width: "100%", padding: "10px 12px", border: "1px solid #333333", background: "#3A322A", fontSize: "12px", fontFamily: "Georgia, serif", color: "#F0EFED", outline: "none", cursor: "pointer" },
+    btn:       { padding: "10px 20px", background: "#352E25", color: "#F0EFED", border: "none", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'Rajdhani', sans-serif" },
+    btnOut:    { padding: "8px 16px", background: "transparent", color: "#F0EFED", border: "1px solid #555555", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'Rajdhani', sans-serif" },
+    btnDanger: { padding: "8px 16px", background: "transparent", color: "#8B1A1A", border: "1px solid #8B1A1A", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'Rajdhani', sans-serif" },
+    input:     { width: "100%", padding: "10px 12px", border: "1px solid #333333", background: "#3A322A", fontSize: "13px", fontFamily: "'Rajdhani', sans-serif", color: "#F0EFED", outline: "none", boxSizing: "border-box" },
+    select:    { width: "100%", padding: "10px 12px", border: "1px solid #333333", background: "#3A322A", fontSize: "12px", fontFamily: "'Rajdhani', sans-serif", color: "#F0EFED", outline: "none", cursor: "pointer" },
     modal:     { position: "fixed", inset: 0, background: "rgba(26,22,18,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 200 },
     modalBox:  { background: "#3A322A", border: "1px solid #333333", padding: "32px", width: "420px", maxWidth: "90vw", maxHeight: "90vh", overflowY: "auto" },
   };
@@ -1248,7 +1324,7 @@ function MeridianApp({ user }) {
     display: "flex", alignItems: "center", padding: "12px 28px",
     color: active ? "#F0EFED" : "#B8A898", background: active ? "#5A5248" : "transparent",
     cursor: "pointer", fontSize: "12px", letterSpacing: "2px", textTransform: "uppercase",
-    border: "none", width: "100%", textAlign: "left", fontFamily: "Georgia, serif",
+    border: "none", width: "100%", textAlign: "left", fontFamily: "'Rajdhani', sans-serif",
     borderLeft: active ? "2px solid #BF5700" : "2px solid transparent",
   });
 
@@ -1261,7 +1337,7 @@ function MeridianApp({ user }) {
   const dayCell  = (isToday, isSel) => ({ aspectRatio: "1", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", padding: "6px 4px", background: isToday ? "#5A3A18" : isSel ? "#4A4035" : "transparent", color: isToday ? "#FF8200" : "#E8DDD0", cursor: "pointer", fontSize: "12px" });
 
   if (loading) return (
-    <div style={{ minHeight: "100vh", background: "#3A322A", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Georgia, serif" }}>
+    <div style={{ minHeight: "100vh", background: "#3A322A", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Rajdhani', sans-serif" }}>
       <div style={{ fontSize: "12px", letterSpacing: "4px", color: "#C4B090", textTransform: "uppercase" }}>Loading...</div>
     </div>
   );
@@ -1269,7 +1345,7 @@ function MeridianApp({ user }) {
   const isMobile = window.innerWidth < 768;
 
   return (
-    <div style={{ minHeight: "100vh", background: "#3A322A", fontFamily: "Georgia, 'Times New Roman', serif", color: "#F0EFED" }}>
+    <div style={{ minHeight: "100vh", background: "#3A322A", fontFamily: "'Rajdhani', sans-serif", color: "#F0EFED" }}>
       {showConfetti && <Confetti />}
       {focusMode && (
         <FocusScreen
@@ -1294,12 +1370,7 @@ function MeridianApp({ user }) {
           onNextSession={() => { setFocusSession(s => s + 1); setFocusComplete(false); setTimerSeconds(focusMins * 60); setTimerRunning(true); }}
         />
       )}
-      {xpPopup && (
-        <div style={{ position: "fixed", top: "20%", left: "50%", transform: "translateX(-50%)", zIndex: 8000, background: "#352E25", color: "#BF5700", padding: "10px 24px", fontSize: "18px", letterSpacing: "2px", fontFamily: "Georgia, serif", animation: "xpPop 1.5s ease forwards", pointerEvents: "none" }}>
-          +{xpPopup} XP
-          <style>{`@keyframes xpPop { 0%{opacity:0;transform:translateX(-50%) translateY(0)} 20%{opacity:1} 100%{opacity:0;transform:translateX(-50%) translateY(-60px)} }`}</style>
-        </div>
-      )}
+
 
       {/* Sidebar - desktop only */}
       {!isMobile && (
@@ -1318,14 +1389,12 @@ function MeridianApp({ user }) {
             <div style={{ fontSize: "10px", color: "#D4C8B8", marginBottom: "4px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.email}</div>
             <div style={{ fontSize: "10px", color: "#D4C8B8", letterSpacing: "2px", textTransform: "uppercase", marginBottom: "8px" }}>Done: {completionRate}%</div>
             <div style={{ height: "3px", background: "#1E1E1E", marginBottom: "14px" }}><div style={fill(completionRate, "#BF5700")} /></div>
-            <button onClick={signOut} style={{ background: "none", border: "none", color: "#D4C8B8", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", padding: 0, fontFamily: "Georgia, serif" }}>Sign Out</button>
+            <button onClick={signOut} style={{ background: "none", border: "none", color: "#D4C8B8", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", padding: 0, fontFamily: "'Rajdhani', sans-serif" }}>Sign Out</button>
             <div style={{ fontSize: "9px", color: "#5A5248", marginTop: "12px", letterSpacing: "1px" }}>© 2026 Chebiyyam</div>
             <div style={{ marginTop: "12px", borderTop: "1px solid #222222", paddingTop: "12px" }}>
-              <div style={{ fontSize: "10px", color: "#BF5700" }}>⚡ Level {stats.level} — {stats.xp % 100}/100 XP</div>
-              <div style={{ height: "2px", background: "#1E1E1E", marginTop: "5px", marginBottom: "8px" }}><div style={{ height: "100%", width: `${stats.xp % 100}%`, background: "#BF5700", transition: "width 0.5s" }} /></div>
-              <div style={{ fontSize: "10px", color: "#D4C8B8" }}>🔥 {stats.streak} day streak</div>
+              <div style={{ fontSize: "10px", color: "#C4B090" }}>⏱ {Math.floor((stats.deep_work_minutes||0)/60)}h {(stats.deep_work_minutes||0)%60}m deep work</div>
               <div style={{ fontSize: "10px", color: "#D4C8B8", marginTop: "3px" }}>⏱ {Math.floor((stats.deep_work_minutes||0)/60)}h {(stats.deep_work_minutes||0)%60}m deep work</div>
-              <button onClick={() => setSoundEnabled(s => !s)} style={{ marginTop: "8px", background: "none", border: "none", color: soundEnabled ? "#BF5700" : "#B8A898", fontSize: "10px", cursor: "pointer", fontFamily: "Georgia, serif", padding: 0 }}>
+              <button onClick={() => setSoundEnabled(s => !s)} style={{ marginTop: "8px", background: "none", border: "none", color: soundEnabled ? "#BF5700" : "#B8A898", fontSize: "10px", cursor: "pointer", fontFamily: "'Rajdhani', sans-serif", padding: 0 }}>
                 {soundEnabled ? "🔊 Sound on" : "🔇 Sound off"}
               </button>
             </div>
@@ -1337,7 +1406,7 @@ function MeridianApp({ user }) {
       {isMobile && (
         <div style={{ position: "fixed", top: 0, left: 0, right: 0, background: "#352E25", padding: "14px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", zIndex: 100 }}>
           <div style={{ fontSize: "18px", letterSpacing: "4px", color: "#BF5700", textTransform: "uppercase" }}>Meridian</div>
-          <button onClick={signOut} style={{ background: "none", border: "none", color: "#D4C8B8", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" }}>Sign Out</button>
+          <button onClick={signOut} style={{ background: "none", border: "none", color: "#D4C8B8", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'Rajdhani', sans-serif" }}>Sign Out</button>
         </div>
       )}
 
@@ -1364,6 +1433,38 @@ function MeridianApp({ user }) {
         {/* DASHBOARD */}
         {view === "dashboard" && (
           <>
+            {/* Exam notification banner - once per day morning */}
+            {examNotifs.length > 0 && !notifDismissed && (
+              <div style={{ background: "#3A1A00", border: "1px solid #BF5700", borderLeft: "4px solid #BF5700", padding: "14px 20px", marginBottom: "20px", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                <div>
+                  <div style={{ fontSize: "12px", letterSpacing: "2px", textTransform: "uppercase", color: "#FF8200", marginBottom: "8px" }}>⚠️ Upcoming Exams</div>
+                  {examNotifs.map(n => (
+                    <div key={n.date} style={{ fontSize: "14px", color: "#F0EFED", marginBottom: "4px" }}>
+                      {n.events.length > 1
+                        ? <><strong style={{color:"#FF8200"}}>{n.events.map(e=>e.title).join(" + ")}</strong> — {n.daysLeft === 0 ? "TODAY" : n.daysLeft === 1 ? "Tomorrow" : `${n.daysLeft} days away`}</>
+                        : <><strong style={{color:"#FF8200"}}>{n.events[0].title}</strong> — {n.daysLeft === 0 ? "TODAY" : n.daysLeft === 1 ? "Tomorrow" : `${n.daysLeft} days away`}</>
+                      }
+                    </div>
+                  ))}
+                </div>
+                <button onClick={dismissNotif} style={{ background: "none", border: "none", color: "#BF5700", fontSize: "22px", cursor: "pointer", padding: "0 0 0 16px", lineHeight: 1 }}>×</button>
+              </div>
+            )}
+            {/* Next exam countdown card */}
+            {nextExam && (
+              <div style={{ background: "#2A1800", border: "1px solid #3D2200", padding: "14px 20px", marginBottom: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div>
+                  <div style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#FF8200", marginBottom: "4px" }}>Next Exam</div>
+                  <div style={{ fontSize: "15px", color: "#F0EFED", fontWeight: "600" }}>{nextExam.title}</div>
+                </div>
+                <div style={{ textAlign: "right" }}>
+                  <div style={{ fontSize: "38px", fontWeight: "700", lineHeight: 1, color: nextExam.daysLeft <= 3 ? "#E53935" : nextExam.daysLeft <= 7 ? "#FB8C00" : "#BF5700" }}>
+                    {nextExam.daysLeft === 0 ? "TODAY" : nextExam.daysLeft === 1 ? "1" : nextExam.daysLeft}
+                  </div>
+                  {nextExam.daysLeft > 1 && <div style={{ fontSize: "10px", color: "#A89880", letterSpacing: "2px", textTransform: "uppercase" }}>days away</div>}
+                </div>
+              </div>
+            )}
             {noGoals && (
               <div style={{ ...S.card, borderLeft: "3px solid #BF5700", marginBottom: "24px" }}>
                 <div style={{ fontSize: "14px", marginBottom: "8px" }}>Welcome to Meridian.</div>
@@ -1543,7 +1644,7 @@ function MeridianApp({ user }) {
                 <div style={{ ...S.cardTitle, marginBottom: "14px" }}>
                   <span style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#C4B090" }}>🔮 Goal Forecast</span>
                   {goals.filter(g => tasks.filter(t=>t.goal_id===g.id&&!t.done).length > 0).length > 5 && (
-                    <button style={{ background: "none", border: "none", fontSize: "10px", color: "#BF5700", cursor: "pointer", fontFamily: "Georgia, serif", letterSpacing: "1px" }} onClick={() => setShowAllGoals(s => !s)}>
+                    <button style={{ background: "none", border: "none", fontSize: "10px", color: "#BF5700", cursor: "pointer", fontFamily: "'Rajdhani', sans-serif", letterSpacing: "1px" }} onClick={() => setShowAllGoals(s => !s)}>
                       {showAllGoals ? "Show less" : `See all (${goals.filter(g => tasks.filter(t=>t.goal_id===g.id&&!t.done).length > 0).length})`}
                     </button>
                   )}
@@ -2243,7 +2344,7 @@ function MeridianApp({ user }) {
       {isMobile && (
         <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: "#352E25", display: "flex", justifyContent: "space-around", padding: "10px 0", zIndex: 100, borderTop: "1px solid #222222" }}>
           {[["dashboard","Home"],["calendar","Cal"],["tasks","Tasks"],["goals","Goals"],["scheduler","Plan"]].map(([id,lbl]) => (
-            <button key={id} onClick={() => navigate(id)} style={{ background: "none", border: "none", color: view===id ? "#BF5700" : "#B8A898", fontSize: "9px", letterSpacing: "1px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif", display: "flex", flexDirection: "column", alignItems: "center", gap: "2px", padding: "4px 8px", borderTop: view===id ? "2px solid #BF5700" : "2px solid transparent" }}>
+            <button key={id} onClick={() => navigate(id)} style={{ background: "none", border: "none", color: view===id ? "#BF5700" : "#B8A898", fontSize: "9px", letterSpacing: "1px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'Rajdhani', sans-serif", display: "flex", flexDirection: "column", alignItems: "center", gap: "2px", padding: "4px 8px", borderTop: view===id ? "2px solid #BF5700" : "2px solid transparent" }}>
               {lbl}
             </button>
           ))}
@@ -2292,22 +2393,22 @@ function FocusScreen({ task, timerSeconds, timerRunning, setTimerRunning, focusC
   const accent = task ? goalColor(task.goal_id) : "#BF5700";
 
   if (focusComplete) return (
-    <div style={{ position: "fixed", inset: 0, background: "#2C2720", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", zIndex: 5000, fontFamily: "Georgia, serif", color: "#F0EFED", textAlign: "center", padding: "40px" }}>
+    <div style={{ position: "fixed", inset: 0, background: "#2C2720", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", zIndex: 5000, fontFamily: "'Rajdhani', sans-serif", color: "#F0EFED", textAlign: "center", padding: "40px" }}>
       <div style={{ fontSize: "72px", marginBottom: "16px" }}>✅</div>
       <div style={{ fontSize: "11px", letterSpacing: "4px", textTransform: "uppercase", color: "#BF5700", marginBottom: "12px" }}>Session Complete</div>
       <div style={{ fontSize: "48px", color: "#BF5700", marginBottom: "4px" }}>+50 XP</div>
       <div style={{ fontSize: "14px", color: "#C4B090", marginBottom: "8px" }}>{focusMins} minutes of deep work logged.</div>
       <div style={{ fontSize: "12px", color: "#D4C8B8", marginBottom: "40px" }}>Session {focusSession} of {focusSessions} today · {Math.floor((stats.deep_work_minutes||0)/60)}h {(stats.deep_work_minutes||0)%60}m total</div>
       <div style={{ display: "flex", gap: "16px", flexWrap: "wrap", justifyContent: "center" }}>
-        <button onClick={onMarkComplete} style={{ padding: "14px 28px", background: "#BF5700", color: "#0E0C0A", border: "none", fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" }}>Mark Task Complete</button>
-        <button onClick={onNextSession} style={{ padding: "14px 28px", background: "transparent", color: "#BF5700", border: "1px solid #BF5700", fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" }}>Start Next Session</button>
-        <button onClick={() => onExit(false)} style={{ padding: "14px 28px", background: "transparent", color: "#D4C8B8", border: "1px solid #282828", fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" }}>Back to App</button>
+        <button onClick={onMarkComplete} style={{ padding: "14px 28px", background: "#BF5700", color: "#0E0C0A", border: "none", fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'Rajdhani', sans-serif" }}>Mark Task Complete</button>
+        <button onClick={onNextSession} style={{ padding: "14px 28px", background: "transparent", color: "#BF5700", border: "1px solid #BF5700", fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'Rajdhani', sans-serif" }}>Start Next Session</button>
+        <button onClick={() => onExit(false)} style={{ padding: "14px 28px", background: "transparent", color: "#D4C8B8", border: "1px solid #282828", fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'Rajdhani', sans-serif" }}>Back to App</button>
       </div>
     </div>
   );
 
   return (
-    <div style={{ position: "fixed", inset: 0, background: "#3A322A", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", zIndex: 5000, fontFamily: "Georgia, 'Times New Roman', serif", color: "#F0EFED" }}>
+    <div style={{ position: "fixed", inset: 0, background: "#3A322A", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", zIndex: 5000, fontFamily: "'Rajdhani', sans-serif", color: "#F0EFED" }}>
       {/* Edge blur */}
       <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at center, transparent 40%, rgba(26,22,18,0.18) 100%)", pointerEvents: "none" }} />
 
@@ -2349,10 +2450,10 @@ function FocusScreen({ task, timerSeconds, timerRunning, setTimerRunning, focusC
 
         {/* Controls */}
         <div style={{ display: "flex", gap: "12px", justifyContent: "center", marginTop: "28px" }}>
-          <button onClick={() => setTimerRunning(r => !r)} style={{ padding: "12px 32px", background: "#352E25", color: "#F0EFED", border: "none", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" }}>
+          <button onClick={() => setTimerRunning(r => !r)} style={{ padding: "12px 32px", background: "#352E25", color: "#F0EFED", border: "none", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'Rajdhani', sans-serif" }}>
             {timerRunning ? "Pause" : "Resume"}
           </button>
-          <button onClick={() => onExit(true)} style={{ padding: "12px 24px", background: "transparent", color: "#C4B090", border: "1px solid #555555", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" }}>
+          <button onClick={() => onExit(true)} style={{ padding: "12px 24px", background: "transparent", color: "#C4B090", border: "1px solid #555555", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'Rajdhani', sans-serif" }}>
             Exit Early
           </button>
         </div>
@@ -2361,7 +2462,7 @@ function FocusScreen({ task, timerSeconds, timerRunning, setTimerRunning, focusC
         <div style={{ display: "flex", gap: "8px", justifyContent: "center", marginTop: "24px" }}>
           {[["🟤","brown"],["⬜","white"],["🩷","pink"],["🔇","off"]].map(([icon, val]) => (
             <button key={val} onClick={() => setAmbience(ambience === val || val === "off" ? null : val)}
-              style={{ padding: "6px 14px", background: ambience === val ? "#1A1612" : "transparent", color: ambience === val ? "#BF5700" : "#A89880", border: "1px solid #333333", fontSize: "11px", cursor: "pointer", fontFamily: "Georgia, serif" }}>
+              style={{ padding: "6px 14px", background: ambience === val ? "#1A1612" : "transparent", color: ambience === val ? "#BF5700" : "#A89880", border: "1px solid #333333", fontSize: "11px", cursor: "pointer", fontFamily: "'Rajdhani', sans-serif" }}>
               {icon} {val === "off" ? "Off" : val.charAt(0).toUpperCase() + val.slice(1)}
             </button>
           ))}
@@ -2471,6 +2572,12 @@ function SanjuLoader() {
 
 // ── ROOT ─────────────────────────────────────────────────────────────────────
 export default function App() {
+  useEffect(() => {
+    const link = document.createElement("link");
+    link.href = "https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&display=swap";
+    link.rel = "stylesheet";
+    document.head.appendChild(link);
+  }, []);
   const [user, setUser] = useState(null);
   const [checking, setChecking] = useState(true);
   const [showAuth, setShowAuth] = useState(false);
