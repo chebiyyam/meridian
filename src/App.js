@@ -107,7 +107,7 @@ function LandingPage({ onLogin }) {
   ];
 
   return (
-    <div style={{ minHeight: "100vh", background: "#1A1714", fontFamily: "Georgia, serif", color: "#F0EFED" }}>
+    <div style={{ minHeight: "100vh", background: "#2C2720", fontFamily: "Georgia, serif", color: "#F0EFED" }}>
 
       {/* Nav */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "24px 48px", borderBottom: "1px solid #222222" }}>
@@ -142,28 +142,28 @@ function LandingPage({ onLogin }) {
       {/* App Preview with overlay */}
       <div style={{ position: "relative", margin: "0 48px 80px", border: "1px solid #222222" }}>
         {/* Fake app preview */}
-        <div style={{ background: "#2A2520", padding: "24px", display: "grid", gridTemplateColumns: "200px 1fr", minHeight: "400px", pointerEvents: "none", userSelect: "none" }}>
+        <div style={{ background: "#3A322A", padding: "24px", display: "grid", gridTemplateColumns: "200px 1fr", minHeight: "400px", pointerEvents: "none", userSelect: "none" }}>
           {/* Fake sidebar */}
-          <div style={{ background: "#252118", padding: "24px 0", display: "flex", flexDirection: "column", gap: "4px" }}>
+          <div style={{ background: "#352E25", padding: "24px 0", display: "flex", flexDirection: "column", gap: "4px" }}>
             <div style={{ padding: "8px 24px", fontSize: "18px", letterSpacing: "4px", color: "#BF5700", textTransform: "uppercase", marginBottom: "16px" }}>Meridian</div>
             {["Dashboard", "Calendar", "Tasks", "Goals", "Schedule Builder"].map((item, i) => (
-              <div key={item} style={{ padding: "10px 24px", fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", color: i === 0 ? "#F0EFED" : "#B8A898", background: i === 0 ? "#3D3830" : "transparent", borderLeft: i === 0 ? "2px solid #BF5700" : "2px solid transparent" }}>{item}</div>
+              <div key={item} style={{ padding: "10px 24px", fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", color: i === 0 ? "#F0EFED" : "#B8A898", background: i === 0 ? "#5A5248" : "transparent", borderLeft: i === 0 ? "2px solid #BF5700" : "2px solid transparent" }}>{item}</div>
             ))}
           </div>
           {/* Fake dashboard */}
-          <div style={{ padding: "32px", background: "#2A2520" }}>
+          <div style={{ padding: "32px", background: "#3A322A" }}>
             <div style={{ fontSize: "28px", marginBottom: "6px", color: "#F0EFED" }}>Good morning.</div>
             <div style={{ fontSize: "11px", color: "#C4B090", letterSpacing: "2px", textTransform: "uppercase", marginBottom: "28px" }}>Your day at a glance</div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "16px", marginBottom: "20px" }}>
               {[["Tasks Remaining", "4"], ["Today's Events", "2"], ["Active Goals", "3"]].map(([lbl, val]) => (
-                <div key={lbl} style={{ background: "#2A2520", border: "1px solid #333333", padding: "18px" }}>
+                <div key={lbl} style={{ background: "#3A322A", border: "1px solid #333333", padding: "18px" }}>
                   <div style={{ fontSize: "9px", letterSpacing: "2px", textTransform: "uppercase", color: "#C4B090", marginBottom: "10px" }}>{lbl}</div>
                   <div style={{ fontSize: "36px", color: "#F0EFED" }}>{val}</div>
                 </div>
               ))}
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: "16px" }}>
-              <div style={{ background: "#2A2520", border: "1px solid #333333", padding: "18px" }}>
+              <div style={{ background: "#3A322A", border: "1px solid #333333", padding: "18px" }}>
                 <div style={{ fontSize: "9px", letterSpacing: "2px", textTransform: "uppercase", color: "#C4B090", marginBottom: "14px" }}>Upcoming Tasks</div>
                 {[["Finish research paper", "high", "#8B1A1A"], ["Submit Oxford application", "high", "#1A3A5C"], ["Club meeting prep", "med", "#2C4A2E"]].map(([t, p, c]) => (
                   <div key={t} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "8px 0", borderBottom: "1px solid #2A2A2A" }}>
@@ -174,7 +174,7 @@ function LandingPage({ onLogin }) {
                   </div>
                 ))}
               </div>
-              <div style={{ background: "#2A2520", border: "1px solid #333333", padding: "18px" }}>
+              <div style={{ background: "#3A322A", border: "1px solid #333333", padding: "18px" }}>
                 <div style={{ fontSize: "9px", letterSpacing: "2px", textTransform: "uppercase", color: "#C4B090", marginBottom: "14px" }}>Goals Overview</div>
                 {[["Oxford Internship", "#8B1A1A", 70], ["TAMU Research", "#1A3A5C", 45], ["Academics", "#4A3520", 80]].map(([lbl, c, pct]) => (
                   <div key={lbl} style={{ marginBottom: "14px" }}>
@@ -182,7 +182,7 @@ function LandingPage({ onLogin }) {
                       <div style={{ fontSize: "11px", color: "#D4C8B8" }}>{lbl}</div>
                       <div style={{ fontSize: "10px", color: "#C4B090" }}>{pct}%</div>
                     </div>
-                    <div style={{ height: "4px", background: "#4A4438" }}>
+                    <div style={{ height: "4px", background: "#6A6055" }}>
                       <div style={{ height: "4px", width: `${pct}%`, background: c }} />
                     </div>
                   </div>
@@ -218,8 +218,8 @@ function LandingPage({ onLogin }) {
 
       {/* Footer */}
       <div style={{ borderTop: "1px solid #222222", padding: "24px 48px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div style={{ fontSize: "9px", letterSpacing: "2px", color: "#3D3830", textTransform: "uppercase" }}>© 2026 Chebiyyam</div>
-        <div style={{ fontSize: "9px", letterSpacing: "2px", color: "#3D3830", textTransform: "uppercase" }}>Meridian</div>
+        <div style={{ fontSize: "9px", letterSpacing: "2px", color: "#5A5248", textTransform: "uppercase" }}>© 2026 Chebiyyam</div>
+        <div style={{ fontSize: "9px", letterSpacing: "2px", color: "#5A5248", textTransform: "uppercase" }}>Meridian</div>
       </div>
     </div>
   );
@@ -246,8 +246,8 @@ function AuthScreen({ onBack }) {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "#1A1714", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Georgia, serif" }}>
-      <div style={{ width: "400px", padding: "48px", background: "#252118", border: "1px solid #222222" }}>
+    <div style={{ minHeight: "100vh", background: "#2C2720", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Georgia, serif" }}>
+      <div style={{ width: "400px", padding: "48px", background: "#352E25", border: "1px solid #222222" }}>
         <div style={{ fontSize: "28px", letterSpacing: "6px", color: "#BF5700", textTransform: "uppercase", marginBottom: "6px" }}>Meridian</div>
         <div style={{ fontSize: "11px", color: "#D4C8B8", letterSpacing: "2px", textTransform: "uppercase", marginBottom: "40px" }}>Your operating system</div>
         {error   && <div style={{ fontSize: "11px", color: "#8B1A1A", marginBottom: "16px", padding: "8px 12px", background: "#8B1A1A18", border: "1px solid #8B1A1A40" }}>{error}</div>}
@@ -256,7 +256,7 @@ function AuthScreen({ onBack }) {
           <div key={lbl}>
             <div style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#C4B090", marginBottom: "6px" }}>{lbl}</div>
             <input type={type} value={val} onChange={e => set(e.target.value)} onKeyDown={e => e.key === "Enter" && handle()}
-              style={{ width: "100%", padding: "12px 14px", background: "#1A1714", border: "1px solid #222222", color: "#F0EFED", fontSize: "13px", fontFamily: "Georgia, serif", outline: "none", boxSizing: "border-box", marginBottom: "16px" }} />
+              style={{ width: "100%", padding: "12px 14px", background: "#2C2720", border: "1px solid #222222", color: "#F0EFED", fontSize: "13px", fontFamily: "Georgia, serif", outline: "none", boxSizing: "border-box", marginBottom: "16px" }} />
           </div>
         ))}
         <button onClick={handle} disabled={loading}
@@ -267,7 +267,7 @@ function AuthScreen({ onBack }) {
           style={{ fontSize: "11px", color: "#D4C8B8", textAlign: "center", marginTop: "24px", cursor: "pointer" }}>
           {mode === "login" ? "No account? Sign up" : "Have an account? Sign in"}
         </div>
-        {onBack && <div onClick={onBack} style={{ fontSize: "11px", color: "#3D3830", textAlign: "center", marginTop: "12px", cursor: "pointer" }}>Back to home</div>}
+        {onBack && <div onClick={onBack} style={{ fontSize: "11px", color: "#5A5248", textAlign: "center", marginTop: "12px", cursor: "pointer" }}>Back to home</div>}
       </div>
     </div>
   );
@@ -349,9 +349,9 @@ function AIScheduler({ user, refreshKey }) {
   };
 
   const S = {
-    input:  { width: "100%", padding: "8px 10px", border: "1px solid #333333", background: "#2A2520", fontSize: "12px", fontFamily: "Georgia, serif", color: "#F0EFED", outline: "none", boxSizing: "border-box" },
-    select: { width: "100%", padding: "8px 10px", border: "1px solid #333333", background: "#2A2520", fontSize: "12px", fontFamily: "Georgia, serif", color: "#F0EFED", outline: "none", cursor: "pointer" },
-    btn:    { padding: "10px 20px", background: "#252118", color: "#F0EFED", border: "none", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" },
+    input:  { width: "100%", padding: "8px 10px", border: "1px solid #333333", background: "#3A322A", fontSize: "12px", fontFamily: "Georgia, serif", color: "#F0EFED", outline: "none", boxSizing: "border-box" },
+    select: { width: "100%", padding: "8px 10px", border: "1px solid #333333", background: "#3A322A", fontSize: "12px", fontFamily: "Georgia, serif", color: "#F0EFED", outline: "none", cursor: "pointer" },
+    btn:    { padding: "10px 20px", background: "#352E25", color: "#F0EFED", border: "none", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" },
     btnOut: { padding: "8px 14px", background: "transparent", color: "#F0EFED", border: "1px solid #555555", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" },
   };
 
@@ -525,7 +525,12 @@ function MeridianApp({ user }) {
         const recent = snaps.slice(0, 2);
         if (recent.length === 2 && recent.every(s => s.score < 30)) setFallingOff(true);
       }
-      if (new Date().getDay() === 0 && snaps.length >= 5) setShowWeeklyReport(true);
+      const lastWeeklyShown = localStorage.getItem("meridian_weekly_shown");
+      const thisWeek = new Date().toLocaleDateString('en-CA', { year: 'numeric', month: '2-digit', day: '2-digit' }).slice(0,7);
+      if (new Date().getDay() === 0 && snaps.length >= 5 && lastWeeklyShown !== thisWeek) {
+        setShowWeeklyReport(true);
+        localStorage.setItem("meridian_weekly_shown", thisWeek);
+      }
     }
   };
 
@@ -1228,20 +1233,20 @@ function MeridianApp({ user }) {
   const noGoals        = goals.length === 0;
 
   const S = {
-    card:      { background: "#2A2520", border: "1px solid #333333", padding: "24px" },
+    card:      { background: "#3A322A", border: "1px solid #333333", padding: "24px" },
     cardTitle: { fontSize: "10px", letterSpacing: "3px", textTransform: "uppercase", color: "#C4B090", marginBottom: "16px", display: "flex", justifyContent: "space-between", alignItems: "center" },
-    btn:       { padding: "10px 20px", background: "#252118", color: "#F0EFED", border: "none", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" },
+    btn:       { padding: "10px 20px", background: "#352E25", color: "#F0EFED", border: "none", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" },
     btnOut:    { padding: "8px 16px", background: "transparent", color: "#F0EFED", border: "1px solid #555555", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" },
     btnDanger: { padding: "8px 16px", background: "transparent", color: "#8B1A1A", border: "1px solid #8B1A1A", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" },
-    input:     { width: "100%", padding: "10px 12px", border: "1px solid #333333", background: "#2A2520", fontSize: "13px", fontFamily: "Georgia, serif", color: "#F0EFED", outline: "none", boxSizing: "border-box" },
-    select:    { width: "100%", padding: "10px 12px", border: "1px solid #333333", background: "#2A2520", fontSize: "12px", fontFamily: "Georgia, serif", color: "#F0EFED", outline: "none", cursor: "pointer" },
+    input:     { width: "100%", padding: "10px 12px", border: "1px solid #333333", background: "#3A322A", fontSize: "13px", fontFamily: "Georgia, serif", color: "#F0EFED", outline: "none", boxSizing: "border-box" },
+    select:    { width: "100%", padding: "10px 12px", border: "1px solid #333333", background: "#3A322A", fontSize: "12px", fontFamily: "Georgia, serif", color: "#F0EFED", outline: "none", cursor: "pointer" },
     modal:     { position: "fixed", inset: 0, background: "rgba(26,22,18,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 200 },
-    modalBox:  { background: "#2A2520", border: "1px solid #333333", padding: "32px", width: "420px", maxWidth: "90vw", maxHeight: "90vh", overflowY: "auto" },
+    modalBox:  { background: "#3A322A", border: "1px solid #333333", padding: "32px", width: "420px", maxWidth: "90vw", maxHeight: "90vh", overflowY: "auto" },
   };
 
   const navBtn = (active) => ({
     display: "flex", alignItems: "center", padding: "12px 28px",
-    color: active ? "#F0EFED" : "#B8A898", background: active ? "#3D3830" : "transparent",
+    color: active ? "#F0EFED" : "#B8A898", background: active ? "#5A5248" : "transparent",
     cursor: "pointer", fontSize: "12px", letterSpacing: "2px", textTransform: "uppercase",
     border: "none", width: "100%", textAlign: "left", fontFamily: "Georgia, serif",
     borderLeft: active ? "2px solid #BF5700" : "2px solid transparent",
@@ -1253,10 +1258,10 @@ function MeridianApp({ user }) {
   const fill     = (pct, color) => ({ height: "4px", width: `${pct}%`, background: color || "#1A1612", transition: "width 0.6s" });
   const chip     = (id)   => ({ fontSize: "11px", padding: "4px 10px", background: goalColor(id)+"18", color: goalColor(id), borderLeft: `2px solid ${goalColor(id)}`, marginBottom: "6px", display: "flex", justifyContent: "space-between" });
   const badge    = (p)    => ({ fontSize: "9px", letterSpacing: "1px", textTransform: "uppercase", padding: "2px 6px", flexShrink: 0, background: p==="high"?"#8B1A1A20":p==="med"?"#4A352020":"#2C4A2E20", color: p==="high"?"#8B1A1A":p==="med"?"#4A3520":"#2C4A2E" });
-  const dayCell  = (isToday, isSel) => ({ aspectRatio: "1", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", padding: "6px 4px", background: isToday ? "#3A2A18" : isSel ? "#3D3428" : "transparent", color: isToday ? "#FF8200" : "#E8DDD0", cursor: "pointer", fontSize: "12px" });
+  const dayCell  = (isToday, isSel) => ({ aspectRatio: "1", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", padding: "6px 4px", background: isToday ? "#5A3A18" : isSel ? "#4A4035" : "transparent", color: isToday ? "#FF8200" : "#E8DDD0", cursor: "pointer", fontSize: "12px" });
 
   if (loading) return (
-    <div style={{ minHeight: "100vh", background: "#2A2520", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Georgia, serif" }}>
+    <div style={{ minHeight: "100vh", background: "#3A322A", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Georgia, serif" }}>
       <div style={{ fontSize: "12px", letterSpacing: "4px", color: "#C4B090", textTransform: "uppercase" }}>Loading...</div>
     </div>
   );
@@ -1264,7 +1269,7 @@ function MeridianApp({ user }) {
   const isMobile = window.innerWidth < 768;
 
   return (
-    <div style={{ minHeight: "100vh", background: "#2A2520", fontFamily: "Georgia, 'Times New Roman', serif", color: "#F0EFED" }}>
+    <div style={{ minHeight: "100vh", background: "#3A322A", fontFamily: "Georgia, 'Times New Roman', serif", color: "#F0EFED" }}>
       {showConfetti && <Confetti />}
       {focusMode && (
         <FocusScreen
@@ -1290,7 +1295,7 @@ function MeridianApp({ user }) {
         />
       )}
       {xpPopup && (
-        <div style={{ position: "fixed", top: "20%", left: "50%", transform: "translateX(-50%)", zIndex: 8000, background: "#252118", color: "#BF5700", padding: "10px 24px", fontSize: "18px", letterSpacing: "2px", fontFamily: "Georgia, serif", animation: "xpPop 1.5s ease forwards", pointerEvents: "none" }}>
+        <div style={{ position: "fixed", top: "20%", left: "50%", transform: "translateX(-50%)", zIndex: 8000, background: "#352E25", color: "#BF5700", padding: "10px 24px", fontSize: "18px", letterSpacing: "2px", fontFamily: "Georgia, serif", animation: "xpPop 1.5s ease forwards", pointerEvents: "none" }}>
           +{xpPopup} XP
           <style>{`@keyframes xpPop { 0%{opacity:0;transform:translateX(-50%) translateY(0)} 20%{opacity:1} 100%{opacity:0;transform:translateX(-50%) translateY(-60px)} }`}</style>
         </div>
@@ -1298,7 +1303,7 @@ function MeridianApp({ user }) {
 
       {/* Sidebar - desktop only */}
       {!isMobile && (
-        <div style={{ position: "fixed", left: 0, top: 0, bottom: 0, width: "220px", background: "#252118", display: "flex", flexDirection: "column", zIndex: 100 }}>
+        <div style={{ position: "fixed", left: 0, top: 0, bottom: 0, width: "220px", background: "#352E25", display: "flex", flexDirection: "column", zIndex: 100 }}>
           <div style={{ padding: "32px 28px 24px", borderBottom: "1px solid #222222" }}>
             <div style={{ fontSize: "22px", fontWeight: "400", color: "#F0EFED", letterSpacing: "4px", textTransform: "uppercase" }}>Meridian</div>
             <div style={{ fontSize: "10px", color: "#D4C8B8", letterSpacing: "2px", marginTop: "4px", textTransform: "uppercase" }}>Your operating system</div>
@@ -1314,7 +1319,7 @@ function MeridianApp({ user }) {
             <div style={{ fontSize: "10px", color: "#D4C8B8", letterSpacing: "2px", textTransform: "uppercase", marginBottom: "8px" }}>Done: {completionRate}%</div>
             <div style={{ height: "3px", background: "#1E1E1E", marginBottom: "14px" }}><div style={fill(completionRate, "#BF5700")} /></div>
             <button onClick={signOut} style={{ background: "none", border: "none", color: "#D4C8B8", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", padding: 0, fontFamily: "Georgia, serif" }}>Sign Out</button>
-            <div style={{ fontSize: "9px", color: "#3D3830", marginTop: "12px", letterSpacing: "1px" }}>© 2026 Chebiyyam</div>
+            <div style={{ fontSize: "9px", color: "#5A5248", marginTop: "12px", letterSpacing: "1px" }}>© 2026 Chebiyyam</div>
             <div style={{ marginTop: "12px", borderTop: "1px solid #222222", paddingTop: "12px" }}>
               <div style={{ fontSize: "10px", color: "#BF5700" }}>⚡ Level {stats.level} — {stats.xp % 100}/100 XP</div>
               <div style={{ height: "2px", background: "#1E1E1E", marginTop: "5px", marginBottom: "8px" }}><div style={{ height: "100%", width: `${stats.xp % 100}%`, background: "#BF5700", transition: "width 0.5s" }} /></div>
@@ -1330,7 +1335,7 @@ function MeridianApp({ user }) {
 
       {/* Mobile top bar */}
       {isMobile && (
-        <div style={{ position: "fixed", top: 0, left: 0, right: 0, background: "#252118", padding: "14px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", zIndex: 100 }}>
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, background: "#352E25", padding: "14px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", zIndex: 100 }}>
           <div style={{ fontSize: "18px", letterSpacing: "4px", color: "#BF5700", textTransform: "uppercase" }}>Meridian</div>
           <button onClick={signOut} style={{ background: "none", border: "none", color: "#D4C8B8", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" }}>Sign Out</button>
         </div>
@@ -1351,7 +1356,7 @@ function MeridianApp({ user }) {
           </div>
           {/* Clickable quote */}
           <div onClick={nextQuote} title="Click for a new quote"
-            style={{ padding: "10px 16px", background: "#252118", color: "#BF5700", fontSize: "10px", letterSpacing: "1px", fontStyle: "italic", maxWidth: isMobile ? "100%" : "320px", textAlign: "right", cursor: "pointer", userSelect: "none" }}>
+            style={{ padding: "10px 16px", background: "#352E25", color: "#BF5700", fontSize: "10px", letterSpacing: "1px", fontStyle: "italic", maxWidth: isMobile ? "100%" : "320px", textAlign: "right", cursor: "pointer", userSelect: "none" }}>
             "{QUOTES[quoteIdx]}"
           </div>
         </div>
@@ -1381,7 +1386,7 @@ function MeridianApp({ user }) {
                     <div style={{ fontSize: "11px", color: "#C4B090", marginTop: "8px" }}>of {tasks.length} total</div>
                   </div>
                   <svg width="60" height="60" style={{ flexShrink: 0 }}>
-                    <circle cx="30" cy="30" r="24" fill="none" stroke="#4A4438" strokeWidth="5" />
+                    <circle cx="30" cy="30" r="24" fill="none" stroke="#6A6055" strokeWidth="5" />
                     <circle cx="30" cy="30" r="24" fill="none" stroke={completionRate === 100 ? "#43A047" : "#BF5700"} strokeWidth="5"
                       strokeDasharray={`${2 * Math.PI * 24}`}
                       strokeDashoffset={`${2 * Math.PI * 24 * (1 - completionRate / 100)}`}
@@ -1393,7 +1398,7 @@ function MeridianApp({ user }) {
               </div>
 
               {/* Today card */}
-              <div style={{ ...S.card, borderLeft: `3px solid ${todayEvents.length > 0 ? "#1E88E5" : "#4A4438"}` }}>
+              <div style={{ ...S.card, borderLeft: `3px solid ${todayEvents.length > 0 ? "#1E88E5" : "#6A6055"}` }}>
                 <div style={S.cardTitle}>Today</div>
                 <div style={{ fontSize: "11px", color: "#C4B090", marginBottom: "8px" }}>
                   {DAYS[today.getDay()]}, {MONTHS[today.getMonth()]} {today.getDate()}
@@ -1521,7 +1526,7 @@ function MeridianApp({ user }) {
                     {weeklySnapshots.slice(0, 5).reverse().map((s, i) => (
                       <div key={i} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                         <div style={{ fontSize: "10px", color: "#C4B090", width: "36px" }}>{s.date.slice(5)}</div>
-                        <div style={{ flex: 1, height: "6px", background: "#4A4438", borderRadius: "3px" }}>
+                        <div style={{ flex: 1, height: "6px", background: "#6A6055", borderRadius: "3px" }}>
                           <div style={{ height: "100%", width: `${s.score}%`, background: "#BF5700", borderRadius: "3px", transition: "width 0.6s" }} />
                         </div>
                         <div style={{ fontSize: "10px", color: "#C4B090", width: "50px" }}>{s.completed_tasks}/{s.total_tasks}</div>
@@ -1583,7 +1588,7 @@ function MeridianApp({ user }) {
                         </div>
                         <div style={{ fontSize: "10px", color: urgencyColor }}>{forecastLine}</div>
                       </div>
-                      <div style={{ height: "4px", background: "#4A4438", borderRadius: "2px" }}>
+                      <div style={{ height: "4px", background: "#6A6055", borderRadius: "2px" }}>
                         <div style={{ height: "100%", width: `${pct}%`, background: g.color, borderRadius: "2px", transition: "width 0.6s" }} />
                       </div>
                       <div style={{ display: "flex", justifyContent: "space-between", marginTop: "4px", fontSize: "10px", color: "#C4B090" }}>
@@ -1625,7 +1630,7 @@ function MeridianApp({ user }) {
                         <div style={{ fontSize: "11px", color: "#D4C8B8" }}>{g.label}</div>
                         <div style={{ fontSize: "10px", color: "#C4B090" }}>{d}/{gt.length}</div>
                       </div>
-                      <div style={{ height: "4px", background: "#4A4438" }}><div style={fill(p, g.color)} /></div>
+                      <div style={{ height: "4px", background: "#6A6055" }}><div style={fill(p, g.color)} /></div>
                     </div>
                   );
                 })}
@@ -1833,7 +1838,7 @@ function MeridianApp({ user }) {
                         </div>
                       ))}
                     </div>
-                    <div style={{height:"4px",background:"#4A4438",marginBottom:"16px"}}><div style={fill(p,g.color)}/></div>
+                    <div style={{height:"4px",background:"#6A6055",marginBottom:"16px"}}><div style={fill(p,g.color)}/></div>
                     {ge.length > 0 && (
                       <>
                         <div style={{fontSize:"10px",color:"#A89880",letterSpacing:"2px",textTransform:"uppercase",marginBottom:"8px"}}>Upcoming</div>
@@ -1906,7 +1911,7 @@ function MeridianApp({ user }) {
                         {g.deadline && <div style={{ fontSize: "10px", color: "#C4B090" }}>due {g.deadline}</div>}
                       </div>
                       {importParsed.tasks.filter(t => t.goal === g.label).map((t, j) => (
-                        <div key={j} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "6px 12px", background: "#2A2520", marginBottom: "4px", marginLeft: "22px" }}>
+                        <div key={j} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "6px 12px", background: "#3A322A", marginBottom: "4px", marginLeft: "22px" }}>
                           <div style={{ fontSize: "12px", flex: 1 }}>{t.text}</div>
                           <div style={{ fontSize: "9px", padding: "2px 6px", background: t.priority === "high" ? "#E5393520" : t.priority === "med" ? "#FB8C0020" : "#43A04720", color: t.priority === "high" ? "#E53935" : t.priority === "med" ? "#FB8C00" : "#43A047" }}>{t.priority}</div>
                           {t.due && <div style={{ fontSize: "10px", color: "#C4B090" }}>{t.due}</div>}
@@ -1984,7 +1989,7 @@ function MeridianApp({ user }) {
                       <div key={day} onClick={() => {
                         const curr = newTask.recurring || [];
                         setNewTask({...newTask, recurring: selected ? curr.filter(d=>d!==val) : [...curr, val]});
-                      }} style={{ padding: "6px 12px", fontSize: "11px", cursor: "pointer", border: `1px solid ${selected ? "#BF5700" : "#4A4438"}`, background: selected ? "#BF5700" : "transparent", color: selected ? "#0E0C0A" : "#B8A898", userSelect: "none" }}>
+                      }} style={{ padding: "6px 12px", fontSize: "11px", cursor: "pointer", border: `1px solid ${selected ? "#BF5700" : "#6A6055"}`, background: selected ? "#BF5700" : "transparent", color: selected ? "#0E0C0A" : "#B8A898", userSelect: "none" }}>
                         {day}
                       </div>
                     );
@@ -2037,19 +2042,19 @@ function MeridianApp({ user }) {
               <div style={{ fontSize: "12px", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "4px" }}>📊 Weekly Report</div>
               <div style={{ fontSize: "11px", color: "#C4B090", marginBottom: "24px" }}>Your performance over the last 7 days</div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "24px" }}>
-                <div style={{ padding: "16px", background: "#2A2520", border: "1px solid #333333", textAlign: "center" }}>
+                <div style={{ padding: "16px", background: "#3A322A", border: "1px solid #333333", textAlign: "center" }}>
                   <div style={{ fontSize: "32px", color: avg >= 70 ? "#43A047" : avg >= 40 ? "#FB8C00" : "#E53935" }}>{avg}%</div>
                   <div style={{ fontSize: "10px", color: "#C4B090", marginTop: "4px" }}>Avg Completion</div>
                 </div>
-                <div style={{ padding: "16px", background: "#2A2520", border: "1px solid #333333", textAlign: "center" }}>
+                <div style={{ padding: "16px", background: "#3A322A", border: "1px solid #333333", textAlign: "center" }}>
                   <div style={{ fontSize: "32px", color: "#BF5700" }}>{stats.streak}</div>
                   <div style={{ fontSize: "10px", color: "#C4B090", marginTop: "4px" }}>Day Streak</div>
                 </div>
-                <div style={{ padding: "16px", background: "#2A2520", border: "1px solid #333333", textAlign: "center" }}>
+                <div style={{ padding: "16px", background: "#3A322A", border: "1px solid #333333", textAlign: "center" }}>
                   <div style={{ fontSize: "14px", color: "#43A047" }}>🏆 {best.date.slice(5)}</div>
                   <div style={{ fontSize: "10px", color: "#C4B090", marginTop: "4px" }}>Best Day ({best.score}%)</div>
                 </div>
-                <div style={{ padding: "16px", background: "#2A2520", border: "1px solid #333333", textAlign: "center" }}>
+                <div style={{ padding: "16px", background: "#3A322A", border: "1px solid #333333", textAlign: "center" }}>
                   <div style={{ fontSize: "14px", color: "#E53935" }}>📉 {worst.date.slice(5)}</div>
                   <div style={{ fontSize: "10px", color: "#C4B090", marginTop: "4px" }}>Worst Day ({worst.score}%)</div>
                 </div>
@@ -2058,7 +2063,7 @@ function MeridianApp({ user }) {
                 {weeklySnapshots.slice().reverse().map((s, i) => (
                   <div key={i} style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px" }}>
                     <div style={{ fontSize: "10px", color: "#C4B090", width: "42px" }}>{s.date.slice(5)}</div>
-                    <div style={{ flex: 1, height: "8px", background: "#4A4438", borderRadius: "4px" }}>
+                    <div style={{ flex: 1, height: "8px", background: "#6A6055", borderRadius: "4px" }}>
                       <div style={{ height: "100%", width: `${s.score}%`, background: s.score >= 70 ? "#43A047" : s.score >= 40 ? "#FB8C00" : "#E53935", borderRadius: "4px" }} />
                     </div>
                     <div style={{ fontSize: "10px", color: "#C4B090", width: "34px" }}>{s.completed_tasks}/{s.total_tasks}</div>
@@ -2122,7 +2127,7 @@ function MeridianApp({ user }) {
                   <div key={task.id} onClick={() => {
                     if (selected) setNonNegotiables(nonNegotiables.filter(id => id !== task.id));
                     else if (nonNegotiables.length < 3) setNonNegotiables([...nonNegotiables, task.id]);
-                  }} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "10px 12px", background: selected ? "#1A161210" : "transparent", border: `1px solid ${selected ? "#BF5700" : "#4A4438"}`, cursor: nonNegotiables.length >= 3 && !selected ? "not-allowed" : "pointer", opacity: nonNegotiables.length >= 3 && !selected ? 0.4 : 1 }}>
+                  }} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "10px 12px", background: selected ? "#1A161210" : "transparent", border: `1px solid ${selected ? "#BF5700" : "#6A6055"}`, cursor: nonNegotiables.length >= 3 && !selected ? "not-allowed" : "pointer", opacity: nonNegotiables.length >= 3 && !selected ? 0.4 : 1 }}>
                     <div style={{ width: "14px", height: "14px", border: `1.5px solid ${selected ? "#BF5700" : "#555555"}`, background: selected ? "#BF5700" : "transparent", flexShrink: 0 }} />
                     <div style={{ flex: 1, fontSize: "13px", color: "#F0EFED" }}>{task.text}</div>
                     <div style={{ fontSize: "10px", color: "#C4B090" }}>{task.due || ""}</div>
@@ -2195,7 +2200,7 @@ function MeridianApp({ user }) {
                     return (
                       <div key={day} onClick={() => {
                         setEditTask({...editTask, recurring: selected ? curr.filter(d=>d!==val) : [...curr, val]});
-                      }} style={{ padding: "6px 12px", fontSize: "11px", cursor: "pointer", border: `1px solid ${selected ? "#BF5700" : "#4A4438"}`, background: selected ? "#BF5700" : "transparent", color: selected ? "#0E0C0A" : "#B8A898", userSelect: "none" }}>
+                      }} style={{ padding: "6px 12px", fontSize: "11px", cursor: "pointer", border: `1px solid ${selected ? "#BF5700" : "#6A6055"}`, background: selected ? "#BF5700" : "transparent", color: selected ? "#0E0C0A" : "#B8A898", userSelect: "none" }}>
                         {day}
                       </div>
                     );
@@ -2236,7 +2241,7 @@ function MeridianApp({ user }) {
 
       {/* Mobile bottom nav */}
       {isMobile && (
-        <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: "#252118", display: "flex", justifyContent: "space-around", padding: "10px 0", zIndex: 100, borderTop: "1px solid #222222" }}>
+        <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: "#352E25", display: "flex", justifyContent: "space-around", padding: "10px 0", zIndex: 100, borderTop: "1px solid #222222" }}>
           {[["dashboard","Home"],["calendar","Cal"],["tasks","Tasks"],["goals","Goals"],["scheduler","Plan"]].map(([id,lbl]) => (
             <button key={id} onClick={() => navigate(id)} style={{ background: "none", border: "none", color: view===id ? "#BF5700" : "#B8A898", fontSize: "9px", letterSpacing: "1px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif", display: "flex", flexDirection: "column", alignItems: "center", gap: "2px", padding: "4px 8px", borderTop: view===id ? "2px solid #BF5700" : "2px solid transparent" }}>
               {lbl}
@@ -2287,7 +2292,7 @@ function FocusScreen({ task, timerSeconds, timerRunning, setTimerRunning, focusC
   const accent = task ? goalColor(task.goal_id) : "#BF5700";
 
   if (focusComplete) return (
-    <div style={{ position: "fixed", inset: 0, background: "#1A1714", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", zIndex: 5000, fontFamily: "Georgia, serif", color: "#F0EFED", textAlign: "center", padding: "40px" }}>
+    <div style={{ position: "fixed", inset: 0, background: "#2C2720", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", zIndex: 5000, fontFamily: "Georgia, serif", color: "#F0EFED", textAlign: "center", padding: "40px" }}>
       <div style={{ fontSize: "72px", marginBottom: "16px" }}>✅</div>
       <div style={{ fontSize: "11px", letterSpacing: "4px", textTransform: "uppercase", color: "#BF5700", marginBottom: "12px" }}>Session Complete</div>
       <div style={{ fontSize: "48px", color: "#BF5700", marginBottom: "4px" }}>+50 XP</div>
@@ -2302,7 +2307,7 @@ function FocusScreen({ task, timerSeconds, timerRunning, setTimerRunning, focusC
   );
 
   return (
-    <div style={{ position: "fixed", inset: 0, background: "#2A2520", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", zIndex: 5000, fontFamily: "Georgia, 'Times New Roman', serif", color: "#F0EFED" }}>
+    <div style={{ position: "fixed", inset: 0, background: "#3A322A", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", zIndex: 5000, fontFamily: "Georgia, 'Times New Roman', serif", color: "#F0EFED" }}>
       {/* Edge blur */}
       <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at center, transparent 40%, rgba(26,22,18,0.18) 100%)", pointerEvents: "none" }} />
 
@@ -2320,7 +2325,7 @@ function FocusScreen({ task, timerSeconds, timerRunning, setTimerRunning, focusC
       <div style={{ textAlign: "center", position: "relative", zIndex: 1 }}>
         {/* SVG ring */}
         <svg width="280" height="280" style={{ display: "block", margin: "0 auto" }}>
-          <circle cx="140" cy="140" r="120" fill="none" stroke="#4A4438" strokeWidth="6" />
+          <circle cx="140" cy="140" r="120" fill="none" stroke="#6A6055" strokeWidth="6" />
           <circle cx="140" cy="140" r="120" fill="none" stroke={accent} strokeWidth="6"
             strokeDasharray={`${2 * Math.PI * 120}`}
             strokeDashoffset={`${2 * Math.PI * 120 * (1 - pct / 100)}`}
@@ -2344,7 +2349,7 @@ function FocusScreen({ task, timerSeconds, timerRunning, setTimerRunning, focusC
 
         {/* Controls */}
         <div style={{ display: "flex", gap: "12px", justifyContent: "center", marginTop: "28px" }}>
-          <button onClick={() => setTimerRunning(r => !r)} style={{ padding: "12px 32px", background: "#252118", color: "#F0EFED", border: "none", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" }}>
+          <button onClick={() => setTimerRunning(r => !r)} style={{ padding: "12px 32px", background: "#352E25", color: "#F0EFED", border: "none", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" }}>
             {timerRunning ? "Pause" : "Resume"}
           </button>
           <button onClick={() => onExit(true)} style={{ padding: "12px 24px", background: "transparent", color: "#C4B090", border: "1px solid #555555", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "Georgia, serif" }}>
@@ -2458,7 +2463,7 @@ function SanjuLoader() {
   }, []);
 
   return (
-    <div style={{ position: "fixed", inset: 0, background: "#1A1714", zIndex: 9999 }}>
+    <div style={{ position: "fixed", inset: 0, background: "#2C2720", zIndex: 9999 }}>
       <canvas ref={canvasRef} style={{ display: "block", width: "100%", height: "100%" }} />
     </div>
   );
