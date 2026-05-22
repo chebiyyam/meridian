@@ -9,9 +9,9 @@ const supabase = createClient(
 
 const MUTED_COLORS = [
   { name: "Red",        value: "#E53935" },
-  { name: "Blue",       value: "#1E88E5" },
-  { name: "Green",      value: "#43A047" },
-  { name: "Orange",     value: "#FB8C00" },
+  { name: "Blue",       value: "#58A6FF" },
+  { name: "Green",      value: "#3FB950" },
+  { name: "Orange",     value: "#F0883E" },
   { name: "Purple",     value: "#8E24AA" },
   { name: "Teal",       value: "#00ACC1" },
   { name: "Pink",       value: "#D81B60" },
@@ -21,7 +21,7 @@ const MUTED_COLORS = [
   { name: "Cyan",       value: "#00BCD4" },
   { name: "Deep Orange",value: "#F4511E" },
   { name: "Brown",      value: "#6D4C41" },
-  { name: "Gold",       value: "#BF5700" },
+  { name: "Gold",       value: "#39D2C0" },
   { name: "Coral",      value: "#FF6B6B" },
   { name: "Mint",       value: "#26A69A" },
   { name: "Lavender",   value: "#7986CB" },
@@ -107,33 +107,33 @@ function LandingPage({ onLogin }) {
   ];
 
   return (
-    <div style={{ minHeight: "100vh", background: "#2C2720", fontFamily: "'Rajdhani', sans-serif", color: "#F0EFED" }}>
+    <div style={{ minHeight: "100vh", background: "#0D1117", fontFamily: "'DM Sans', sans-serif", color: "#E6EDF3" }}>
 
       {/* Nav */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "24px 48px", borderBottom: "1px solid #222222" }}>
-        <div style={{ fontSize: "20px", letterSpacing: "5px", color: "#BF5700", textTransform: "uppercase" }}>Meridian</div>
+        <div style={{ fontSize: "20px", letterSpacing: "5px", color: "#39D2C0", textTransform: "uppercase" }}>Meridian</div>
         <button onClick={onLogin}
-          style={{ padding: "10px 24px", background: "transparent", border: "1px solid #BF5700", color: "#BF5700", fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'Rajdhani', sans-serif" }}>
+          style={{ padding: "10px 24px", background: "transparent", border: "1px solid #39D2C0", color: "#39D2C0", fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'DM Sans', sans-serif" }}>
           Sign In
         </button>
       </div>
 
       {/* Hero */}
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "80px 48px 60px", textAlign: "center" }}>
-        <div style={{ fontSize: "11px", letterSpacing: "4px", textTransform: "uppercase", color: "#BF5700", marginBottom: "24px" }}>Welcome to Meridian</div>
-        <div style={{ fontSize: "52px", fontWeight: "400", lineHeight: "1.2", marginBottom: "24px", maxWidth: "700px" }}>
+        <div style={{ fontSize: "12px", letterSpacing: "2px", textTransform: "uppercase", color: "#39D2C0", marginBottom: "16px", opacity: 0.8 }}>✦ Welcome to Meridian</div>
+        <div style={{ fontSize: "52px", fontFamily: "'DM Serif Display', serif", fontWeight: "400", lineHeight: "1.2", marginBottom: "24px", maxWidth: "700px" }}>
           Every goal deserves a plan.
         </div>
-        <div style={{ fontSize: "15px", color: "#C4B090", lineHeight: "1.8", marginBottom: "40px", maxWidth: "500px" }}>
+        <div style={{ fontSize: "15px", color: "#8B949E", lineHeight: "1.8", marginBottom: "40px", maxWidth: "500px" }}>
           Meridian is your personal accountability system. Track goals, manage tasks, plan your schedule and stay on top of everything that matters.
         </div>
         <div style={{ display: "flex", gap: "16px" }}>
           <button onClick={onLogin}
-            style={{ padding: "14px 36px", background: "#BF5700", color: "#0E0C0A", border: "none", fontSize: "11px", letterSpacing: "3px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'Rajdhani', sans-serif" }}>
+            style={{ padding: "14px 36px", background: "#39D2C0", color: "#0D1117", border: "none", fontSize: "13px", fontWeight: "600", cursor: "pointer", fontFamily: "'DM Sans', sans-serif", borderRadius: "8px" }}>
             Get Started
           </button>
           <button onClick={onLogin}
-            style={{ padding: "14px 36px", background: "transparent", border: "1px solid #222222", color: "#C4B090", fontSize: "11px", letterSpacing: "3px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'Rajdhani', sans-serif" }}>
+            style={{ padding: "14px 36px", background: "transparent", border: "1px solid #222222", color: "#8B949E", fontSize: "11px", letterSpacing: "3px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'DM Sans', sans-serif" }}>
             Sign In
           </button>
         </div>
@@ -142,47 +142,47 @@ function LandingPage({ onLogin }) {
       {/* App Preview with overlay */}
       <div style={{ position: "relative", margin: "0 48px 80px", border: "1px solid #222222" }}>
         {/* Fake app preview */}
-        <div style={{ background: "#3A322A", padding: "24px", display: "grid", gridTemplateColumns: "200px 1fr", minHeight: "400px", pointerEvents: "none", userSelect: "none" }}>
+        <div style={{ background: "#161B22", padding: "24px", display: "grid", gridTemplateColumns: "200px 1fr", minHeight: "400px", pointerEvents: "none", userSelect: "none" }}>
           {/* Fake sidebar */}
-          <div style={{ background: "#352E25", padding: "24px 0", display: "flex", flexDirection: "column", gap: "4px" }}>
-            <div style={{ padding: "8px 24px", fontSize: "18px", letterSpacing: "4px", color: "#BF5700", textTransform: "uppercase", marginBottom: "16px" }}>Meridian</div>
+          <div style={{ background: "#1C2128", padding: "24px 0", display: "flex", flexDirection: "column", gap: "4px" }}>
+            <div style={{ padding: "8px 24px", fontSize: "18px", fontFamily: "'DM Serif Display', serif", color: "#39D2C0", marginBottom: "16px" }}>Meridian</div>
             {["Dashboard", "Calendar", "Tasks", "Goals", "Schedule Builder"].map((item, i) => (
-              <div key={item} style={{ padding: "10px 24px", fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", color: i === 0 ? "#F0EFED" : "#B8A898", background: i === 0 ? "#5A5248" : "transparent", borderLeft: i === 0 ? "2px solid #BF5700" : "2px solid transparent" }}>{item}</div>
+              <div key={item} style={{ padding: "10px 24px", fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", color: i === 0 ? "#E6EDF3" : "#6E7681", background: i === 0 ? "#2D333B" : "transparent", borderLeft: i === 0 ? "2px solid #39D2C0" : "2px solid transparent" }}>{item}</div>
             ))}
           </div>
           {/* Fake dashboard */}
-          <div style={{ padding: "32px", background: "#3A322A" }}>
-            <div style={{ fontSize: "28px", marginBottom: "6px", color: "#F0EFED" }}>Good morning.</div>
-            <div style={{ fontSize: "11px", color: "#C4B090", letterSpacing: "2px", textTransform: "uppercase", marginBottom: "28px" }}>Your day at a glance</div>
+          <div style={{ padding: "32px", background: "#161B22" }}>
+            <div style={{ fontSize: "28px", marginBottom: "6px", color: "#E6EDF3" }}>Good morning.</div>
+            <div style={{ fontSize: "11px", color: "#8B949E", letterSpacing: "2px", textTransform: "uppercase", marginBottom: "28px" }}>Your day at a glance</div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "16px", marginBottom: "20px" }}>
               {[["Tasks Remaining", "4"], ["Today's Events", "2"], ["Active Goals", "3"]].map(([lbl, val]) => (
-                <div key={lbl} style={{ background: "#3A322A", border: "1px solid #333333", padding: "18px" }}>
-                  <div style={{ fontSize: "9px", letterSpacing: "2px", textTransform: "uppercase", color: "#C4B090", marginBottom: "10px" }}>{lbl}</div>
-                  <div style={{ fontSize: "36px", color: "#F0EFED" }}>{val}</div>
+                <div key={lbl} style={{ background: "#161B22", border: "1px solid #333333", padding: "18px" }}>
+                  <div style={{ fontSize: "9px", letterSpacing: "2px", textTransform: "uppercase", color: "#8B949E", marginBottom: "10px" }}>{lbl}</div>
+                  <div style={{ fontSize: "36px", color: "#E6EDF3" }}>{val}</div>
                 </div>
               ))}
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: "16px" }}>
-              <div style={{ background: "#3A322A", border: "1px solid #333333", padding: "18px" }}>
-                <div style={{ fontSize: "9px", letterSpacing: "2px", textTransform: "uppercase", color: "#C4B090", marginBottom: "14px" }}>Upcoming Tasks</div>
-                {[["Finish research paper", "high", "#8B1A1A"], ["Submit Oxford application", "high", "#1A3A5C"], ["Club meeting prep", "med", "#2C4A2E"]].map(([t, p, c]) => (
+              <div style={{ background: "#161B22", border: "1px solid #333333", padding: "18px" }}>
+                <div style={{ fontSize: "12px", fontWeight: "600", color: "#8B949E", marginBottom: "12px" }}>Upcoming Tasks</div>
+                {[["Finish research paper", "high", "#FF3D5A"], ["Submit Oxford application", "high", "#1A3A5C"], ["Club meeting prep", "med", "#1A3A20"]].map(([t, p, c]) => (
                   <div key={t} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "8px 0", borderBottom: "1px solid #2A2A2A" }}>
                     <div style={{ width: "14px", height: "14px", border: "1.5px solid #555555" }} />
                     <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: c }} />
-                    <div style={{ fontSize: "12px", color: "#F0EFED", flex: 1 }}>{t}</div>
+                    <div style={{ fontSize: "12px", color: "#E6EDF3", flex: 1 }}>{t}</div>
                     <div style={{ fontSize: "9px", padding: "2px 6px", background: c + "20", color: c }}>{p}</div>
                   </div>
                 ))}
               </div>
-              <div style={{ background: "#3A322A", border: "1px solid #333333", padding: "18px" }}>
-                <div style={{ fontSize: "9px", letterSpacing: "2px", textTransform: "uppercase", color: "#C4B090", marginBottom: "14px" }}>Goals Overview</div>
-                {[["Oxford Internship", "#8B1A1A", 70], ["TAMU Research", "#1A3A5C", 45], ["Academics", "#4A3520", 80]].map(([lbl, c, pct]) => (
+              <div style={{ background: "#161B22", border: "1px solid #333333", padding: "18px" }}>
+                <div style={{ fontSize: "12px", fontWeight: "600", color: "#8B949E", marginBottom: "12px" }}>Goals Overview</div>
+                {[["Oxford Internship", "#FF3D5A", 70], ["TAMU Research", "#1A3A5C", 45], ["Academics", "#0E2535", 80]].map(([lbl, c, pct]) => (
                   <div key={lbl} style={{ marginBottom: "14px" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}>
-                      <div style={{ fontSize: "11px", color: "#D4C8B8" }}>{lbl}</div>
-                      <div style={{ fontSize: "10px", color: "#C4B090" }}>{pct}%</div>
+                      <div style={{ fontSize: "11px", color: "#C9D1D9" }}>{lbl}</div>
+                      <div style={{ fontSize: "12px", color: "#8B949E" }}>{pct}%</div>
                     </div>
-                    <div style={{ height: "4px", background: "#6A6055" }}>
+                    <div style={{ height: "4px", background: "#2D333B" }}>
                       <div style={{ height: "4px", width: `${pct}%`, background: c }} />
                     </div>
                   </div>
@@ -194,10 +194,10 @@ function LandingPage({ onLogin }) {
 
         {/* Blur overlay with CTA */}
         <div style={{ position: "absolute", inset: 0, backdropFilter: "blur(6px)", background: "rgba(14,12,10,0.6)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-          <div style={{ fontSize: "13px", letterSpacing: "3px", textTransform: "uppercase", color: "#BF5700", marginBottom: "12px" }}>Your dashboard awaits</div>
-          <div style={{ fontSize: "15px", color: "#F0EFED", marginBottom: "28px" }}>Sign in to access your personal Meridian.</div>
+          <div style={{ fontSize: "14px", fontFamily: "'DM Serif Display', serif", color: "#39D2C0", marginBottom: "12px" }}>Your dashboard awaits ✦</div>
+          <div style={{ fontSize: "15px", color: "#E6EDF3", marginBottom: "28px" }}>Sign in to access your personal Meridian.</div>
           <button onClick={onLogin}
-            style={{ padding: "14px 40px", background: "#BF5700", color: "#0E0C0A", border: "none", fontSize: "11px", letterSpacing: "3px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'Rajdhani', sans-serif" }}>
+            style={{ padding: "14px 40px", background: "#39D2C0", color: "#0D1117", border: "none", fontSize: "14px", fontWeight: "600", cursor: "pointer", fontFamily: "'DM Sans', sans-serif", borderRadius: "8px" }}>
             Sign In / Sign Up
           </button>
         </div>
@@ -205,12 +205,12 @@ function LandingPage({ onLogin }) {
 
       {/* Features */}
       <div style={{ padding: "0 48px 80px" }}>
-        <div style={{ fontSize: "10px", letterSpacing: "4px", textTransform: "uppercase", color: "#BF5700", textAlign: "center", marginBottom: "40px" }}>What's inside</div>
+        <div style={{ fontSize: "13px", letterSpacing: "1px", color: "#8B949E", textAlign: "center", marginBottom: "40px", fontWeight: "500" }}>Everything you need ✦</div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: "20px" }}>
           {features.map(f => (
             <div key={f.title} style={{ padding: "28px 24px", border: "1px solid #222222" }}>
-              <div style={{ fontSize: "13px", letterSpacing: "2px", textTransform: "uppercase", color: "#BF5700", marginBottom: "12px" }}>{f.title}</div>
-              <div style={{ fontSize: "13px", color: "#D4C8B8", lineHeight: "1.7" }}>{f.desc}</div>
+              <div style={{ fontSize: "15px", fontFamily: "'DM Serif Display', serif", color: "#39D2C0", marginBottom: "10px" }}>{f.title}</div>
+              <div style={{ fontSize: "13px", color: "#8B949E", lineHeight: "1.7" }}>{f.desc}</div>
             </div>
           ))}
         </div>
@@ -218,8 +218,8 @@ function LandingPage({ onLogin }) {
 
       {/* Footer */}
       <div style={{ borderTop: "1px solid #222222", padding: "24px 48px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div style={{ fontSize: "9px", letterSpacing: "2px", color: "#5A5248", textTransform: "uppercase" }}>© 2026 Chebiyyam</div>
-        <div style={{ fontSize: "9px", letterSpacing: "2px", color: "#5A5248", textTransform: "uppercase" }}>Meridian</div>
+        <div style={{ fontSize: "9px", letterSpacing: "2px", color: "#2D333B", textTransform: "uppercase" }}>© 2026 Chebiyyam</div>
+        <div style={{ fontSize: "9px", letterSpacing: "2px", color: "#2D333B", textTransform: "uppercase" }}>Meridian</div>
       </div>
     </div>
   );
@@ -246,28 +246,28 @@ function AuthScreen({ onBack }) {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "#2C2720", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Rajdhani', sans-serif" }}>
-      <div style={{ width: "400px", padding: "48px", background: "#352E25", border: "1px solid #222222" }}>
-        <div style={{ fontSize: "28px", letterSpacing: "6px", color: "#BF5700", textTransform: "uppercase", marginBottom: "6px" }}>Meridian</div>
-        <div style={{ fontSize: "11px", color: "#D4C8B8", letterSpacing: "2px", textTransform: "uppercase", marginBottom: "40px" }}>Your operating system</div>
-        {error   && <div style={{ fontSize: "11px", color: "#8B1A1A", marginBottom: "16px", padding: "8px 12px", background: "#8B1A1A18", border: "1px solid #8B1A1A40" }}>{error}</div>}
-        {message && <div style={{ fontSize: "11px", color: "#2C4A2E", marginBottom: "16px", padding: "8px 12px", background: "#2C4A2E18", border: "1px solid #2C4A2E40" }}>{message}</div>}
+    <div style={{ minHeight: "100vh", background: "#0D1117", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'DM Sans', sans-serif" }}>
+      <div style={{ width: "400px", padding: "48px", background: "#1C2128", border: "1px solid #222222" }}>
+        <div style={{ fontSize: "32px", fontFamily: "'DM Serif Display', serif", color: "#39D2C0", marginBottom: "6px" }}>Meridian</div>
+        <div style={{ fontSize: "11px", color: "#C9D1D9", letterSpacing: "2px", textTransform: "uppercase", marginBottom: "40px" }}>Your operating system</div>
+        {error   && <div style={{ fontSize: "11px", color: "#FF3D5A", marginBottom: "16px", padding: "8px 12px", background: "#FF3D5A18", border: "1px solid #8B1A1A40" }}>{error}</div>}
+        {message && <div style={{ fontSize: "11px", color: "#1A3A20", marginBottom: "16px", padding: "8px 12px", background: "#1A3A2018", border: "1px solid #2C4A2E40" }}>{message}</div>}
         {[["Email","email",email,setEmail],["Password","password",password,setPassword]].map(([lbl,type,val,set]) => (
           <div key={lbl}>
-            <div style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#C4B090", marginBottom: "6px" }}>{lbl}</div>
+            <div style={{ fontSize: "12px", fontWeight: "500", color: "#8B949E", marginBottom: "6px" }}>{lbl}</div>
             <input type={type} value={val} onChange={e => set(e.target.value)} onKeyDown={e => e.key === "Enter" && handle()}
-              style={{ width: "100%", padding: "12px 14px", background: "#2C2720", border: "1px solid #222222", color: "#F0EFED", fontSize: "13px", fontFamily: "'Rajdhani', sans-serif", outline: "none", boxSizing: "border-box", marginBottom: "16px" }} />
+              style={{ width: "100%", padding: "12px 14px", background: "#0D1117", border: "1px solid #222222", color: "#E6EDF3", fontSize: "13px", fontFamily: "'DM Sans', sans-serif", outline: "none", boxSizing: "border-box", marginBottom: "16px" }} />
           </div>
         ))}
         <button onClick={handle} disabled={loading}
-          style={{ width: "100%", padding: "14px", background: "#BF5700", color: "#0E0C0A", border: "none", fontSize: "11px", letterSpacing: "3px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'Rajdhani', sans-serif", marginTop: "8px" }}>
+          style={{ width: "100%", padding: "14px", background: "#39D2C0", color: "#0D1117", border: "none", fontSize: "14px", fontWeight: "600", cursor: "pointer", fontFamily: "'DM Sans', sans-serif", marginTop: "8px", borderRadius: "8px" }}>
           {loading ? "..." : mode === "login" ? "Sign In" : "Create Account"}
         </button>
         <div onClick={() => { setMode(mode === "login" ? "signup" : "login"); setError(""); setMessage(""); }}
-          style={{ fontSize: "11px", color: "#D4C8B8", textAlign: "center", marginTop: "24px", cursor: "pointer" }}>
+          style={{ fontSize: "11px", color: "#C9D1D9", textAlign: "center", marginTop: "24px", cursor: "pointer" }}>
           {mode === "login" ? "No account? Sign up" : "Have an account? Sign in"}
         </div>
-        {onBack && <div onClick={onBack} style={{ fontSize: "11px", color: "#5A5248", textAlign: "center", marginTop: "12px", cursor: "pointer" }}>Back to home</div>}
+        {onBack && <div onClick={onBack} style={{ fontSize: "11px", color: "#2D333B", textAlign: "center", marginTop: "12px", cursor: "pointer" }}>Back to home</div>}
       </div>
     </div>
   );
@@ -349,27 +349,27 @@ function AIScheduler({ user, refreshKey }) {
   };
 
   const S = {
-    input:  { width: "100%", padding: "8px 10px", border: "1px solid #333333", background: "#3A322A", fontSize: "12px", fontFamily: "'Rajdhani', sans-serif", color: "#F0EFED", outline: "none", boxSizing: "border-box" },
-    select: { width: "100%", padding: "8px 10px", border: "1px solid #333333", background: "#3A322A", fontSize: "12px", fontFamily: "'Rajdhani', sans-serif", color: "#F0EFED", outline: "none", cursor: "pointer" },
-    btn:    { padding: "10px 20px", background: "#352E25", color: "#F0EFED", border: "none", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'Rajdhani', sans-serif" },
-    btnOut: { padding: "8px 14px", background: "transparent", color: "#F0EFED", border: "1px solid #555555", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'Rajdhani', sans-serif" },
+    input:  { width: "100%", padding: "8px 10px", border: "1px solid #333333", background: "#161B22", fontSize: "12px", fontFamily: "'DM Sans', sans-serif", color: "#E6EDF3", outline: "none", boxSizing: "border-box" },
+    select: { width: "100%", padding: "8px 10px", border: "1px solid #333333", background: "#161B22", fontSize: "12px", fontFamily: "'DM Sans', sans-serif", color: "#E6EDF3", outline: "none", cursor: "pointer" },
+    btn:    { padding: "10px 20px", background: "#1C2128", color: "#E6EDF3", border: "none", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'DM Sans', sans-serif" },
+    btnOut: { padding: "8px 14px", background: "transparent", color: "#E6EDF3", border: "1px solid #555555", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'DM Sans', sans-serif" },
   };
 
-  const priorityColor = (p) => p === "high" ? "#8B1A1A" : p === "med" ? "#4A3520" : "#2C4A2E";
+  const priorityColor = (p) => p === "high" ? "#FF3D5A" : p === "med" ? "#0E2535" : "#1A3A20";
 
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
-        <div style={{ fontSize: "12px", color: "#C4B090", lineHeight: "1.7" }}>
+        <div style={{ fontSize: "12px", color: "#8B949E", lineHeight: "1.7" }}>
           Add everything you need to get done. The scheduler will prioritize by urgency and importance.
         </div>
-        {syncing && <div style={{ fontSize: "10px", color: "#BF5700", letterSpacing: "2px", textTransform: "uppercase" }}>Saving...</div>}
+        {syncing && <div style={{ fontSize: "10px", color: "#39D2C0", letterSpacing: "2px", textTransform: "uppercase" }}>Saving...</div>}
       </div>
 
       {/* Column headers */}
       <div style={{ display: "grid", gridTemplateColumns: "2fr 0.7fr 0.8fr 1fr auto", gap: "8px", marginBottom: "6px" }}>
         {["Task Name", "Hours", "Priority", "Deadline", ""].map((lbl, i) => (
-          <div key={i} style={{ fontSize: "9px", letterSpacing: "2px", textTransform: "uppercase", color: "#C4B090" }}>{lbl}</div>
+          <div key={i} style={{ fontSize: "9px", letterSpacing: "2px", textTransform: "uppercase", color: "#8B949E" }}>{lbl}</div>
         ))}
       </div>
 
@@ -383,7 +383,7 @@ function AIScheduler({ user, refreshKey }) {
             <option value="low">Low</option>
           </select>
           <input style={S.input} type="date" min={new Date().toLocaleDateString('en-CA')} value={task.deadline} onChange={e => updateItem(i, "deadline", e.target.value)} />
-          <button onClick={() => removeItem(i)} style={{ background: "none", border: "none", color: "#555555", fontSize: "18px", cursor: "pointer", padding: "0 4px" }}>x</button>
+          <button onClick={() => removeItem(i)} style={{ background: "none", border: "none", color: "#484F58", fontSize: "18px", cursor: "pointer", padding: "0 4px" }}>x</button>
         </div>
       ))}
 
@@ -399,13 +399,13 @@ function AIScheduler({ user, refreshKey }) {
         <>
           {/* Priority order */}
           <div style={{ marginBottom: "28px" }}>
-            <div style={{ fontSize: "10px", letterSpacing: "3px", textTransform: "uppercase", color: "#C4B090", marginBottom: "12px" }}>Tackle In This Order</div>
+            <div style={{ fontSize: "10px", letterSpacing: "3px", textTransform: "uppercase", color: "#8B949E", marginBottom: "12px" }}>Tackle In This Order</div>
             {schedule.scored.map((t, i) => (
               <div key={i} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "10px 0", borderBottom: "1px solid #2A2A2A" }}>
-                <div style={{ fontSize: "18px", color: "#BF5700", fontWeight: "400", width: "24px" }}>{i + 1}</div>
+                <div style={{ fontSize: "18px", color: "#39D2C0", fontWeight: "400", width: "24px" }}>{i + 1}</div>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: "13px" }}>{t.name}</div>
-                  <div style={{ fontSize: "10px", color: "#C4B090", marginTop: "2px" }}>
+                  <div style={{ fontSize: "12px", color: "#8B949E", marginTop: "2px" }}>
                     {t.hours}h needed
                     {t.days < 999 ? ` · due in ${t.days} day${t.days !== 1 ? "s" : ""}` : " · no deadline"}
                   </div>
@@ -866,7 +866,7 @@ function MeridianApp({ user }) {
     setImportParsed(null);
 
     try {
-      const colors = ["#E53935","#1E88E5","#43A047","#FB8C00","#8E24AA","#00ACC1","#D81B60","#7CB342","#3949AB","#FFB300","#00BCD4","#F4511E","#26A69A","#7986CB","#EC407A","#29B6F6","#8D9B6A","#BF5700","#FF6B6B","#6D4C41"];
+      const colors = ["#E53935","#58A6FF","#3FB950","#F0883E","#8E24AA","#00ACC1","#D81B60","#7CB342","#3949AB","#FFB300","#00BCD4","#F4511E","#26A69A","#7986CB","#EC407A","#29B6F6","#8D9B6A","#39D2C0","#FF6B6B","#6D4C41"];
       const goals = [];
       const tasks = [];
       let currentGoal = null;
@@ -975,7 +975,7 @@ function MeridianApp({ user }) {
 
   const seedData = async () => {
     setImportLoading(true);
-    const colors = ["#E53935","#1E88E5","#43A047","#FB8C00","#8E24AA","#00ACC1","#D81B60","#7CB342","#3949AB","#FFB300","#00BCD4","#F4511E"];
+    const colors = ["#E53935","#58A6FF","#3FB950","#F0883E","#8E24AA","#00ACC1","#D81B60","#7CB342","#3949AB","#FFB300","#00BCD4","#F4511E"];
     const goalDefs = [
       { label: "AP Gov",            color: colors[0],  deadline: "2026-05-05" },
       { label: "AP Macro",          color: colors[1],  deadline: "2026-05-08" },
@@ -1294,7 +1294,7 @@ function MeridianApp({ user }) {
   const signOut = () => supabase.auth.signOut();
   const nextQuote = () => setQuoteIdx(i => (i + 1) % QUOTES.length);
 
-  const goalColor = (id) => goals.find(g => g.id === id)?.color || "#A89880";
+  const goalColor = (id) => goals.find(g => g.id === id)?.color || "#6E7681";
   const goalLabel = (id) => goals.find(g => g.id === id)?.label || "?";
   const pendingTasks   = tasks.filter(t => !t.done);
   const doneTasks      = tasks.filter(t => t.done);
@@ -1309,43 +1309,43 @@ function MeridianApp({ user }) {
   const noGoals        = goals.length === 0;
 
   const S = {
-    card:      { background: "#3A322A", border: "1px solid #333333", padding: "24px" },
-    cardTitle: { fontSize: "10px", letterSpacing: "3px", textTransform: "uppercase", color: "#C4B090", marginBottom: "16px", display: "flex", justifyContent: "space-between", alignItems: "center" },
-    btn:       { padding: "10px 20px", background: "#352E25", color: "#F0EFED", border: "none", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'Rajdhani', sans-serif" },
-    btnOut:    { padding: "8px 16px", background: "transparent", color: "#F0EFED", border: "1px solid #555555", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'Rajdhani', sans-serif" },
-    btnDanger: { padding: "8px 16px", background: "transparent", color: "#8B1A1A", border: "1px solid #8B1A1A", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'Rajdhani', sans-serif" },
-    input:     { width: "100%", padding: "10px 12px", border: "1px solid #333333", background: "#3A322A", fontSize: "13px", fontFamily: "'Rajdhani', sans-serif", color: "#F0EFED", outline: "none", boxSizing: "border-box" },
-    select:    { width: "100%", padding: "10px 12px", border: "1px solid #333333", background: "#3A322A", fontSize: "12px", fontFamily: "'Rajdhani', sans-serif", color: "#F0EFED", outline: "none", cursor: "pointer" },
+    card:      { background: "#161B22", border: "1px solid #333333", padding: "24px" },
+    cardTitle: { fontSize: "12px", letterSpacing: "0px", fontWeight: "600", color: "#8B949E", marginBottom: "16px", display: "flex", justifyContent: "space-between", alignItems: "center" },
+    btn:       { padding: "9px 18px", background: "#39D2C0", color: "#0D1117", border: "none", fontSize: "12px", fontWeight: "600", cursor: "pointer", fontFamily: "'DM Sans', sans-serif", borderRadius: "6px" },
+    btnOut:    { padding: "8px 16px", background: "transparent", color: "#E6EDF3", border: "1px solid #555555", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'DM Sans', sans-serif" },
+    btnDanger: { padding: "8px 16px", background: "transparent", color: "#FF3D5A", border: "1px solid #8B1A1A", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'DM Sans', sans-serif" },
+    input:     { width: "100%", padding: "10px 12px", border: "1px solid #333333", background: "#161B22", fontSize: "13px", fontFamily: "'DM Sans', sans-serif", color: "#E6EDF3", outline: "none", boxSizing: "border-box" },
+    select:    { width: "100%", padding: "10px 12px", border: "1px solid #333333", background: "#161B22", fontSize: "12px", fontFamily: "'DM Sans', sans-serif", color: "#E6EDF3", outline: "none", cursor: "pointer" },
     modal:     { position: "fixed", inset: 0, background: "rgba(26,22,18,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 200 },
-    modalBox:  { background: "#3A322A", border: "1px solid #333333", padding: "32px", width: "420px", maxWidth: "90vw", maxHeight: "90vh", overflowY: "auto" },
+    modalBox:  { background: "#161B22", border: "1px solid #333333", padding: "32px", width: "420px", maxWidth: "90vw", maxHeight: "90vh", overflowY: "auto" },
   };
 
   const navBtn = (active) => ({
     display: "flex", alignItems: "center", padding: "12px 28px",
-    color: active ? "#F0EFED" : "#B8A898", background: active ? "#5A5248" : "transparent",
+    color: active ? "#E6EDF3" : "#6E7681", background: active ? "#2D333B" : "transparent",
     cursor: "pointer", fontSize: "12px", letterSpacing: "2px", textTransform: "uppercase",
-    border: "none", width: "100%", textAlign: "left", fontFamily: "'Rajdhani', sans-serif",
-    borderLeft: active ? "2px solid #BF5700" : "2px solid transparent",
+    border: "none", width: "100%", textAlign: "left", fontFamily: "'DM Sans', sans-serif",
+    borderLeft: active ? "2px solid #39D2C0" : "2px solid transparent",
   });
 
   const taskRow  = (done) => ({ display: "flex", alignItems: "flex-start", gap: "12px", padding: "12px 0", borderBottom: "1px solid #2A2A2A", opacity: done ? 0.5 : 1, cursor: "pointer" });
-  const chk      = (done) => ({ width: "16px", height: "16px", border: `1.5px solid ${done ? "#BF5700" : "#555555"}`, background: done ? "#BF5700" : "transparent", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: "2px" });
+  const chk      = (done) => ({ width: "16px", height: "16px", border: `1.5px solid ${done ? "#39D2C0" : "#484F58"}`, background: done ? "#39D2C0" : "transparent", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: "2px" });
   const dot      = (id)   => ({ width: "6px", height: "6px", borderRadius: "50%", background: goalColor(id), flexShrink: 0, marginTop: "6px" });
-  const fill     = (pct, color) => ({ height: "4px", width: `${pct}%`, background: color || "#1A1612", transition: "width 0.6s" });
+  const fill     = (pct, color) => ({ height: "4px", width: `${pct}%`, background: color || "#090D13", transition: "width 0.6s" });
   const chip     = (id)   => ({ fontSize: "11px", padding: "4px 10px", background: goalColor(id)+"18", color: goalColor(id), borderLeft: `2px solid ${goalColor(id)}`, marginBottom: "6px", display: "flex", justifyContent: "space-between" });
-  const badge    = (p)    => ({ fontSize: "9px", letterSpacing: "1px", textTransform: "uppercase", padding: "2px 6px", flexShrink: 0, background: p==="high"?"#8B1A1A20":p==="med"?"#4A352020":"#2C4A2E20", color: p==="high"?"#8B1A1A":p==="med"?"#4A3520":"#2C4A2E" });
-  const dayCell  = (isToday, isSel) => ({ aspectRatio: "1", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", padding: "6px 4px", background: isToday ? "#5A3A18" : isSel ? "#4A4035" : "transparent", color: isToday ? "#FF8200" : "#E8DDD0", cursor: "pointer", fontSize: "12px" });
+  const badge    = (p)    => ({ fontSize: "9px", letterSpacing: "1px", textTransform: "uppercase", padding: "2px 6px", flexShrink: 0, background: p==="high"?"#FF3D5A20":p==="med"?"#FF6B8A20":"#2C4A2E20", color: p==="high"?"#FF3D5A":p==="med"?"#0E2535":"#1A3A20" });
+  const dayCell  = (isToday, isSel) => ({ aspectRatio: "1", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", padding: "6px 4px", background: isToday ? "#0D3040" : isSel ? "#1C2D3A" : "transparent", color: isToday ? "#5AE4D5" : "#C9D1D9", cursor: "pointer", fontSize: "12px", borderRadius: "6px" });
 
   if (loading) return (
-    <div style={{ minHeight: "100vh", background: "#3A322A", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Rajdhani', sans-serif" }}>
-      <div style={{ fontSize: "12px", letterSpacing: "4px", color: "#C4B090", textTransform: "uppercase" }}>Loading...</div>
+    <div style={{ minHeight: "100vh", background: "#161B22", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'DM Sans', sans-serif" }}>
+      <div style={{ fontSize: "14px", fontFamily: "'DM Serif Display', serif", color: "#39D2C0" }}>Loading...</div>
     </div>
   );
 
   const isMobile = window.innerWidth < 768;
 
   return (
-    <div style={{ minHeight: "100vh", background: "#3A322A", fontFamily: "'Rajdhani', sans-serif", color: "#F0EFED" }}>
+    <div style={{ minHeight: "100vh", background: "#0D1117", fontFamily: "'DM Sans', sans-serif", color: "#E6EDF3" }}>
       {showConfetti && <Confetti />}
       {focusMode && (
         <FocusScreen
@@ -1374,27 +1374,27 @@ function MeridianApp({ user }) {
 
       {/* Sidebar - desktop only */}
       {!isMobile && (
-        <div style={{ position: "fixed", left: 0, top: 0, bottom: 0, width: "220px", background: "#352E25", display: "flex", flexDirection: "column", zIndex: 100 }}>
+        <div style={{ position: "fixed", left: 0, top: 0, bottom: 0, width: "220px", background: "#1C2128", display: "flex", flexDirection: "column", zIndex: 100 }}>
           <div style={{ padding: "32px 28px 24px", borderBottom: "1px solid #222222" }}>
-            <div style={{ fontSize: "22px", fontWeight: "400", color: "#F0EFED", letterSpacing: "4px", textTransform: "uppercase" }}>Meridian</div>
-            <div style={{ fontSize: "10px", color: "#D4C8B8", letterSpacing: "2px", marginTop: "4px", textTransform: "uppercase" }}>Your operating system</div>
+            <div style={{ fontSize: "22px", fontFamily: "'DM Serif Display', serif", color: "#39D2C0", letterSpacing: "1px" }}>Meridian</div>
+            <div style={{ fontSize: "10px", color: "#C9D1D9", letterSpacing: "2px", marginTop: "4px", textTransform: "uppercase" }}>Your operating system</div>
           </div>
           <nav style={{ padding: "20px 0", flex: 1 }}>
             {[["dashboard","Dashboard"],["calendar","Calendar"],["tasks","Tasks"],["goals","Goals"],["scheduler","Schedule Builder"]].map(([id,lbl]) => (
               <button key={id} style={navBtn(view===id)} onClick={() => navigate(id)}>{lbl}</button>
             ))}
-            <button style={{ ...navBtn(false), color: "#BF5700", marginTop: "8px", borderTop: "1px solid #222222", paddingTop: "20px" }} onClick={() => setShowImport(true)}>⚡ Import from Claude</button>
+            <button style={{ ...navBtn(false), color: "#39D2C0", marginTop: "8px", borderTop: "1px solid #222222", paddingTop: "20px" }} onClick={() => setShowImport(true)}>⚡ Import from Claude</button>
           </nav>
           <div style={{ padding: "16px 28px", borderTop: "1px solid #222222" }}>
-            <div style={{ fontSize: "10px", color: "#D4C8B8", marginBottom: "4px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.email}</div>
-            <div style={{ fontSize: "10px", color: "#D4C8B8", letterSpacing: "2px", textTransform: "uppercase", marginBottom: "8px" }}>Done: {completionRate}%</div>
-            <div style={{ height: "3px", background: "#1E1E1E", marginBottom: "14px" }}><div style={fill(completionRate, "#BF5700")} /></div>
-            <button onClick={signOut} style={{ background: "none", border: "none", color: "#D4C8B8", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", padding: 0, fontFamily: "'Rajdhani', sans-serif" }}>Sign Out</button>
-            <div style={{ fontSize: "9px", color: "#5A5248", marginTop: "12px", letterSpacing: "1px" }}>© 2026 Chebiyyam</div>
+            <div style={{ fontSize: "12px", color: "#8B949E", marginBottom: "4px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.email}</div>
+            <div style={{ fontSize: "12px", color: "#8B949E", marginBottom: "8px" }}>Done: {completionRate}%</div>
+            <div style={{ height: "3px", background: "#1E1E1E", marginBottom: "14px" }}><div style={fill(completionRate, "#39D2C0")} /></div>
+            <button onClick={signOut} style={{ background: "none", border: "none", color: "#6E7681", fontSize: "12px", cursor: "pointer", padding: "6px 0", fontFamily: "'DM Sans', sans-serif" }}>Sign Out</button>
+            <div style={{ fontSize: "11px", color: "#6E7681", marginTop: "8px" }}>© 2026 Chebiyyam</div>
             <div style={{ marginTop: "12px", borderTop: "1px solid #222222", paddingTop: "12px" }}>
-              <div style={{ fontSize: "10px", color: "#C4B090" }}>⏱ {Math.floor((stats.deep_work_minutes||0)/60)}h {(stats.deep_work_minutes||0)%60}m deep work</div>
-              <div style={{ fontSize: "10px", color: "#D4C8B8", marginTop: "3px" }}>⏱ {Math.floor((stats.deep_work_minutes||0)/60)}h {(stats.deep_work_minutes||0)%60}m deep work</div>
-              <button onClick={() => setSoundEnabled(s => !s)} style={{ marginTop: "8px", background: "none", border: "none", color: soundEnabled ? "#BF5700" : "#B8A898", fontSize: "10px", cursor: "pointer", fontFamily: "'Rajdhani', sans-serif", padding: 0 }}>
+              <div style={{ fontSize: "12px", color: "#8B949E" }}>⏱ {Math.floor((stats.deep_work_minutes||0)/60)}h {(stats.deep_work_minutes||0)%60}m deep work</div>
+              <div style={{ fontSize: "12px", color: "#C9D1D9", marginTop: "3px" }}>⏱ {Math.floor((stats.deep_work_minutes||0)/60)}h {(stats.deep_work_minutes||0)%60}m deep work</div>
+              <button onClick={() => setSoundEnabled(s => !s)} style={{ marginTop: "8px", background: "none", border: "none", color: soundEnabled ? "#39D2C0" : "#6E7681", fontSize: "10px", cursor: "pointer", fontFamily: "'DM Sans', sans-serif", padding: 0 }}>
                 {soundEnabled ? "🔊 Sound on" : "🔇 Sound off"}
               </button>
             </div>
@@ -1404,30 +1404,41 @@ function MeridianApp({ user }) {
 
       {/* Mobile top bar */}
       {isMobile && (
-        <div style={{ position: "fixed", top: 0, left: 0, right: 0, background: "#352E25", padding: "14px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", zIndex: 100 }}>
-          <div style={{ fontSize: "18px", letterSpacing: "4px", color: "#BF5700", textTransform: "uppercase" }}>Meridian</div>
-          <button onClick={signOut} style={{ background: "none", border: "none", color: "#D4C8B8", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'Rajdhani', sans-serif" }}>Sign Out</button>
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, background: "#1C2128", padding: "14px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", zIndex: 100 }}>
+          <div style={{ fontSize: "20px", fontFamily: "'DM Serif Display', serif", color: "#39D2C0" }}>Meridian</div>
+          <button onClick={signOut} style={{ background: "none", border: "none", color: "#8B949E", fontSize: "12px", cursor: "pointer", fontFamily: "'DM Sans', sans-serif" }}>Sign Out</button>
         </div>
       )}
 
       {/* Main */}
       <div style={{ marginLeft: isMobile ? "0" : "220px", padding: isMobile ? "70px 16px 80px" : "40px 48px", minHeight: "100vh" }}>
 
-        {/* Header */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: isMobile ? "24px" : "40px", flexWrap: "wrap", gap: "12px" }}>
-          <div>
-            <div style={{ fontSize: isMobile ? "24px" : "32px", fontWeight: "400", letterSpacing: "1px" }}>
-              {view === "dashboard" ? greeting : view === "calendar" ? "Calendar" : view === "tasks" ? "Tasks" : view === "goals" ? "Goals" : "Schedule Builder"}
+        {/* Notion-style Page Header */}
+        <div style={{ marginBottom: isMobile ? "24px" : "36px" }}>
+          {/* Cover banner strip */}
+          <div style={{ height: "8px", borderRadius: "4px", marginBottom: "28px", background: "linear-gradient(90deg, #39D2C0 0%, #58A6FF 50%, #FF6B8A 100%)" }} />
+          {/* Page icon + title */}
+          <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+              <div style={{ fontSize: isMobile ? "36px" : "44px", lineHeight: 1 }}>
+                {view === "dashboard" ? "🎓" : view === "calendar" ? "📅" : view === "tasks" ? "✅" : view === "goals" ? "🎯" : "⚡"}
+              </div>
+              <div>
+                <div style={{ fontSize: isMobile ? "26px" : "34px", fontFamily: "'DM Serif Display', serif", fontWeight: "400", color: "#E6EDF3", lineHeight: 1.1 }}>
+                  {view === "dashboard" ? greeting : view === "calendar" ? "Calendar" : view === "tasks" ? "Tasks" : view === "goals" ? "Goals" : "Schedule Builder"}
+                </div>
+                <div style={{ fontSize: "12px", color: "#8B949E", marginTop: "6px" }}>
+                  {DAYS[today.getDay()]}, {MONTHS[today.getMonth()]} {today.getDate()}, {today.getFullYear()}
+                </div>
+              </div>
             </div>
-            <div style={{ fontSize: "11px", color: "#C4B090", letterSpacing: "2px", textTransform: "uppercase", marginTop: "6px" }}>
-              {DAYS[today.getDay()]}, {MONTHS[today.getMonth()]} {today.getDate()}, {today.getFullYear()}
+            {/* Quote pill */}
+            <div onClick={nextQuote} title="Click for a new quote"
+              style={{ padding: "8px 14px", background: "#1C2128", border: "1px solid #21262D", borderRadius: "20px", color: "#8B949E", fontSize: "11px", fontStyle: "italic", maxWidth: isMobile ? "100%" : "300px", textAlign: "right", cursor: "pointer", userSelect: "none" }}>
+              "{QUOTES[quoteIdx]}"
             </div>
           </div>
-          {/* Clickable quote */}
-          <div onClick={nextQuote} title="Click for a new quote"
-            style={{ padding: "10px 16px", background: "#352E25", color: "#BF5700", fontSize: "10px", letterSpacing: "1px", fontStyle: "italic", maxWidth: isMobile ? "100%" : "320px", textAlign: "right", cursor: "pointer", userSelect: "none" }}>
-            "{QUOTES[quoteIdx]}"
-          </div>
+          <div style={{ height: "1px", background: "#21262D", marginTop: "20px" }} />
         </div>
 
         {/* DASHBOARD */}
@@ -1435,82 +1446,82 @@ function MeridianApp({ user }) {
           <>
             {/* Exam notification banner - once per day morning */}
             {examNotifs.length > 0 && !notifDismissed && (
-              <div style={{ background: "#3A1A00", border: "1px solid #BF5700", borderLeft: "4px solid #BF5700", padding: "14px 20px", marginBottom: "20px", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+              <div style={{ background: "#0D1E2E", border: "1px solid #39D2C0", borderLeft: "4px solid #39D2C0", padding: "14px 20px", marginBottom: "20px", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                 <div>
-                  <div style={{ fontSize: "12px", letterSpacing: "2px", textTransform: "uppercase", color: "#FF8200", marginBottom: "8px" }}>⚠️ Upcoming Exams</div>
+                  <div style={{ fontSize: "12px", letterSpacing: "2px", textTransform: "uppercase", color: "#5AE4D5", marginBottom: "8px" }}>⚠️ Upcoming Exams</div>
                   {examNotifs.map(n => (
-                    <div key={n.date} style={{ fontSize: "14px", color: "#F0EFED", marginBottom: "4px" }}>
+                    <div key={n.date} style={{ fontSize: "14px", color: "#E6EDF3", marginBottom: "4px" }}>
                       {n.events.length > 1
-                        ? <><strong style={{color:"#FF8200"}}>{n.events.map(e=>e.title).join(" + ")}</strong> — {n.daysLeft === 0 ? "TODAY" : n.daysLeft === 1 ? "Tomorrow" : `${n.daysLeft} days away`}</>
-                        : <><strong style={{color:"#FF8200"}}>{n.events[0].title}</strong> — {n.daysLeft === 0 ? "TODAY" : n.daysLeft === 1 ? "Tomorrow" : `${n.daysLeft} days away`}</>
+                        ? <><strong style={{color:"#5AE4D5"}}>{n.events.map(e=>e.title).join(" + ")}</strong> — {n.daysLeft === 0 ? "TODAY" : n.daysLeft === 1 ? "Tomorrow" : `${n.daysLeft} days away`}</>
+                        : <><strong style={{color:"#5AE4D5"}}>{n.events[0].title}</strong> — {n.daysLeft === 0 ? "TODAY" : n.daysLeft === 1 ? "Tomorrow" : `${n.daysLeft} days away`}</>
                       }
                     </div>
                   ))}
                 </div>
-                <button onClick={dismissNotif} style={{ background: "none", border: "none", color: "#BF5700", fontSize: "22px", cursor: "pointer", padding: "0 0 0 16px", lineHeight: 1 }}>×</button>
+                <button onClick={dismissNotif} style={{ background: "none", border: "none", color: "#39D2C0", fontSize: "22px", cursor: "pointer", padding: "0 0 0 16px", lineHeight: 1 }}>×</button>
               </div>
             )}
             {/* Next exam countdown card */}
             {nextExam && (
-              <div style={{ background: "#2A1800", border: "1px solid #3D2200", padding: "14px 20px", marginBottom: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div style={{ background: "#0D2030", border: "1px solid #3D2200", padding: "14px 20px", marginBottom: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <div>
-                  <div style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#FF8200", marginBottom: "4px" }}>Next Exam</div>
-                  <div style={{ fontSize: "15px", color: "#F0EFED", fontWeight: "600" }}>{nextExam.title}</div>
+                  <div style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#5AE4D5", marginBottom: "4px" }}>Next Exam</div>
+                  <div style={{ fontSize: "15px", color: "#E6EDF3", fontWeight: "600" }}>{nextExam.title}</div>
                 </div>
                 <div style={{ textAlign: "right" }}>
-                  <div style={{ fontSize: "38px", fontWeight: "700", lineHeight: 1, color: nextExam.daysLeft <= 3 ? "#E53935" : nextExam.daysLeft <= 7 ? "#FB8C00" : "#BF5700" }}>
+                  <div style={{ fontSize: "38px", fontWeight: "700", lineHeight: 1, color: nextExam.daysLeft <= 3 ? "#E53935" : nextExam.daysLeft <= 7 ? "#F0883E" : "#39D2C0" }}>
                     {nextExam.daysLeft === 0 ? "TODAY" : nextExam.daysLeft === 1 ? "1" : nextExam.daysLeft}
                   </div>
-                  {nextExam.daysLeft > 1 && <div style={{ fontSize: "10px", color: "#A89880", letterSpacing: "2px", textTransform: "uppercase" }}>days away</div>}
+                  {nextExam.daysLeft > 1 && <div style={{ fontSize: "11px", color: "#6E7681" }}>days away</div>}
                 </div>
               </div>
             )}
             {noGoals && (
-              <div style={{ ...S.card, borderLeft: "3px solid #BF5700", marginBottom: "24px" }}>
+              <div style={{ ...S.card, borderLeft: "3px solid #39D2C0", marginBottom: "24px" }}>
                 <div style={{ fontSize: "14px", marginBottom: "8px" }}>Welcome to Meridian.</div>
-                <div style={{ fontSize: "12px", color: "#C4B090", marginBottom: "16px" }}>Start by creating your goals. Add the commitments you want to track and stay accountable to.</div>
+                <div style={{ fontSize: "12px", color: "#8B949E", marginBottom: "16px" }}>Start by creating your goals. Add the commitments you want to track and stay accountable to.</div>
                 <button style={S.btn} onClick={() => { navigate("goals"); setShowAddGoal(true); }}>Create Your First Goal</button>
               </div>
             )}
             <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr", gap: "16px", marginBottom: "24px" }}>
               {/* Tasks card */}
-              <div style={{ ...S.card, borderLeft: `3px solid ${pendingTasks.length === 0 ? "#43A047" : pendingTasks.filter(t=>t.due&&t.due<todayStr).length > 0 ? "#E53935" : "#BF5700"}` }}>
+              <div style={{ ...S.card, borderLeft: `3px solid ${pendingTasks.length === 0 ? "#3FB950" : pendingTasks.filter(t=>t.due&&t.due<todayStr).length > 0 ? "#E53935" : "#39D2C0"}` }}>
                 <div style={S.cardTitle}>
                   {pendingTasks.filter(t=>t.due&&t.due<todayStr).length > 0
                     ? <span style={{color:"#E53935"}}>⚠️ {pendingTasks.filter(t=>t.due&&t.due<todayStr).length} overdue</span>
-                    : pendingTasks.length === 0 ? <span style={{color:"#43A047"}}>✅ All clear</span>
+                    : pendingTasks.length === 0 ? <span style={{color:"#3FB950"}}>✅ All clear</span>
                     : "Tasks Remaining"}
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
                   <div>
                     <div style={{ fontSize: "48px", fontWeight: "400", lineHeight: 1 }}>{pendingTasks.length}</div>
-                    <div style={{ fontSize: "11px", color: "#C4B090", marginTop: "8px" }}>of {tasks.length} total</div>
+                    <div style={{ fontSize: "11px", color: "#8B949E", marginTop: "8px" }}>of {tasks.length} total</div>
                   </div>
                   <svg width="60" height="60" style={{ flexShrink: 0 }}>
-                    <circle cx="30" cy="30" r="24" fill="none" stroke="#6A6055" strokeWidth="5" />
-                    <circle cx="30" cy="30" r="24" fill="none" stroke={completionRate === 100 ? "#43A047" : "#BF5700"} strokeWidth="5"
+                    <circle cx="30" cy="30" r="24" fill="none" stroke="#2D333B" strokeWidth="5" />
+                    <circle cx="30" cy="30" r="24" fill="none" stroke={completionRate === 100 ? "#3FB950" : "#39D2C0"} strokeWidth="5"
                       strokeDasharray={`${2 * Math.PI * 24}`}
                       strokeDashoffset={`${2 * Math.PI * 24 * (1 - completionRate / 100)}`}
                       strokeLinecap="round" transform="rotate(-90 30 30)"
                       style={{ transition: "stroke-dashoffset 0.8s ease" }} />
-                    <text x="30" y="35" textAnchor="middle" fontSize="11" fill="#1A1612" fontFamily="Georgia, serif">{completionRate}%</text>
+                    <text x="30" y="35" textAnchor="middle" fontSize="11" fill="#090D13" fontFamily="Georgia, serif">{completionRate}%</text>
                   </svg>
                 </div>
               </div>
 
               {/* Today card */}
-              <div style={{ ...S.card, borderLeft: `3px solid ${todayEvents.length > 0 ? "#1E88E5" : "#6A6055"}` }}>
+              <div style={{ ...S.card, borderLeft: `3px solid ${todayEvents.length > 0 ? "#58A6FF" : "#2D333B"}` }}>
                 <div style={S.cardTitle}>Today</div>
-                <div style={{ fontSize: "11px", color: "#C4B090", marginBottom: "8px" }}>
+                <div style={{ fontSize: "11px", color: "#8B949E", marginBottom: "8px" }}>
                   {DAYS[today.getDay()]}, {MONTHS[today.getMonth()]} {today.getDate()}
                 </div>
                 {todayEvents.length === 0
-                  ? <div style={{ fontSize: "12px", color: "#555555" }}>No events today</div>
+                  ? <div style={{ fontSize: "12px", color: "#484F58" }}>No events today</div>
                   : todayEvents.map(e => (
                     <div key={e.id} style={{ display: "flex", alignItems: "center", gap: "8px", padding: "5px 0", borderBottom: "1px solid #2A2A2A" }}>
                       <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: goalColor(e.goal_id), flexShrink: 0 }} />
                       <div style={{ fontSize: "11px", flex: 1 }}>{e.title}</div>
-                      <div style={{ fontSize: "10px", color: "#C4B090" }}>{e.time}</div>
+                      <div style={{ fontSize: "12px", color: "#8B949E" }}>{e.time}</div>
                     </div>
                   ))}
                 {/* Tasks due today */}
@@ -1535,11 +1546,11 @@ function MeridianApp({ user }) {
                       <div key={g.id} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                         <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: g.color, flexShrink: 0 }} />
                         <div style={{ fontSize: "10px", flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{g.label}</div>
-                        <div style={{ fontSize: "10px", color: "#C4B090" }}>{pct}%</div>
+                        <div style={{ fontSize: "12px", color: "#8B949E" }}>{pct}%</div>
                       </div>
                     );
                   })}
-                  {goals.length > 4 && <div style={{ fontSize: "10px", color: "#C4B090" }}>+{goals.length - 4} more</div>}
+                  {goals.length > 4 && <div style={{ fontSize: "12px", color: "#8B949E" }}>+{goals.length - 4} more</div>}
                 </div>
               </div>
             </div>
@@ -1556,24 +1567,24 @@ function MeridianApp({ user }) {
               const doneTodayCount = uniqueTodayTasks.filter(t => t.done).length;
               const allDoneToday = uniqueTodayTasks.length > 0 && doneTodayCount === uniqueTodayTasks.length;
               return (
-                <div style={{ ...S.card, marginBottom: "24px", borderLeft: allDoneToday ? "3px solid #43A047" : "3px solid #BF5700" }}>
+                <div style={{ ...S.card, marginBottom: "24px", borderLeft: allDoneToday ? "3px solid #43A047" : "3px solid #39D2C0" }}>
                   <div style={S.cardTitle}>
                     <span>🎯 Today's Tasks {uniqueTodayTasks.length > 0 ? `(${doneTodayCount}/${uniqueTodayTasks.length})` : ""} {allDoneToday ? "— ✅ Done!" : ""}</span>
                     <button style={S.btnOut} onClick={() => { setNewTask({ text: "", goal_id: "", due: todayStr, priority: "high", hours: "", recurring: [] }); setShowAddTask(true); }}>+ Add</button>
                   </div>
-                  {uniqueTodayTasks.length === 0 && <div style={{ fontSize: "12px", color: "#C4B090" }}>No tasks due today. Add one or check your upcoming tasks below.</div>}
+                  {uniqueTodayTasks.length === 0 && <div style={{ fontSize: "12px", color: "#8B949E" }}>No tasks due today. Add one or check your upcoming tasks below.</div>}
                   {uniqueTodayTasks.map(task => (
                     <div key={task.id} onClick={() => toggleTask(task)} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "10px 0", borderBottom: "1px solid #2A2A2A", cursor: "pointer" }}>
-                      <div style={{ ...chk(task.done), border: `1.5px solid ${task.done ? "#43A047" : "#BF5700"}`, background: task.done ? "#43A047" : "transparent" }}>
+                      <div style={{ ...chk(task.done), border: `1.5px solid ${task.done ? "#3FB950" : "#39D2C0"}`, background: task.done ? "#3FB950" : "transparent" }}>
                         {task.done && <span style={{ fontSize: "10px", color: "#fff" }}>✓</span>}
                       </div>
                       <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: goalColor(task.goal_id), flexShrink: 0 }} />
-                      <div style={{ flex: 1, fontSize: "13px", textDecoration: task.done ? "line-through" : "none", color: task.done ? "#777777" : "#F0EFED" }}>{task.text}</div>
-                      <div style={{ fontSize: "10px", color: "#C4B090" }}>{goalLabel(task.goal_id)}</div>
+                      <div style={{ flex: 1, fontSize: "13px", textDecoration: task.done ? "line-through" : "none", color: task.done ? "#777777" : "#E6EDF3" }}>{task.text}</div>
+                      <div style={{ fontSize: "12px", color: "#8B949E" }}>{goalLabel(task.goal_id)}</div>
                       <div style={badge(task.priority)}>{task.priority}</div>
                     </div>
                   ))}
-                  {allDoneToday && <div style={{ fontSize: "12px", color: "#43A047", marginTop: "10px", letterSpacing: "1px" }}>🎉 You crushed today. Remarkable.</div>}
+                  {allDoneToday && <div style={{ fontSize: "12px", color: "#3FB950", marginTop: "10px", letterSpacing: "1px" }}>🎉 You crushed today. Remarkable.</div>}
                 </div>
               );
             })()}
@@ -1582,7 +1593,7 @@ function MeridianApp({ user }) {
             <div style={{ ...S.card, marginBottom: "24px" }}>
               <div style={S.cardTitle}>
                 <span>⏱ Flow Mode</span>
-                <span style={{ fontSize: "10px", color: "#C4B090" }}>{Math.floor((stats.deep_work_today||0)/60)}h {(stats.deep_work_today||0)%60}m deep work today</span>
+                <span style={{ fontSize: "12px", color: "#8B949E" }}>{Math.floor((stats.deep_work_today||0)/60)}h {(stats.deep_work_today||0)%60}m deep work today</span>
               </div>
               {!timerRunning && timerSeconds === 0 && (
                 <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
@@ -1596,15 +1607,15 @@ function MeridianApp({ user }) {
                 </div>
               )}
               {!timerRunning && timerSeconds === 0 && timerMode && (
-                <div style={{ fontSize: "11px", color: "#43A047", marginTop: "8px" }}>✅ Session complete! Deep work logged.</div>
+                <div style={{ fontSize: "11px", color: "#3FB950", marginTop: "8px" }}>✅ Session complete! Deep work logged.</div>
               )}
             </div>
             {/* Falling Off Detection */}
             {fallingOff && (
-              <div style={{ ...S.card, marginBottom: "24px", borderLeft: "3px solid #FB8C00", background: "#FB8C0008" }}>
-                <div style={{ fontSize: "13px", color: "#FB8C00", marginBottom: "4px" }}>📉 You were more consistent last week.</div>
-                <div style={{ fontSize: "11px", color: "#C4B090" }}>No pressure — but let's get back on track. Even one task today counts.</div>
-                <button style={{ ...S.btnOut, marginTop: "10px", borderColor: "#FB8C00", color: "#FB8C00" }} onClick={() => setFallingOff(false)}>Got it, I'm back 💪</button>
+              <div style={{ ...S.card, marginBottom: "24px", borderLeft: "3px solid #FB8C00", background: "#F0883E08" }}>
+                <div style={{ fontSize: "13px", color: "#F0883E", marginBottom: "4px" }}>📉 You were more consistent last week.</div>
+                <div style={{ fontSize: "11px", color: "#8B949E" }}>No pressure — but let's get back on track. Even one task today counts.</div>
+                <button style={{ ...S.btnOut, marginTop: "10px", borderColor: "#F0883E", color: "#F0883E" }} onClick={() => setFallingOff(false)}>Got it, I'm back 💪</button>
               </div>
             )}
 
@@ -1617,20 +1628,20 @@ function MeridianApp({ user }) {
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: "20px", flexWrap: "wrap" }}>
                   <div>
-                    <div style={{ fontSize: "48px", fontWeight: "400", lineHeight: 1, color: performanceScore >= 70 ? "#43A047" : performanceScore >= 40 ? "#FB8C00" : "#BF5700" }}>{performanceScore}</div>
-                    <div style={{ fontSize: "11px", color: "#C4B090", marginTop: "4px" }}>7-day avg</div>
-                    <div style={{ fontSize: "10px", color: "#C4B090", marginTop: "2px" }}>
+                    <div style={{ fontSize: "48px", fontWeight: "400", lineHeight: 1, color: performanceScore >= 70 ? "#3FB950" : performanceScore >= 40 ? "#F0883E" : "#39D2C0" }}>{performanceScore}</div>
+                    <div style={{ fontSize: "11px", color: "#8B949E", marginTop: "4px" }}>7-day avg</div>
+                    <div style={{ fontSize: "12px", color: "#8B949E", marginTop: "2px" }}>
                       {performanceScore < 30 ? "You're just getting started 💪" : performanceScore < 60 ? "Building momentum 🔥" : "You're on a roll ⚡"}
                     </div>
                   </div>
                   <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "6px" }}>
                     {weeklySnapshots.slice(0, 5).reverse().map((s, i) => (
                       <div key={i} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                        <div style={{ fontSize: "10px", color: "#C4B090", width: "36px" }}>{s.date.slice(5)}</div>
-                        <div style={{ flex: 1, height: "6px", background: "#6A6055", borderRadius: "3px" }}>
-                          <div style={{ height: "100%", width: `${s.score}%`, background: "#BF5700", borderRadius: "3px", transition: "width 0.6s" }} />
+                        <div style={{ fontSize: "12px", color: "#8B949E", width: "36px" }}>{s.date.slice(5)}</div>
+                        <div style={{ flex: 1, height: "6px", background: "#2D333B", borderRadius: "3px" }}>
+                          <div style={{ height: "100%", width: `${s.score}%`, background: "#39D2C0", borderRadius: "3px", transition: "width 0.6s" }} />
                         </div>
-                        <div style={{ fontSize: "10px", color: "#C4B090", width: "50px" }}>{s.completed_tasks}/{s.total_tasks}</div>
+                        <div style={{ fontSize: "12px", color: "#8B949E", width: "50px" }}>{s.completed_tasks}/{s.total_tasks}</div>
                       </div>
                     ))}
                   </div>
@@ -1642,9 +1653,9 @@ function MeridianApp({ user }) {
             {goals.length > 0 && (
               <div style={{ ...S.card, marginBottom: "24px" }}>
                 <div style={{ ...S.cardTitle, marginBottom: "14px" }}>
-                  <span style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#C4B090" }}>🔮 Goal Forecast</span>
+                  <span style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#8B949E" }}>🔮 Goal Forecast</span>
                   {goals.filter(g => tasks.filter(t=>t.goal_id===g.id&&!t.done).length > 0).length > 5 && (
-                    <button style={{ background: "none", border: "none", fontSize: "10px", color: "#BF5700", cursor: "pointer", fontFamily: "'Rajdhani', sans-serif", letterSpacing: "1px" }} onClick={() => setShowAllGoals(s => !s)}>
+                    <button style={{ background: "none", border: "none", fontSize: "10px", color: "#39D2C0", cursor: "pointer", fontFamily: "'DM Sans', sans-serif", letterSpacing: "1px" }} onClick={() => setShowAllGoals(s => !s)}>
                       {showAllGoals ? "Show less" : `See all (${goals.filter(g => tasks.filter(t=>t.goal_id===g.id&&!t.done).length > 0).length})`}
                     </button>
                   )}
@@ -1672,8 +1683,8 @@ function MeridianApp({ user }) {
                     const deadlineStr = deadlineDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
                     if (daysLeft <= 0) { urgencyColor = "#E53935"; forecastLine = `⚠️ Deadline passed — ${remaining} left`; }
                     else if (daysLeft <= 7) { urgencyColor = "#E53935"; forecastLine = `🔴 ${daysLeft}d left (${deadlineStr}) · ${tasksPerDay}/day needed`; }
-                    else if (daysLeft <= 14) { urgencyColor = "#FB8C00"; forecastLine = `🟠 ${daysLeft}d until ${deadlineStr} · ${tasksPerDay}/day`; }
-                    else { urgencyColor = "#43A047"; forecastLine = `🟢 ${daysLeft}d until ${deadlineStr} · ${tasksPerDay}/day`; }
+                    else if (daysLeft <= 14) { urgencyColor = "#F0883E"; forecastLine = `🟠 ${daysLeft}d until ${deadlineStr} · ${tasksPerDay}/day`; }
+                    else { urgencyColor = "#3FB950"; forecastLine = `🟢 ${daysLeft}d until ${deadlineStr} · ${tasksPerDay}/day`; }
                   } else {
                     const daysLeft = Math.ceil(remaining / 2);
                     const completionStr = new Date(Date.now() + daysLeft * 86400000).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
@@ -1689,10 +1700,10 @@ function MeridianApp({ user }) {
                         </div>
                         <div style={{ fontSize: "10px", color: urgencyColor }}>{forecastLine}</div>
                       </div>
-                      <div style={{ height: "4px", background: "#6A6055", borderRadius: "2px" }}>
+                      <div style={{ height: "4px", background: "#2D333B", borderRadius: "2px" }}>
                         <div style={{ height: "100%", width: `${pct}%`, background: g.color, borderRadius: "2px", transition: "width 0.6s" }} />
                       </div>
-                      <div style={{ display: "flex", justifyContent: "space-between", marginTop: "4px", fontSize: "10px", color: "#C4B090" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", marginTop: "4px", fontSize: "12px", color: "#8B949E" }}>
                         <span>{pct}% done</span><span>{remaining} remaining</span>
                       </div>
                     </div>
@@ -1707,20 +1718,20 @@ function MeridianApp({ user }) {
                   <span>Upcoming Tasks</span>
                   <button style={S.btnOut} onClick={() => { if(noGoals){navigate("goals");setShowAddGoal(true);}else{ setNewTask({ text: "", goal_id: "", due: "", priority: "med", hours: "", recurring: [] }); setShowAddTask(true); }}}>+ Add</button>
                 </div>
-                {upcomingTasks.length === 0 && <div style={{ fontSize: "13px", color: "#C4B090" }}>{noGoals ? "Create a goal first to start adding tasks." : "No tasks yet."}</div>}
+                {upcomingTasks.length === 0 && <div style={{ fontSize: "13px", color: "#8B949E" }}>{noGoals ? "Create a goal first to start adding tasks." : "No tasks yet."}</div>}
                 {upcomingTasks.map(task => (
                   <div key={task.id} style={taskRow(task.done)} onClick={() => toggleTask(task)}>
                     <div style={chk(task.done)}>{task.done && <span style={{ fontSize: "10px", color: "#FFFFFF" }}>✓</span>}</div>
                     <div style={dot(task.goal_id)} />
-                    <div style={{ flex: 1, fontSize: "13px", color: "#F0EFED" }}>{task.text}</div>
+                    <div style={{ flex: 1, fontSize: "13px", color: "#E6EDF3" }}>{task.text}</div>
                     <div style={badge(task.priority)}>{task.priority}</div>
-                    {task.due && <div style={{ fontSize: "10px", color: "#C4B090", flexShrink: 0 }}>{task.due.slice(5)}</div>}
+                    {task.due && <div style={{ fontSize: "12px", color: "#8B949E", flexShrink: 0 }}>{task.due.slice(5)}</div>}
                   </div>
                 ))}
               </div>
               <div style={S.card}>
                 <div style={S.cardTitle}>Goals Overview</div>
-                {goals.length === 0 && <div style={{ fontSize: "12px", color: "#555555" }}>No goals yet.</div>}
+                {goals.length === 0 && <div style={{ fontSize: "12px", color: "#484F58" }}>No goals yet.</div>}
                 {goals.map(g => {
                   const gt = tasks.filter(t => t.goal_id === g.id);
                   const d  = gt.filter(t => t.done).length;
@@ -1728,17 +1739,17 @@ function MeridianApp({ user }) {
                   return (
                     <div key={g.id} style={{ marginBottom: "16px" }}>
                       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}>
-                        <div style={{ fontSize: "11px", color: "#D4C8B8" }}>{g.label}</div>
-                        <div style={{ fontSize: "10px", color: "#C4B090" }}>{d}/{gt.length}</div>
+                        <div style={{ fontSize: "11px", color: "#C9D1D9" }}>{g.label}</div>
+                        <div style={{ fontSize: "12px", color: "#8B949E" }}>{d}/{gt.length}</div>
                       </div>
-                      <div style={{ height: "4px", background: "#6A6055" }}><div style={fill(p, g.color)} /></div>
+                      <div style={{ height: "4px", background: "#2D333B" }}><div style={fill(p, g.color)} /></div>
                     </div>
                   );
                 })}
                 <div style={{ marginTop: "16px", paddingTop: "16px", borderTop: "1px solid #2A2A2A" }}>
-                  <div style={{ fontSize: "10px", color: "#C4B090", letterSpacing: "2px", textTransform: "uppercase", marginBottom: "8px" }}>Today's Focus</div>
+                  <div style={{ fontSize: "11px", fontWeight: "600", color: "#8B949E", marginBottom: "8px" }}>Today's Focus</div>
                   {todayEvents.map(e => <div key={e.id} style={chip(e.goal_id)}><span>{e.title}</span><span>{e.time}</span></div>)}
-                  {todayEvents.length === 0 && <div style={{ fontSize: "12px", color: "#555555" }}>No events today</div>}
+                  {todayEvents.length === 0 && <div style={{ fontSize: "12px", color: "#484F58" }}>No events today</div>}
                 </div>
               </div>
             </div>
@@ -1751,16 +1762,16 @@ function MeridianApp({ user }) {
             <div style={S.card}>
               <div style={S.cardTitle}>
                 <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                  <button style={{ background: "none", border: "none", cursor: "pointer", fontSize: "18px", color: "#F0EFED" }}
+                  <button style={{ background: "none", border: "none", cursor: "pointer", fontSize: "18px", color: "#E6EDF3" }}
                     onClick={() => { if(calMonth===0){setCalMonth(11);setCalYear(y=>y-1);}else setCalMonth(m=>m-1); }}>&lt;</button>
-                  <span style={{ fontSize: "13px", letterSpacing: "3px" }}>{MONTHS[calMonth].toUpperCase()} {calYear}</span>
-                  <button style={{ background: "none", border: "none", cursor: "pointer", fontSize: "18px", color: "#F0EFED" }}
+                  <span style={{ fontSize: "14px", fontWeight: "600" }}>{MONTHS[calMonth].toUpperCase()} {calYear}</span>
+                  <button style={{ background: "none", border: "none", cursor: "pointer", fontSize: "18px", color: "#E6EDF3" }}
                     onClick={() => { if(calMonth===11){setCalMonth(0);setCalYear(y=>y+1);}else setCalMonth(m=>m+1); }}>&gt;</button>
                 </div>
                 <button style={S.btnOut} onClick={() => { if(noGoals){navigate("goals");setShowAddGoal(true);}else setShowAddEvent(true); }}>+ Event</button>
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: "2px" }}>
-                {DAYS.map(d => <div key={d} style={{ textAlign: "center", fontSize: "10px", letterSpacing: "2px", color: "#C4B090", padding: "8px 0", textTransform: "uppercase" }}>{d}</div>)}
+                {DAYS.map(d => <div key={d} style={{ textAlign: "center", fontSize: "11px", fontWeight: "600", color: "#8B949E", padding: "8px 0" }}>{d}</div>)}
                 {Array.from({length:firstDay}).map((_,i)=><div key={`e${i}`}/>)}
                 {Array.from({length:daysInMonth}).map((_,i)=>{
                   const day=i+1, ds=calDs(day), evs=eventsForDate(ds), isToday=ds===todayStr, isSel=ds===selectedDate;
@@ -1772,9 +1783,9 @@ function MeridianApp({ user }) {
                     <div key={day} style={dayCell(isToday,isSel)} onClick={()=>setSelectedDate(isSel?null:ds)}>
                       <span>{day}</span>
                       <div style={{display:"flex",gap:"2px",flexWrap:"wrap",justifyContent:"center",marginTop:"2px"}}>
-                        {evs.slice(0,2).map(e=><div key={e.id} style={{width:"4px",height:"4px",borderRadius:"50%",background:isToday?"#BF5700":goalColor(e.goal_id)}}/>)}
-                        {uniqueGoalColors.map((c,i)=><div key={i} style={{width:"4px",height:"4px",borderRadius:"1px",background:isToday?"#F0EFED":c}}/>)}
-                        {goalDeadlines.slice(0,1).map(g=><div key={g.id} style={{width:"5px",height:"5px",borderRadius:"50%",background:g.color,border:`1px solid ${isToday?"#F0EFED":"#1A1612"}`}}/>)}
+                        {evs.slice(0,2).map(e=><div key={e.id} style={{width:"4px",height:"4px",borderRadius:"50%",background:isToday?"#39D2C0":goalColor(e.goal_id)}}/>)}
+                        {uniqueGoalColors.map((c,i)=><div key={i} style={{width:"4px",height:"4px",borderRadius:"1px",background:isToday?"#E6EDF3":c}}/>)}
+                        {goalDeadlines.slice(0,1).map(g=><div key={g.id} style={{width:"5px",height:"5px",borderRadius:"50%",background:g.color,border:`1px solid ${isToday?"#E6EDF3":"#090D13"}`}}/>)}
                       </div>
                     </div>
                   );
@@ -1807,13 +1818,13 @@ function MeridianApp({ user }) {
                   <div style={{fontSize:"10px",opacity:0.7}}>{e.date} at {e.time} - {goalLabel(e.goal_id)}</div>
                 </div>
               ))}
-              {futureEvents.length===0 && !selectedDate && <div style={{fontSize:"12px",color:"#555555"}}>No upcoming events.</div>}
-              {selectedDate && eventsForDate(selectedDate).length===0 && tasks.filter(t=>t.due===selectedDate&&!t.done).length===0 && goals.filter(g=>g.deadline===selectedDate).length===0 && <div style={{fontSize:"12px",color:"#555555"}}>Nothing on this day.</div>}
+              {futureEvents.length===0 && !selectedDate && <div style={{fontSize:"12px",color:"#484F58"}}>No upcoming events.</div>}
+              {selectedDate && eventsForDate(selectedDate).length===0 && tasks.filter(t=>t.due===selectedDate&&!t.done).length===0 && goals.filter(g=>g.deadline===selectedDate).length===0 && <div style={{fontSize:"12px",color:"#484F58"}}>Nothing on this day.</div>}
               {/* Legend */}
               <div style={{marginTop:"16px", paddingTop:"12px", borderTop:"1px solid #2A2A2A", display:"flex", gap:"16px", flexWrap:"wrap"}}>
-                <div style={{display:"flex",alignItems:"center",gap:"5px",fontSize:"10px",color:"#A89880"}}><div style={{width:"8px",height:"8px",borderRadius:"50%",background:"#BF5700"}}/> Event</div>
-                <div style={{display:"flex",alignItems:"center",gap:"5px",fontSize:"10px",color:"#A89880"}}><div style={{width:"8px",height:"8px",borderRadius:"1px",background:"#A89880"}}/> Task due</div>
-                <div style={{display:"flex",alignItems:"center",gap:"5px",fontSize:"10px",color:"#A89880"}}><div style={{width:"8px",height:"8px",borderRadius:"50%",border:"1.5px solid #999999"}}/> Goal deadline</div>
+                <div style={{display:"flex",alignItems:"center",gap:"5px",fontSize:"10px",color:"#6E7681"}}><div style={{width:"8px",height:"8px",borderRadius:"50%",background:"#39D2C0"}}/> Event</div>
+                <div style={{display:"flex",alignItems:"center",gap:"5px",fontSize:"10px",color:"#6E7681"}}><div style={{width:"8px",height:"8px",borderRadius:"1px",background:"#6E7681"}}/> Task due</div>
+                <div style={{display:"flex",alignItems:"center",gap:"5px",fontSize:"10px",color:"#6E7681"}}><div style={{width:"8px",height:"8px",borderRadius:"50%",border:"1.5px solid #999999"}}/> Goal deadline</div>
               </div>
             </div>
           </div>
@@ -1834,7 +1845,7 @@ function MeridianApp({ user }) {
               const todayTasks = [...new Map([...dueTodayTasks, ...recurringToday].map(t => [t.id, t])).values()];
               if (todayTasks.length === 0) return null;
               return (
-                <div style={{ ...S.card, borderLeft: "3px solid #BF5700" }}>
+                <div style={{ ...S.card, borderLeft: "3px solid #39D2C0" }}>
                   <div style={S.cardTitle}>
                     <span>📅 Today — {DAYS[today.getDay()]}, {MONTHS[today.getMonth()]} {today.getDate()} ({todayTasks.length})</span>
                   </div>
@@ -1843,13 +1854,13 @@ function MeridianApp({ user }) {
                       <div style={chk(false)} onClick={() => toggleTask(task)} />
                       <div style={dot(task.goal_id)} />
                       <div style={{ flex: 1 }} onClick={() => toggleTask(task)}>
-                        <div style={{ fontSize: "13px" }}>{task.text} {task.recurring && <span style={{fontSize:"9px",color:"#BF5700",marginLeft:"6px"}}>↻</span>}</div>
-                        <div style={{ fontSize: "10px", color: "#C4B090", marginTop: "2px" }}>{goalLabel(task.goal_id)}</div>
+                        <div style={{ fontSize: "13px" }}>{task.text} {task.recurring && <span style={{fontSize:"9px",color:"#39D2C0",marginLeft:"6px"}}>↻</span>}</div>
+                        <div style={{ fontSize: "12px", color: "#8B949E", marginTop: "2px" }}>{goalLabel(task.goal_id)}</div>
                       </div>
                       <div style={badge(task.priority)}>{task.priority}</div>
-                      <button onClick={() => setEditTask({...task})} style={{background:"none",border:"none",color:"#A89880",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>Edit</button>
-                      <button onClick={() => { setFocusPickerTask(task); setFocusPickerMins(25); setShowFocusPicker(true); }} style={{background:"none",border:"none",color:"#1E88E5",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>Focus</button>
-                      <button onClick={() => deleteTask(task.id)} style={{background:"none",border:"none",color:"#8B1A1A",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>x</button>
+                      <button onClick={() => setEditTask({...task})} style={{background:"none",border:"none",color:"#6E7681",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>Edit</button>
+                      <button onClick={() => { setFocusPickerTask(task); setFocusPickerMins(25); setShowFocusPicker(true); }} style={{background:"none",border:"none",color:"#58A6FF",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>Focus</button>
+                      <button onClick={() => deleteTask(task.id)} style={{background:"none",border:"none",color:"#FF3D5A",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>x</button>
                     </div>
                   ))}
                 </div>
@@ -1862,19 +1873,19 @@ function MeridianApp({ user }) {
                   <span>All Pending ({pendingTasks.length})</span>
                   <button style={S.btnOut} onClick={() => { if(noGoals){navigate("goals");setShowAddGoal(true);}else{ setNewTask({ text: "", goal_id: "", due: "", priority: "med", hours: "", recurring: [] }); setShowAddTask(true); }}}>+ Task</button>
                 </div>
-                {pendingTasks.length===0 && <div style={{fontSize:"13px",color:"#A89880"}}>{noGoals?"Create a goal first.":"All caught up. Remarkable."}</div>}
+                {pendingTasks.length===0 && <div style={{fontSize:"13px",color:"#6E7681"}}>{noGoals?"Create a goal first.":"All caught up. Remarkable."}</div>}
                 {pendingTasks.map(task=>(
                   <div key={task.id} style={taskRow(false)}>
                     <div style={chk(false)} onClick={()=>toggleTask(task)}/>
                     <div style={dot(task.goal_id)}/>
                     <div style={{flex:1}} onClick={()=>toggleTask(task)}>
-                      <div style={{fontSize:"13px"}}>{task.text} {task.recurring && (() => { try { const d = JSON.parse(task.recurring); return <span style={{fontSize:"9px",color:"#BF5700",letterSpacing:"1px",textTransform:"uppercase",marginLeft:"6px"}}>↻ {d.join(", ")}</span>; } catch { return null; } })()}</div>
-                      <div style={{fontSize:"10px",color:"#A89880",marginTop:"2px"}}>{goalLabel(task.goal_id)}{task.due?` - due ${task.due}`:""}</div>
+                      <div style={{fontSize:"13px"}}>{task.text} {task.recurring && (() => { try { const d = JSON.parse(task.recurring); return <span style={{fontSize:"9px",color:"#39D2C0",letterSpacing:"1px",textTransform:"uppercase",marginLeft:"6px"}}>↻ {d.join(", ")}</span>; } catch { return null; } })()}</div>
+                      <div style={{fontSize:"10px",color:"#6E7681",marginTop:"2px"}}>{goalLabel(task.goal_id)}{task.due?` - due ${task.due}`:""}</div>
                     </div>
                     <div style={badge(task.priority)}>{task.priority}</div>
-                    <button onClick={() => setEditTask({...task})} style={{background:"none",border:"none",color:"#A89880",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>Edit</button>
-                    <button onClick={() => { setFocusPickerTask(task); setFocusPickerMins(25); setShowFocusPicker(true); }} style={{background:"none",border:"none",color:"#1E88E5",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>Focus</button>
-                    <button onClick={() => deleteTask(task.id)} style={{background:"none",border:"none",color:"#8B1A1A",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>x</button>
+                    <button onClick={() => setEditTask({...task})} style={{background:"none",border:"none",color:"#6E7681",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>Edit</button>
+                    <button onClick={() => { setFocusPickerTask(task); setFocusPickerMins(25); setShowFocusPicker(true); }} style={{background:"none",border:"none",color:"#58A6FF",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>Focus</button>
+                    <button onClick={() => deleteTask(task.id)} style={{background:"none",border:"none",color:"#FF3D5A",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>x</button>
                   </div>
                 ))}
               </div>
@@ -1889,13 +1900,13 @@ function MeridianApp({ user }) {
                     }}>Clear All</button>
                   )}
                 </div>
-                {doneTasks.length===0 && <div style={{fontSize:"13px",color:"#A89880"}}>Nothing yet.</div>}
+                {doneTasks.length===0 && <div style={{fontSize:"13px",color:"#6E7681"}}>Nothing yet.</div>}
                 {doneTasks.map(task=>(
                   <div key={task.id} style={taskRow(true)}>
                     <div style={chk(true)} onClick={()=>toggleTask(task)}><span style={{fontSize:"10px",color:"#FDFAF6"}}>v</span></div>
                     <div style={dot(task.goal_id)}/>
                     <div style={{fontSize:"13px",textDecoration:"line-through",color:"#888880",flex:1}} onClick={()=>toggleTask(task)}>{task.text}</div>
-                    <button onClick={() => deleteTask(task.id)} style={{background:"none",border:"none",color:"#8B1A1A",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>x</button>
+                    <button onClick={() => deleteTask(task.id)} style={{background:"none",border:"none",color:"#FF3D5A",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>x</button>
                   </div>
                 ))}
               </div>
@@ -1911,8 +1922,8 @@ function MeridianApp({ user }) {
             </div>
             {goals.length === 0 && (
               <div style={{ ...S.card, textAlign: "center", padding: "48px" }}>
-                <div style={{ fontSize: "14px", marginBottom: "8px", color: "#C4B090" }}>No goals yet.</div>
-                <div style={{ fontSize: "12px", color: "#555555", marginBottom: "24px" }}>Add the commitments you want to track.</div>
+                <div style={{ fontSize: "14px", marginBottom: "8px", color: "#8B949E" }}>No goals yet.</div>
+                <div style={{ fontSize: "12px", color: "#484F58", marginBottom: "24px" }}>Add the commitments you want to track.</div>
                 <button style={S.btn} onClick={() => setShowAddGoal(true)}>Create Your First Goal</button>
               </div>
             )}
@@ -1926,31 +1937,31 @@ function MeridianApp({ user }) {
                   <div key={g.id} style={{ ...S.card, borderLeft: `3px solid ${g.color}` }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
                       <div style={{ fontSize: "14px", letterSpacing: "1px" }}>{g.label}</div>
-                      <button onClick={() => deleteGoal(g.id)} style={{ background: "none", border: "none", color: "#555555", fontSize: "18px", cursor: "pointer", padding: "0 0 0 8px", lineHeight: 1 }}>x</button>
+                      <button onClick={() => deleteGoal(g.id)} style={{ background: "none", border: "none", color: "#484F58", fontSize: "18px", cursor: "pointer", padding: "0 0 0 8px", lineHeight: 1 }}>x</button>
                     </div>
-                    <div style={{ fontSize: "10px", color: "#C4B090", marginBottom: "20px" }}>
+                    <div style={{ fontSize: "12px", color: "#8B949E", marginBottom: "20px" }}>
                       {g.deadline ? `Due ${new Date(g.deadline).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}` : "No deadline set"}
                     </div>
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "20px" }}>
                       {[{label:"Tasks Done",val:`${d}/${gt.length}`},{label:"Progress",val:`${p}%`}].map(stat=>(
                         <div key={stat.label} style={{textAlign:"center"}}>
                           <div style={{fontSize:"22px",color:g.color}}>{stat.val}</div>
-                          <div style={{fontSize:"10px",color:"#A89880",textTransform:"uppercase"}}>{stat.label}</div>
+                          <div style={{fontSize:"10px",color:"#6E7681",textTransform:"uppercase"}}>{stat.label}</div>
                         </div>
                       ))}
                     </div>
-                    <div style={{height:"4px",background:"#6A6055",marginBottom:"16px"}}><div style={fill(p,g.color)}/></div>
+                    <div style={{height:"4px",background:"#2D333B",marginBottom:"16px"}}><div style={fill(p,g.color)}/></div>
                     {ge.length > 0 && (
                       <>
-                        <div style={{fontSize:"10px",color:"#A89880",letterSpacing:"2px",textTransform:"uppercase",marginBottom:"8px"}}>Upcoming</div>
+                        <div style={{fontSize:"10px",color:"#6E7681",letterSpacing:"2px",textTransform:"uppercase",marginBottom:"8px"}}>Upcoming</div>
                         {ge.slice(0,2).map(e=>(
-                          <div key={e.id} style={{fontSize:"11px",color:"#B8A898",padding:"4px 0",borderBottom:"1px solid #2A2A2A",display:"flex",justifyContent:"space-between"}}>
-                            <span>{e.title}</span><span style={{color:"#A89880"}}>{e.date.slice(5)}</span>
+                          <div key={e.id} style={{fontSize:"11px",color:"#6E7681",padding:"4px 0",borderBottom:"1px solid #2A2A2A",display:"flex",justifyContent:"space-between"}}>
+                            <span>{e.title}</span><span style={{color:"#6E7681"}}>{e.date.slice(5)}</span>
                           </div>
                         ))}
                       </>
                     )}
-                    {ge.length === 0 && <div style={{fontSize:"11px",color:"#555555"}}>No upcoming events</div>}
+                    {ge.length === 0 && <div style={{fontSize:"11px",color:"#484F58"}}>No upcoming events</div>}
                   </div>
                 );
               })}
@@ -1972,15 +1983,15 @@ function MeridianApp({ user }) {
         <div style={S.modal} onClick={() => { setShowImport(false); setImportParsed(null); setImportText(""); }}>
           <div style={{ ...S.modalBox, width: "560px" }} onClick={e => e.stopPropagation()}>
             <div style={{ fontSize: "12px", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "4px" }}>⚡ Import from Claude</div>
-            <div style={{ fontSize: "11px", color: "#C4B090", marginBottom: "20px" }}>Paste any plan, schedule, or list from Claude. We'll extract your goals and tasks automatically.</div>
-            <div style={{ ...S.card, marginBottom: "16px", borderLeft: "3px solid #BF5700", padding: "16px" }}>
-              <div style={{ fontSize: "11px", color: "#BF5700", marginBottom: "8px", letterSpacing: "1px" }}>⚡ QUICK LOAD</div>
-              <div style={{ fontSize: "12px", color: "#D4C8B8", marginBottom: "12px" }}>Instantly load your saved plan — all goals and tasks in one click.</div>
+            <div style={{ fontSize: "11px", color: "#8B949E", marginBottom: "20px" }}>Paste any plan, schedule, or list from Claude. We'll extract your goals and tasks automatically.</div>
+            <div style={{ ...S.card, marginBottom: "16px", borderLeft: "3px solid #39D2C0", padding: "16px" }}>
+              <div style={{ fontSize: "11px", color: "#39D2C0", marginBottom: "8px", letterSpacing: "1px" }}>⚡ QUICK LOAD</div>
+              <div style={{ fontSize: "12px", color: "#C9D1D9", marginBottom: "12px" }}>Instantly load your saved plan — all goals and tasks in one click.</div>
               <button style={S.btn} onClick={seedData} disabled={importLoading}>{importLoading ? "Loading..." : "Load My Full Plan"}</button>
             </div>
             <div style={{ ...S.card, marginBottom: "16px", borderLeft: "3px solid #1E88E5", padding: "16px" }}>
-              <div style={{ fontSize: "11px", color: "#1E88E5", marginBottom: "8px", letterSpacing: "1px" }}>📅 LOAD SUBTASKS</div>
-              <div style={{ fontSize: "12px", color: "#D4C8B8", marginBottom: "12px" }}>Load your daily breakdown tasks into existing goals.</div>
+              <div style={{ fontSize: "11px", color: "#58A6FF", marginBottom: "8px", letterSpacing: "1px" }}>📅 LOAD SUBTASKS</div>
+              <div style={{ fontSize: "12px", color: "#C9D1D9", marginBottom: "12px" }}>Load your daily breakdown tasks into existing goals.</div>
               <button style={S.btnOut} onClick={seedSubtasks} disabled={importLoading}>{importLoading ? "Loading..." : "Load Subtasks"}</button>
             </div>
 
@@ -2002,20 +2013,20 @@ function MeridianApp({ user }) {
               </>
             ) : (
               <>
-                <div style={{ fontSize: "11px", color: "#43A047", marginBottom: "16px" }}>✅ Found {importParsed.goals.length} goal{importParsed.goals.length !== 1 ? "s" : ""} and {importParsed.tasks.length} task{importParsed.tasks.length !== 1 ? "s" : ""}. Review below:</div>
+                <div style={{ fontSize: "11px", color: "#3FB950", marginBottom: "16px" }}>✅ Found {importParsed.goals.length} goal{importParsed.goals.length !== 1 ? "s" : ""} and {importParsed.tasks.length} task{importParsed.tasks.length !== 1 ? "s" : ""}. Review below:</div>
                 <div style={{ maxHeight: "320px", overflowY: "auto", marginBottom: "16px" }}>
                   {importParsed.goals.map((g, i) => (
                     <div key={i} style={{ marginBottom: "16px" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px" }}>
                         <div style={{ width: "12px", height: "12px", borderRadius: "50%", background: g.color, flexShrink: 0 }} />
                         <div style={{ fontSize: "13px", fontWeight: "600" }}>{g.label}</div>
-                        {g.deadline && <div style={{ fontSize: "10px", color: "#C4B090" }}>due {g.deadline}</div>}
+                        {g.deadline && <div style={{ fontSize: "12px", color: "#8B949E" }}>due {g.deadline}</div>}
                       </div>
                       {importParsed.tasks.filter(t => t.goal === g.label).map((t, j) => (
-                        <div key={j} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "6px 12px", background: "#3A322A", marginBottom: "4px", marginLeft: "22px" }}>
+                        <div key={j} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "6px 12px", background: "#161B22", marginBottom: "4px", marginLeft: "22px" }}>
                           <div style={{ fontSize: "12px", flex: 1 }}>{t.text}</div>
-                          <div style={{ fontSize: "9px", padding: "2px 6px", background: t.priority === "high" ? "#E5393520" : t.priority === "med" ? "#FB8C0020" : "#43A04720", color: t.priority === "high" ? "#E53935" : t.priority === "med" ? "#FB8C00" : "#43A047" }}>{t.priority}</div>
-                          {t.due && <div style={{ fontSize: "10px", color: "#C4B090" }}>{t.due}</div>}
+                          <div style={{ fontSize: "9px", padding: "2px 6px", background: t.priority === "high" ? "#E5393520" : t.priority === "med" ? "#FB8C0020" : "#43A04720", color: t.priority === "high" ? "#E53935" : t.priority === "med" ? "#F0883E" : "#3FB950" }}>{t.priority}</div>
+                          {t.due && <div style={{ fontSize: "12px", color: "#8B949E" }}>{t.due}</div>}
                         </div>
                       ))}
                     </div>
@@ -2040,16 +2051,16 @@ function MeridianApp({ user }) {
             <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
               <input style={S.input} placeholder="Goal name (e.g. Oxford Internship)" value={newGoal.label} onChange={e => setNewGoal({...newGoal, label: e.target.value})} />
               <div>
-                <div style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#C4B090", marginBottom: "6px" }}>Deadline (optional)</div>
+                <div style={{ fontSize: "12px", fontWeight: "500", color: "#8B949E", marginBottom: "6px" }}>Deadline (optional)</div>
                 <input style={S.input} type="date" value={newGoal.deadline} onChange={e => setNewGoal({...newGoal, deadline: e.target.value})} />
-                <div style={{ fontSize: "10px", color: "#C4B090", marginTop: "4px" }}>Used to calculate your Goal Forecast on the dashboard.</div>
+                <div style={{ fontSize: "12px", color: "#8B949E", marginTop: "4px" }}>Used to calculate your Goal Forecast on the dashboard.</div>
               </div>
               <div>
-                <div style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#C4B090", marginBottom: "10px" }}>Color</div>
+                <div style={{ fontSize: "12px", fontWeight: "500", color: "#8B949E", marginBottom: "10px" }}>Color</div>
                 <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
                   {MUTED_COLORS.map(c => (
                     <div key={c.value} onClick={() => setNewGoal({...newGoal, color: c.value})}
-                      style={{ width: "28px", height: "28px", borderRadius: "50%", background: c.value, cursor: "pointer", border: newGoal.color === c.value ? "3px solid #BF5700" : "3px solid transparent", boxSizing: "border-box" }} />
+                      style={{ width: "28px", height: "28px", borderRadius: "50%", background: c.value, cursor: "pointer", border: newGoal.color === c.value ? "3px solid #39D2C0" : "3px solid transparent", boxSizing: "border-box" }} />
                   ))}
                 </div>
               </div>
@@ -2081,7 +2092,7 @@ function MeridianApp({ user }) {
               </select>
               <input style={S.input} type="number" min="0.5" step="0.5" placeholder="Hours needed (optional — syncs to Schedule Builder)" value={newTask.hours} onChange={e => setNewTask({...newTask, hours: e.target.value})} />
               <div>
-                <div style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#C4B090", marginBottom: "8px" }}>Repeat on (optional)</div>
+                <div style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#8B949E", marginBottom: "8px" }}>Repeat on (optional)</div>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
                   {["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map(day => {
                     const val = day.toLowerCase();
@@ -2090,13 +2101,13 @@ function MeridianApp({ user }) {
                       <div key={day} onClick={() => {
                         const curr = newTask.recurring || [];
                         setNewTask({...newTask, recurring: selected ? curr.filter(d=>d!==val) : [...curr, val]});
-                      }} style={{ padding: "6px 12px", fontSize: "11px", cursor: "pointer", border: `1px solid ${selected ? "#BF5700" : "#6A6055"}`, background: selected ? "#BF5700" : "transparent", color: selected ? "#0E0C0A" : "#B8A898", userSelect: "none" }}>
+                      }} style={{ padding: "6px 12px", fontSize: "11px", cursor: "pointer", border: `1px solid ${selected ? "#39D2C0" : "#2D333B"}`, background: selected ? "#39D2C0" : "transparent", color: selected ? "#0D1117" : "#6E7681", userSelect: "none" }}>
                         {day}
                       </div>
                     );
                   })}
                 </div>
-                <div style={{ fontSize: "10px", color: "#C4B090", marginTop: "6px" }}>Recurring tasks auto-reset each selected day.</div>
+                <div style={{ fontSize: "12px", color: "#8B949E", marginTop: "6px" }}>Recurring tasks auto-reset each selected day.</div>
               </div>
               <div style={{ display: "flex", gap: "12px", marginTop: "8px" }}>
                 <button style={S.btn} onClick={addTask}>Add Task</button>
@@ -2141,37 +2152,37 @@ function MeridianApp({ user }) {
           <div style={S.modal} onClick={() => setShowWeeklyReport(false)}>
             <div style={S.modalBox} onClick={e => e.stopPropagation()}>
               <div style={{ fontSize: "12px", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "4px" }}>📊 Weekly Report</div>
-              <div style={{ fontSize: "11px", color: "#C4B090", marginBottom: "24px" }}>Your performance over the last 7 days</div>
+              <div style={{ fontSize: "11px", color: "#8B949E", marginBottom: "24px" }}>Your performance over the last 7 days</div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "24px" }}>
-                <div style={{ padding: "16px", background: "#3A322A", border: "1px solid #333333", textAlign: "center" }}>
-                  <div style={{ fontSize: "32px", color: avg >= 70 ? "#43A047" : avg >= 40 ? "#FB8C00" : "#E53935" }}>{avg}%</div>
-                  <div style={{ fontSize: "10px", color: "#C4B090", marginTop: "4px" }}>Avg Completion</div>
+                <div style={{ padding: "16px", background: "#161B22", border: "1px solid #333333", textAlign: "center" }}>
+                  <div style={{ fontSize: "32px", color: avg >= 70 ? "#3FB950" : avg >= 40 ? "#F0883E" : "#E53935" }}>{avg}%</div>
+                  <div style={{ fontSize: "12px", color: "#8B949E", marginTop: "4px" }}>Avg Completion</div>
                 </div>
-                <div style={{ padding: "16px", background: "#3A322A", border: "1px solid #333333", textAlign: "center" }}>
-                  <div style={{ fontSize: "32px", color: "#BF5700" }}>{stats.streak}</div>
-                  <div style={{ fontSize: "10px", color: "#C4B090", marginTop: "4px" }}>Day Streak</div>
+                <div style={{ padding: "16px", background: "#161B22", border: "1px solid #333333", textAlign: "center" }}>
+                  <div style={{ fontSize: "32px", color: "#39D2C0" }}>{stats.streak}</div>
+                  <div style={{ fontSize: "12px", color: "#8B949E", marginTop: "4px" }}>Day Streak</div>
                 </div>
-                <div style={{ padding: "16px", background: "#3A322A", border: "1px solid #333333", textAlign: "center" }}>
-                  <div style={{ fontSize: "14px", color: "#43A047" }}>🏆 {best.date.slice(5)}</div>
-                  <div style={{ fontSize: "10px", color: "#C4B090", marginTop: "4px" }}>Best Day ({best.score}%)</div>
+                <div style={{ padding: "16px", background: "#161B22", border: "1px solid #333333", textAlign: "center" }}>
+                  <div style={{ fontSize: "14px", color: "#3FB950" }}>🏆 {best.date.slice(5)}</div>
+                  <div style={{ fontSize: "12px", color: "#8B949E", marginTop: "4px" }}>Best Day ({best.score}%)</div>
                 </div>
-                <div style={{ padding: "16px", background: "#3A322A", border: "1px solid #333333", textAlign: "center" }}>
+                <div style={{ padding: "16px", background: "#161B22", border: "1px solid #333333", textAlign: "center" }}>
                   <div style={{ fontSize: "14px", color: "#E53935" }}>📉 {worst.date.slice(5)}</div>
-                  <div style={{ fontSize: "10px", color: "#C4B090", marginTop: "4px" }}>Worst Day ({worst.score}%)</div>
+                  <div style={{ fontSize: "12px", color: "#8B949E", marginTop: "4px" }}>Worst Day ({worst.score}%)</div>
                 </div>
               </div>
               <div style={{ marginBottom: "20px" }}>
                 {weeklySnapshots.slice().reverse().map((s, i) => (
                   <div key={i} style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px" }}>
-                    <div style={{ fontSize: "10px", color: "#C4B090", width: "42px" }}>{s.date.slice(5)}</div>
-                    <div style={{ flex: 1, height: "8px", background: "#6A6055", borderRadius: "4px" }}>
-                      <div style={{ height: "100%", width: `${s.score}%`, background: s.score >= 70 ? "#43A047" : s.score >= 40 ? "#FB8C00" : "#E53935", borderRadius: "4px" }} />
+                    <div style={{ fontSize: "12px", color: "#8B949E", width: "42px" }}>{s.date.slice(5)}</div>
+                    <div style={{ flex: 1, height: "8px", background: "#2D333B", borderRadius: "4px" }}>
+                      <div style={{ height: "100%", width: `${s.score}%`, background: s.score >= 70 ? "#3FB950" : s.score >= 40 ? "#F0883E" : "#E53935", borderRadius: "4px" }} />
                     </div>
-                    <div style={{ fontSize: "10px", color: "#C4B090", width: "34px" }}>{s.completed_tasks}/{s.total_tasks}</div>
+                    <div style={{ fontSize: "12px", color: "#8B949E", width: "34px" }}>{s.completed_tasks}/{s.total_tasks}</div>
                   </div>
                 ))}
               </div>
-              <div style={{ fontSize: "13px", color: improvement >= 0 ? "#43A047" : "#E53935", marginBottom: "16px" }}>
+              <div style={{ fontSize: "13px", color: improvement >= 0 ? "#3FB950" : "#E53935", marginBottom: "16px" }}>
                 {improvement >= 0 ? `📈 You improved by +${improvement}% from last week. Keep going!` : `📉 You dropped ${Math.abs(improvement)}% from last week. Let's bounce back.`}
               </div>
               <button style={S.btn} onClick={() => setShowWeeklyReport(false)}>Close</button>
@@ -2187,7 +2198,7 @@ function MeridianApp({ user }) {
             <div style={{ fontSize: "64px", marginBottom: "16px" }}>{showMilestone.emoji}</div>
             <div style={{ fontSize: "14px", letterSpacing: "2px", textTransform: "uppercase", marginBottom: "8px" }}>Milestone Unlocked</div>
             <div style={{ fontSize: "24px", marginBottom: "8px" }}>{showMilestone.label}</div>
-            <div style={{ fontSize: "12px", color: "#C4B090", marginBottom: "20px" }}>You've completed {showMilestone.count} tasks total. Remarkable.</div>
+            <div style={{ fontSize: "12px", color: "#8B949E", marginBottom: "20px" }}>You've completed {showMilestone.count} tasks total. Remarkable.</div>
             <button style={S.btn} onClick={() => setShowMilestone(null)}>Let's Keep Going</button>
           </div>
         </div>
@@ -2198,11 +2209,11 @@ function MeridianApp({ user }) {
         <div style={S.modal} onClick={() => setShowNNPicker(false)}>
           <div style={S.modalBox} onClick={e => e.stopPropagation()}>
             <div style={{ fontSize: "12px", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "8px" }}>Pick Your 3 Non-Negotiables</div>
-            <div style={{ fontSize: "11px", color: "#C4B090", marginBottom: "20px" }}>These are the 3 tasks you MUST complete today. No excuses.</div>
+            <div style={{ fontSize: "11px", color: "#8B949E", marginBottom: "20px" }}>These are the 3 tasks you MUST complete today. No excuses.</div>
             <div style={{ display: "flex", flexDirection: "column", gap: "8px", maxHeight: "360px", overflowY: "auto" }}>
               {/* Today's tasks first */}
               {pendingTasks.filter(t => t.due === todayStr).length > 0 && (
-                <div style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#BF5700", marginBottom: "4px" }}>📅 Scheduled for today</div>
+                <div style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#39D2C0", marginBottom: "4px" }}>📅 Scheduled for today</div>
               )}
               {pendingTasks.filter(t => t.due === todayStr).map(task => {
                 const selected = nonNegotiables.includes(task.id);
@@ -2210,17 +2221,17 @@ function MeridianApp({ user }) {
                   <div key={task.id} onClick={() => {
                     if (selected) setNonNegotiables(nonNegotiables.filter(id => id !== task.id));
                     else if (nonNegotiables.length < 3) setNonNegotiables([...nonNegotiables, task.id]);
-                  }} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "10px 12px", background: selected ? "#BF570015" : "#F0EFED", border: `1px solid ${selected ? "#BF5700" : "#BF570055"}`, cursor: nonNegotiables.length >= 3 && !selected ? "not-allowed" : "pointer", opacity: nonNegotiables.length >= 3 && !selected ? 0.4 : 1 }}>
-                    <div style={{ width: "14px", height: "14px", border: `1.5px solid ${selected ? "#BF5700" : "#555555"}`, background: selected ? "#BF5700" : "transparent", flexShrink: 0 }} />
-                    <div style={{ flex: 1, fontSize: "13px", color: "#F0EFED" }}>{task.text}</div>
-                    <div style={{ fontSize: "10px", color: "#C4B090" }}>{goalLabel(task.goal_id)}</div>
+                  }} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "10px 12px", background: selected ? "#39D2C015" : "#E6EDF3", border: `1px solid ${selected ? "#39D2C0" : "#39D2C055"}`, cursor: nonNegotiables.length >= 3 && !selected ? "not-allowed" : "pointer", opacity: nonNegotiables.length >= 3 && !selected ? 0.4 : 1 }}>
+                    <div style={{ width: "14px", height: "14px", border: `1.5px solid ${selected ? "#39D2C0" : "#484F58"}`, background: selected ? "#39D2C0" : "transparent", flexShrink: 0 }} />
+                    <div style={{ flex: 1, fontSize: "13px", color: "#E6EDF3" }}>{task.text}</div>
+                    <div style={{ fontSize: "12px", color: "#8B949E" }}>{goalLabel(task.goal_id)}</div>
                     <div style={badge(task.priority)}>{task.priority}</div>
                   </div>
                 );
               })}
               {/* All other pending tasks */}
               {pendingTasks.filter(t => t.due !== todayStr).length > 0 && (
-                <div style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#C4B090", marginTop: "8px", marginBottom: "4px" }}>All other tasks</div>
+                <div style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#8B949E", marginTop: "8px", marginBottom: "4px" }}>All other tasks</div>
               )}
               {pendingTasks.filter(t => t.due !== todayStr).map(task => {
                 const selected = nonNegotiables.includes(task.id);
@@ -2228,10 +2239,10 @@ function MeridianApp({ user }) {
                   <div key={task.id} onClick={() => {
                     if (selected) setNonNegotiables(nonNegotiables.filter(id => id !== task.id));
                     else if (nonNegotiables.length < 3) setNonNegotiables([...nonNegotiables, task.id]);
-                  }} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "10px 12px", background: selected ? "#1A161210" : "transparent", border: `1px solid ${selected ? "#BF5700" : "#6A6055"}`, cursor: nonNegotiables.length >= 3 && !selected ? "not-allowed" : "pointer", opacity: nonNegotiables.length >= 3 && !selected ? 0.4 : 1 }}>
-                    <div style={{ width: "14px", height: "14px", border: `1.5px solid ${selected ? "#BF5700" : "#555555"}`, background: selected ? "#BF5700" : "transparent", flexShrink: 0 }} />
-                    <div style={{ flex: 1, fontSize: "13px", color: "#F0EFED" }}>{task.text}</div>
-                    <div style={{ fontSize: "10px", color: "#C4B090" }}>{task.due || ""}</div>
+                  }} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "10px 12px", background: selected ? "#1A161210" : "transparent", border: `1px solid ${selected ? "#39D2C0" : "#2D333B"}`, cursor: nonNegotiables.length >= 3 && !selected ? "not-allowed" : "pointer", opacity: nonNegotiables.length >= 3 && !selected ? 0.4 : 1 }}>
+                    <div style={{ width: "14px", height: "14px", border: `1.5px solid ${selected ? "#39D2C0" : "#484F58"}`, background: selected ? "#39D2C0" : "transparent", flexShrink: 0 }} />
+                    <div style={{ flex: 1, fontSize: "13px", color: "#E6EDF3" }}>{task.text}</div>
+                    <div style={{ fontSize: "12px", color: "#8B949E" }}>{task.due || ""}</div>
                     <div style={badge(task.priority)}>{task.priority}</div>
                   </div>
                 );
@@ -2254,17 +2265,17 @@ function MeridianApp({ user }) {
         <div style={S.modal} onClick={() => setShowFocusPicker(false)}>
           <div style={{ ...S.modalBox, width: "320px" }} onClick={e => e.stopPropagation()}>
             <div style={{ fontSize: "12px", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "8px" }}>Focus Duration</div>
-            {focusPickerTask && <div style={{ fontSize: "12px", color: "#C4B090", marginBottom: "20px" }}>{focusPickerTask.text}</div>}
+            {focusPickerTask && <div style={{ fontSize: "12px", color: "#8B949E", marginBottom: "20px" }}>{focusPickerTask.text}</div>}
             <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginBottom: "16px" }}>
               {[25, 50, 90, 120].map(m => (
-                <button key={m} style={{ ...S.btnOut, background: focusPickerMins === m ? "#1A1612" : "transparent", color: focusPickerMins === m ? "#F0EFED" : "#1A1612" }}
+                <button key={m} style={{ ...S.btnOut, background: focusPickerMins === m ? "#090D13" : "transparent", color: focusPickerMins === m ? "#E6EDF3" : "#090D13" }}
                   onClick={() => setFocusPickerMins(m)}>{m} min</button>
               ))}
             </div>
             <div style={{ display: "flex", gap: "8px", alignItems: "center", marginBottom: "20px" }}>
               <input type="number" min="1" max="240" value={focusPickerMins} onChange={e => setFocusPickerMins(Number(e.target.value))}
                 style={{ ...S.input, width: "80px" }} />
-              <div style={{ fontSize: "11px", color: "#C4B090" }}>custom minutes</div>
+              <div style={{ fontSize: "11px", color: "#8B949E" }}>custom minutes</div>
             </div>
             <div style={{ display: "flex", gap: "12px" }}>
               <button style={S.btn} onClick={() => { setShowFocusPicker(false); enterFocusMode(focusPickerTask, focusPickerMins); }}>Start Focus</button>
@@ -2292,7 +2303,7 @@ function MeridianApp({ user }) {
               </select>
               <input style={S.input} type="number" min="0.5" step="0.5" placeholder="Hours needed (optional)" value={editTask.hours || ""} onChange={e => setEditTask({...editTask, hours: e.target.value})} />
               <div>
-                <div style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#C4B090", marginBottom: "8px" }}>Repeat on (optional)</div>
+                <div style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#8B949E", marginBottom: "8px" }}>Repeat on (optional)</div>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
                   {["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map(day => {
                     const val = day.toLowerCase();
@@ -2301,7 +2312,7 @@ function MeridianApp({ user }) {
                     return (
                       <div key={day} onClick={() => {
                         setEditTask({...editTask, recurring: selected ? curr.filter(d=>d!==val) : [...curr, val]});
-                      }} style={{ padding: "6px 12px", fontSize: "11px", cursor: "pointer", border: `1px solid ${selected ? "#BF5700" : "#6A6055"}`, background: selected ? "#BF5700" : "transparent", color: selected ? "#0E0C0A" : "#B8A898", userSelect: "none" }}>
+                      }} style={{ padding: "6px 12px", fontSize: "11px", cursor: "pointer", border: `1px solid ${selected ? "#39D2C0" : "#2D333B"}`, background: selected ? "#39D2C0" : "transparent", color: selected ? "#0D1117" : "#6E7681", userSelect: "none" }}>
                         {day}
                       </div>
                     );
@@ -2342,9 +2353,9 @@ function MeridianApp({ user }) {
 
       {/* Mobile bottom nav */}
       {isMobile && (
-        <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: "#352E25", display: "flex", justifyContent: "space-around", padding: "10px 0", zIndex: 100, borderTop: "1px solid #222222" }}>
+        <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: "#1C2128", display: "flex", justifyContent: "space-around", padding: "10px 0", zIndex: 100, borderTop: "1px solid #222222" }}>
           {[["dashboard","Home"],["calendar","Cal"],["tasks","Tasks"],["goals","Goals"],["scheduler","Plan"]].map(([id,lbl]) => (
-            <button key={id} onClick={() => navigate(id)} style={{ background: "none", border: "none", color: view===id ? "#BF5700" : "#B8A898", fontSize: "9px", letterSpacing: "1px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'Rajdhani', sans-serif", display: "flex", flexDirection: "column", alignItems: "center", gap: "2px", padding: "4px 8px", borderTop: view===id ? "2px solid #BF5700" : "2px solid transparent" }}>
+            <button key={id} onClick={() => navigate(id)} style={{ background: "none", border: "none", color: view===id ? "#39D2C0" : "#6E7681", fontSize: "9px", letterSpacing: "1px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'DM Sans', sans-serif", display: "flex", flexDirection: "column", alignItems: "center", gap: "2px", padding: "4px 8px", borderTop: view===id ? "2px solid #39D2C0" : "2px solid transparent" }}>
               {lbl}
             </button>
           ))}
@@ -2359,7 +2370,7 @@ function Confetti() {
   const pieces = Array.from({ length: 60 }, (_, i) => ({
     id: i,
     x: Math.random() * 100,
-    color: ["#BF5700","#E53935","#1E88E5","#43A047","#FB8C00","#8E24AA"][i % 6],
+    color: ["#39D2C0","#E53935","#58A6FF","#3FB950","#F0883E","#8E24AA"][i % 6],
     delay: Math.random() * 0.5,
     duration: 1.5 + Math.random(),
     size: 6 + Math.random() * 6,
@@ -2390,25 +2401,25 @@ function FocusScreen({ task, timerSeconds, timerRunning, setTimerRunning, focusC
   const pct = totalSecs > 0 ? ((totalSecs - timerSeconds) / totalSecs) * 100 : 0;
   const halfway = pct >= 50 && pct < 55;
   const nnIdx = nonNegotiables.indexOf(task?.id);
-  const accent = task ? goalColor(task.goal_id) : "#BF5700";
+  const accent = task ? goalColor(task.goal_id) : "#39D2C0";
 
   if (focusComplete) return (
-    <div style={{ position: "fixed", inset: 0, background: "#2C2720", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", zIndex: 5000, fontFamily: "'Rajdhani', sans-serif", color: "#F0EFED", textAlign: "center", padding: "40px" }}>
+    <div style={{ position: "fixed", inset: 0, background: "#0D1117", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", zIndex: 5000, fontFamily: "'DM Sans', sans-serif", color: "#E6EDF3", textAlign: "center", padding: "40px" }}>
       <div style={{ fontSize: "72px", marginBottom: "16px" }}>✅</div>
-      <div style={{ fontSize: "11px", letterSpacing: "4px", textTransform: "uppercase", color: "#BF5700", marginBottom: "12px" }}>Session Complete</div>
-      <div style={{ fontSize: "48px", color: "#BF5700", marginBottom: "4px" }}>+50 XP</div>
-      <div style={{ fontSize: "14px", color: "#C4B090", marginBottom: "8px" }}>{focusMins} minutes of deep work logged.</div>
-      <div style={{ fontSize: "12px", color: "#D4C8B8", marginBottom: "40px" }}>Session {focusSession} of {focusSessions} today · {Math.floor((stats.deep_work_minutes||0)/60)}h {(stats.deep_work_minutes||0)%60}m total</div>
+      <div style={{ fontSize: "11px", letterSpacing: "4px", textTransform: "uppercase", color: "#39D2C0", marginBottom: "12px" }}>Session Complete</div>
+      <div style={{ fontSize: "48px", color: "#39D2C0", marginBottom: "4px" }}>+50 XP</div>
+      <div style={{ fontSize: "14px", color: "#8B949E", marginBottom: "8px" }}>{focusMins} minutes of deep work logged.</div>
+      <div style={{ fontSize: "12px", color: "#C9D1D9", marginBottom: "40px" }}>Session {focusSession} of {focusSessions} today · {Math.floor((stats.deep_work_minutes||0)/60)}h {(stats.deep_work_minutes||0)%60}m total</div>
       <div style={{ display: "flex", gap: "16px", flexWrap: "wrap", justifyContent: "center" }}>
-        <button onClick={onMarkComplete} style={{ padding: "14px 28px", background: "#BF5700", color: "#0E0C0A", border: "none", fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'Rajdhani', sans-serif" }}>Mark Task Complete</button>
-        <button onClick={onNextSession} style={{ padding: "14px 28px", background: "transparent", color: "#BF5700", border: "1px solid #BF5700", fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'Rajdhani', sans-serif" }}>Start Next Session</button>
-        <button onClick={() => onExit(false)} style={{ padding: "14px 28px", background: "transparent", color: "#D4C8B8", border: "1px solid #282828", fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'Rajdhani', sans-serif" }}>Back to App</button>
+        <button onClick={onMarkComplete} style={{ padding: "14px 28px", background: "#39D2C0", color: "#0D1117", border: "none", fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'DM Sans', sans-serif" }}>Mark Task Complete</button>
+        <button onClick={onNextSession} style={{ padding: "14px 28px", background: "transparent", color: "#39D2C0", border: "1px solid #39D2C0", fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'DM Sans', sans-serif" }}>Start Next Session</button>
+        <button onClick={() => onExit(false)} style={{ padding: "14px 28px", background: "transparent", color: "#C9D1D9", border: "1px solid #282828", fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'DM Sans', sans-serif" }}>Back to App</button>
       </div>
     </div>
   );
 
   return (
-    <div style={{ position: "fixed", inset: 0, background: "#3A322A", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", zIndex: 5000, fontFamily: "'Rajdhani', sans-serif", color: "#F0EFED" }}>
+    <div style={{ position: "fixed", inset: 0, background: "#161B22", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", zIndex: 5000, fontFamily: "'DM Sans', sans-serif", color: "#E6EDF3" }}>
       {/* Edge blur */}
       <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at center, transparent 40%, rgba(26,22,18,0.18) 100%)", pointerEvents: "none" }} />
 
@@ -2419,21 +2430,21 @@ function FocusScreen({ task, timerSeconds, timerRunning, setTimerRunning, focusC
             🎯 Non-Negotiable #{nnIdx + 1} of 3
           </div>
         )}
-        {task && <div style={{ fontSize: "11px", color: "#C4B090", marginTop: "4px", letterSpacing: "1px" }}>{goalLabel(task.goal_id)}</div>}
+        {task && <div style={{ fontSize: "11px", color: "#8B949E", marginTop: "4px", letterSpacing: "1px" }}>{goalLabel(task.goal_id)}</div>}
       </div>
 
       {/* Main timer */}
       <div style={{ textAlign: "center", position: "relative", zIndex: 1 }}>
         {/* SVG ring */}
         <svg width="280" height="280" style={{ display: "block", margin: "0 auto" }}>
-          <circle cx="140" cy="140" r="120" fill="none" stroke="#6A6055" strokeWidth="6" />
+          <circle cx="140" cy="140" r="120" fill="none" stroke="#2D333B" strokeWidth="6" />
           <circle cx="140" cy="140" r="120" fill="none" stroke={accent} strokeWidth="6"
             strokeDasharray={`${2 * Math.PI * 120}`}
             strokeDashoffset={`${2 * Math.PI * 120 * (1 - pct / 100)}`}
             strokeLinecap="round" transform="rotate(-90 140 140)"
             style={{ transition: "stroke-dashoffset 1s linear" }} />
-          <text x="140" y="130" textAnchor="middle" fontSize="52" fill="#1A1612" fontFamily="Georgia, serif" fontWeight="400">{fmt(timerSeconds)}</text>
-          <text x="140" y="158" textAnchor="middle" fontSize="11" fill="#A89880" fontFamily="Georgia, serif" letterSpacing="2">{timerRunning ? "FOCUS" : "PAUSED"}</text>
+          <text x="140" y="130" textAnchor="middle" fontSize="52" fill="#090D13" fontFamily="Georgia, serif" fontWeight="400">{fmt(timerSeconds)}</text>
+          <text x="140" y="158" textAnchor="middle" fontSize="11" fill="#6E7681" fontFamily="Georgia, serif" letterSpacing="2">{timerRunning ? "FOCUS" : "PAUSED"}</text>
         </svg>
 
         {/* Task name */}
@@ -2443,17 +2454,17 @@ function FocusScreen({ task, timerSeconds, timerRunning, setTimerRunning, focusC
         {halfway && <div style={{ fontSize: "11px", color: accent, letterSpacing: "2px", marginTop: "12px", textTransform: "uppercase" }}>You're locked in. Keep going.</div>}
 
         {/* Stats row */}
-        <div style={{ display: "flex", gap: "32px", justifyContent: "center", marginTop: "24px", fontSize: "11px", color: "#C4B090", letterSpacing: "1px" }}>
+        <div style={{ display: "flex", gap: "32px", justifyContent: "center", marginTop: "24px", fontSize: "11px", color: "#8B949E", letterSpacing: "1px" }}>
           <span>⏳ Session {focusSession} of {focusSessions}</span>
           <span>⚡ {Math.floor((stats.deep_work_today||0)/60)}h {(stats.deep_work_today||0)%60}m today</span>
         </div>
 
         {/* Controls */}
         <div style={{ display: "flex", gap: "12px", justifyContent: "center", marginTop: "28px" }}>
-          <button onClick={() => setTimerRunning(r => !r)} style={{ padding: "12px 32px", background: "#352E25", color: "#F0EFED", border: "none", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'Rajdhani', sans-serif" }}>
+          <button onClick={() => setTimerRunning(r => !r)} style={{ padding: "12px 32px", background: "#39D2C0", color: "#0D1117", border: "none", fontSize: "13px", fontWeight: "600", cursor: "pointer", fontFamily: "'DM Sans', sans-serif", borderRadius: "8px" }}>
             {timerRunning ? "Pause" : "Resume"}
           </button>
-          <button onClick={() => onExit(true)} style={{ padding: "12px 24px", background: "transparent", color: "#C4B090", border: "1px solid #555555", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'Rajdhani', sans-serif" }}>
+          <button onClick={() => onExit(true)} style={{ padding: "12px 24px", background: "transparent", color: "#8B949E", border: "1px solid #555555", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'DM Sans', sans-serif" }}>
             Exit Early
           </button>
         </div>
@@ -2462,7 +2473,7 @@ function FocusScreen({ task, timerSeconds, timerRunning, setTimerRunning, focusC
         <div style={{ display: "flex", gap: "8px", justifyContent: "center", marginTop: "24px" }}>
           {[["🟤","brown"],["⬜","white"],["🩷","pink"],["🔇","off"]].map(([icon, val]) => (
             <button key={val} onClick={() => setAmbience(ambience === val || val === "off" ? null : val)}
-              style={{ padding: "6px 14px", background: ambience === val ? "#1A1612" : "transparent", color: ambience === val ? "#BF5700" : "#A89880", border: "1px solid #333333", fontSize: "11px", cursor: "pointer", fontFamily: "'Rajdhani', sans-serif" }}>
+              style={{ padding: "6px 14px", background: ambience === val ? "#090D13" : "transparent", color: ambience === val ? "#39D2C0" : "#6E7681", border: "1px solid #333333", fontSize: "11px", cursor: "pointer", fontFamily: "'DM Sans', sans-serif" }}>
               {icon} {val === "off" ? "Off" : val.charAt(0).toUpperCase() + val.slice(1)}
             </button>
           ))}
@@ -2526,7 +2537,7 @@ function SanjuLoader() {
       let frame = 0;
       let animId;
       const animate = () => {
-        ctx.fillStyle = "#12100E";
+        ctx.fillStyle = "#080C12";
         ctx.fillRect(0, 0, W, H);
 
         for (const p of particles) {
@@ -2540,12 +2551,12 @@ function SanjuLoader() {
         if (frame > 200) {
           const alpha = Math.min(1, (frame - 200) / 60);
           ctx.globalAlpha = alpha;
-          ctx.fillStyle = "#BF5700";
-          ctx.font = "bold 14px Georgia, serif";
+          ctx.fillStyle = "#39D2C0";
+          ctx.font = "bold 16px 'DM Serif Display', serif";
           ctx.textAlign = "center";
-          ctx.fillText("M E R I D I A N", W / 2, dY + dH + 44);
-          ctx.fillStyle = "#FF8200";
-          ctx.font = "10px Georgia, serif";
+          ctx.fillText("Meridian", W / 2, dY + dH + 44);
+          ctx.fillStyle = "#5AE4D5";
+          ctx.font = "11px 'DM Sans', sans-serif";
           ctx.fillText("HOOK 'EM  ·  UT COCKRELL  ·  MECH E", W / 2, dY + dH + 64);
           ctx.globalAlpha = 1;
         }
@@ -2564,7 +2575,7 @@ function SanjuLoader() {
   }, []);
 
   return (
-    <div style={{ position: "fixed", inset: 0, background: "#2C2720", zIndex: 9999 }}>
+    <div style={{ position: "fixed", inset: 0, background: "#0D1117", zIndex: 9999 }}>
       <canvas ref={canvasRef} style={{ display: "block", width: "100%", height: "100%" }} />
     </div>
   );
@@ -2574,7 +2585,7 @@ function SanjuLoader() {
 export default function App() {
   useEffect(() => {
     const link = document.createElement("link");
-    link.href = "https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&display=swap";
+    link.href = "https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Serif+Display:ital@0;1&display=swap";
     link.rel = "stylesheet";
     document.head.appendChild(link);
   }, []);
