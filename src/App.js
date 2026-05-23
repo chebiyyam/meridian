@@ -8,26 +8,16 @@ const supabase = createClient(
 );
 
 const MUTED_COLORS = [
-  { name: "Red",        value: "#E53935" },
-  { name: "Blue",       value: "#58A6FF" },
-  { name: "Green",      value: "#3FB950" },
-  { name: "Orange",     value: "#F0883E" },
-  { name: "Purple",     value: "#8E24AA" },
-  { name: "Teal",       value: "#00ACC1" },
-  { name: "Pink",       value: "#D81B60" },
-  { name: "Lime",       value: "#7CB342" },
-  { name: "Indigo",     value: "#3949AB" },
-  { name: "Amber",      value: "#FFB300" },
-  { name: "Cyan",       value: "#00BCD4" },
-  { name: "Deep Orange",value: "#F4511E" },
-  { name: "Brown",      value: "#6D4C41" },
-  { name: "Gold",       value: "#39D2C0" },
-  { name: "Coral",      value: "#FF6B6B" },
-  { name: "Mint",       value: "#26A69A" },
-  { name: "Lavender",   value: "#7986CB" },
-  { name: "Rose",       value: "#EC407A" },
-  { name: "Sky",        value: "#29B6F6" },
-  { name: "Sage",       value: "#8D9B6A" },
+  { name: "Red",         value: "#E53935" },{ name: "Blue",       value: "#1E88E5" },
+  { name: "Green",       value: "#43A047" },{ name: "Orange",     value: "#FB8C00" },
+  { name: "Purple",      value: "#8E24AA" },{ name: "Teal",       value: "#00ACC1" },
+  { name: "Pink",        value: "#D81B60" },{ name: "Lime",       value: "#7CB342" },
+  { name: "Indigo",      value: "#3949AB" },{ name: "Amber",      value: "#FFB300" },
+  { name: "Cyan",        value: "#00BCD4" },{ name: "Deep Orange",value: "#F4511E" },
+  { name: "Brown",       value: "#6D4C41" },{ name: "Gold",       value: "#BF5700" },
+  { name: "Coral",       value: "#FF6B6B" },{ name: "Mint",       value: "#26A69A" },
+  { name: "Lavender",    value: "#7986CB" },{ name: "Rose",       value: "#EC407A" },
+  { name: "Sky",         value: "#29B6F6" },{ name: "Sage",       value: "#8D9B6A" },
 ];
 
 const QUOTES = [
@@ -39,1753 +29,855 @@ const QUOTES = [
   "The secret of getting ahead is getting started.",
   "Focus on being productive instead of busy.",
   "Small daily improvements are the key to staggering long-term results.",
-  "Excellence is not a destination but a continuous journey.",
-  "What you do today can improve all your tomorrows.",
   "Push yourself, because no one else is going to do it for you.",
-  "Dream it. Wish it. Do it.",
-  "Success doesn't just find you. You have to go out and get it.",
-  "The harder you work for something, the greater you'll feel when you achieve it.",
+  "Do something today that your future self will thank you for.",
   "Don't stop when you're tired. Stop when you're done.",
   "Wake up with determination. Go to bed with satisfaction.",
-  "Do something today that your future self will thank you for.",
-  "Little things make big days.",
-  "It's going to be hard, but hard is not impossible.",
-  "Don't wait for opportunity. Create it.",
-  "Sometimes we're tested not to show our weaknesses, but to discover our strengths.",
-  "The key to success is to focus on goals, not obstacles.",
+  "Success doesn't just find you. You have to go out and get it.",
+  "In the middle of every difficulty lies opportunity.",
+  "It always seems impossible until it is done.",
+  "Someday is not a day of the week.",
   "Dream bigger. Do bigger.",
   "You are stronger than you think.",
   "Believe you can and you're halfway there.",
-  "Act as if what you do makes a difference. It does.",
-  "Success is not final, failure is not fatal: it is the courage to continue that counts.",
-  "Knowing is not enough; we must apply. Willing is not enough; we must do.",
-  "Motivation is what gets you started. Habit is what keeps you going.",
   "The future belongs to those who believe in the beauty of their dreams.",
-  "Storms make trees take deeper roots.",
-  "The only way to do great work is to love what you do.",
-  "In the middle of every difficulty lies opportunity.",
-  "It always seems impossible until it is done.",
-  "You miss 100% of the shots you don't take.",
-  "The best time to plant a tree was 20 years ago. The second best time is now.",
-  "Your limitation — it's only your imagination.",
-  "Great things never come from comfort zones.",
-  "Success is walking from failure to failure with no loss of enthusiasm.",
-  "Don't watch the clock. Do what it does. Keep going.",
-  "Someday is not a day of the week.",
-  "If you want to achieve greatness, stop asking for permission.",
-  "Things work out best for those who make the best of how things work out.",
-  "To live a creative life, we must lose our fear of being wrong.",
-  "If you are not willing to risk the usual, you will have to settle for the ordinary.",
-  "All our dreams can come true if we have the courage to pursue them.",
-  "Good things come to people who wait, but better things come to those who go out and get them.",
-  "If you do what you always did, you will get what you always got.",
-  "Success is not how high you have climbed, but how you make a positive difference.",
-  "Knowing yourself is the beginning of all wisdom.",
 ];
 
-const DAYS = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+const DAYS   = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const ROW_COLORS = ["#FFF8F0","#F0FBF4","#EFF6FF","#FDF4FF","#FFF0F3","#FFFBEA","#F0FBFB","#FFF5F0"];
 
-function getDaysInMonth(y, m) { return new Date(y, m + 1, 0).getDate(); }
-function getFirstDay(y, m)    { return new Date(y, m, 1).getDay(); }
-
-function getGreeting() {
-  const h = new Date().getHours();
-  if (h >= 5  && h < 12) return "Good morning.";
-  if (h >= 12 && h < 17) return "Good afternoon.";
-  if (h >= 17 && h < 21) return "Good evening.";
-  return "Working late.";
+function getDaysInMonth(y,m){return new Date(y,m+1,0).getDate();}
+function getFirstDay(y,m){return new Date(y,m,1).getDay();}
+function getGreeting(){
+  const h=new Date().getHours();
+  if(h>=5&&h<12)return"Good morning.";
+  if(h>=12&&h<17)return"Good afternoon.";
+  if(h>=17&&h<21)return"Good evening.";
+  return"Working late.";
 }
 
-// ── LANDING PAGE ─────────────────────────────────────────────────────────────
-function LandingPage({ onLogin }) {
-  const features = [
-    { title: "Goals", desc: "Create and track every commitment you have." },
-    { title: "Tasks", desc: "Prioritize what matters. Check off what's done." },
-    { title: "Calendar", desc: "See your month at a glance. Never miss a deadline." },
-    { title: "Schedule Builder", desc: "Input your tasks and get an optimized daily plan." },
+const T={
+  bg:"#FFFFFF",bgSoft:"#F7F6F3",
+  text:"#37352F",textMid:"#6B6B6B",textMute:"#9B9A97",
+  border:"#E9E9E7",
+  accent:"#D97706",accentBg:"#FFF8EC",
+  red:"#DC2626",green:"#16A34A",blue:"#2563EB",orange:"#EA580C",
+  font:"'Inter',-apple-system,BlinkMacSystemFont,sans-serif",
+  serif:"'Lora',Georgia,serif",
+};
+
+const S={
+  card:{background:"#FFF",border:"1px solid #E9E9E7",borderRadius:8,padding:20},
+  modal:{position:"fixed",inset:0,background:"rgba(0,0,0,0.28)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:300},
+  modalBox:{background:"#FFF",border:"1px solid #E9E9E7",borderRadius:12,boxShadow:"0 8px 40px rgba(0,0,0,0.11)",padding:32,width:440,maxWidth:"92vw",maxHeight:"88vh",overflowY:"auto"},
+  btn:{padding:"7px 16px",background:"#D97706",color:"#FFF",border:"none",borderRadius:6,fontSize:13,fontWeight:500,cursor:"pointer",fontFamily:"'Inter',-apple-system,sans-serif"},
+  btnOut:{padding:"6px 14px",background:"transparent",color:"#6B6B6B",border:"1px solid #E9E9E7",borderRadius:6,fontSize:13,cursor:"pointer",fontFamily:"'Inter',-apple-system,sans-serif"},
+  btnDanger:{padding:"6px 14px",background:"transparent",color:"#DC2626",border:"1px solid rgba(220,38,38,0.3)",borderRadius:6,fontSize:13,cursor:"pointer",fontFamily:"'Inter',-apple-system,sans-serif"},
+  input:{width:"100%",padding:"8px 10px",border:"1px solid #E9E9E7",background:"#F7F6F3",fontSize:14,fontFamily:"'Inter',-apple-system,sans-serif",color:"#37352F",outline:"none",boxSizing:"border-box",borderRadius:6},
+  select:{width:"100%",padding:"8px 10px",border:"1px solid #E9E9E7",background:"#F7F6F3",fontSize:14,fontFamily:"'Inter',-apple-system,sans-serif",color:"#37352F",outline:"none",cursor:"pointer",borderRadius:6},
+  label:{fontSize:12,fontWeight:500,color:"#6B6B6B",marginBottom:6,display:"block"},
+};
+
+function Confetti(){
+  const ref=useRef(null);
+  useEffect(()=>{
+    const canvas=ref.current;if(!canvas)return;
+    const ctx=canvas.getContext("2d");
+    canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+    const pieces=Array.from({length:80},()=>({
+      x:Math.random()*canvas.width,y:Math.random()*-canvas.height,
+      w:8+Math.random()*8,h:4+Math.random()*4,
+      color:["#D97706","#2563EB","#16A34A","#DC2626","#8B5CF6","#EC4899"][Math.floor(Math.random()*6)],
+      rot:Math.random()*360,spin:(Math.random()-.5)*6,vy:2+Math.random()*4,vx:(Math.random()-.5)*2
+    }));
+    let id;
+    const draw=()=>{
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      pieces.forEach(p=>{
+        ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);
+        ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();
+        p.x+=p.vx;p.y+=p.vy;p.rot+=p.spin;
+        if(p.y>canvas.height){p.y=-20;p.x=Math.random()*canvas.width;}
+      });
+      id=requestAnimationFrame(draw);
+    };
+    draw();return()=>cancelAnimationFrame(id);
+  },[]);
+  return <canvas ref={ref} style={{position:"fixed",inset:0,pointerEvents:"none",zIndex:999}}/>;
+}
+
+function LandingPage({onLogin}){
+  const items=[
+    {icon:"🎯",label:"Goals",desc:"Create and track every commitment you have"},
+    {icon:"✅",label:"Tasks",desc:"Prioritize what matters. Check off what's done"},
+    {icon:"📅",label:"Calendar",desc:"See your month at a glance. Never miss a deadline"},
+    {icon:"⚡",label:"Schedule Builder",desc:"Input tasks and get an optimized daily plan"},
+    {icon:"⏱",label:"Focus Timer",desc:"Deep work sessions with ambience sounds"},
+    {icon:"📥",label:"Import from Claude",desc:"Paste any Claude plan — we parse it automatically"},
   ];
-
-  return (
-    <div style={{ minHeight: "100vh", background: "#0D1117", fontFamily: "'DM Sans', sans-serif", color: "#E6EDF3" }}>
-
-      {/* Nav */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "24px 48px", borderBottom: "1px solid #222222" }}>
-        <div style={{ fontSize: "20px", letterSpacing: "5px", color: "#39D2C0", textTransform: "uppercase" }}>Meridian</div>
-        <button onClick={onLogin}
-          style={{ padding: "10px 24px", background: "transparent", border: "1px solid #39D2C0", color: "#39D2C0", fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'DM Sans', sans-serif" }}>
-          Sign In
-        </button>
+  return(
+    <div style={{minHeight:"100vh",background:"#FFF",fontFamily:T.font,color:T.text}}>
+      <div style={{width:"100%",height:220,background:"linear-gradient(135deg,#FFECD2 0%,#FCB69F 35%,#A1C4FD 65%,#C2E9FB 100%)",position:"relative",overflow:"hidden"}}>
+        <div style={{position:"absolute",inset:0,opacity:.07,backgroundImage:"repeating-linear-gradient(90deg,#000 0,#000 3px,transparent 3px,transparent 70px),repeating-linear-gradient(180deg,#000 0,#000 1px,transparent 1px,transparent 40px)"}}/>
+        <div style={{position:"absolute",bottom:0,left:0,right:0,height:60,background:"linear-gradient(to top,#fff,transparent)"}}/>
       </div>
-
-      {/* Hero */}
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "80px 48px 60px", textAlign: "center" }}>
-        <div style={{ fontSize: "12px", letterSpacing: "2px", textTransform: "uppercase", color: "#39D2C0", marginBottom: "16px", opacity: 0.8 }}>✦ Welcome to Meridian</div>
-        <div style={{ fontSize: "52px", fontFamily: "'DM Serif Display', serif", fontWeight: "400", lineHeight: "1.2", marginBottom: "24px", maxWidth: "700px" }}>
-          Every goal deserves a plan.
-        </div>
-        <div style={{ fontSize: "15px", color: "#8B949E", lineHeight: "1.8", marginBottom: "40px", maxWidth: "500px" }}>
-          Meridian is your personal accountability system. Track goals, manage tasks, plan your schedule and stay on top of everything that matters.
-        </div>
-        <div style={{ display: "flex", gap: "16px" }}>
-          <button onClick={onLogin}
-            style={{ padding: "14px 36px", background: "#39D2C0", color: "#0D1117", border: "none", fontSize: "13px", fontWeight: "600", cursor: "pointer", fontFamily: "'DM Sans', sans-serif", borderRadius: "8px" }}>
-            Get Started
-          </button>
-          <button onClick={onLogin}
-            style={{ padding: "14px 36px", background: "transparent", border: "1px solid #222222", color: "#8B949E", fontSize: "11px", letterSpacing: "3px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'DM Sans', sans-serif" }}>
-            Sign In
-          </button>
-        </div>
-      </div>
-
-      {/* App Preview with overlay */}
-      <div style={{ position: "relative", margin: "0 48px 80px", border: "1px solid #222222" }}>
-        {/* Fake app preview */}
-        <div style={{ background: "#161B22", padding: "24px", display: "grid", gridTemplateColumns: "200px 1fr", minHeight: "400px", pointerEvents: "none", userSelect: "none" }}>
-          {/* Fake sidebar */}
-          <div style={{ background: "#1C2128", padding: "24px 0", display: "flex", flexDirection: "column", gap: "4px" }}>
-            <div style={{ padding: "8px 24px", fontSize: "18px", fontFamily: "'DM Serif Display', serif", color: "#39D2C0", marginBottom: "16px" }}>Meridian</div>
-            {["Dashboard", "Calendar", "Tasks", "Goals", "Schedule Builder"].map((item, i) => (
-              <div key={item} style={{ padding: "10px 24px", fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", color: i === 0 ? "#E6EDF3" : "#6E7681", background: i === 0 ? "#2D333B" : "transparent", borderLeft: i === 0 ? "2px solid #39D2C0" : "2px solid transparent" }}>{item}</div>
+      <div style={{maxWidth:860,margin:"0 auto",padding:"0 48px"}}>
+        <div style={{fontSize:56,marginTop:-24,marginBottom:6,lineHeight:1}}>🎓</div>
+        <div style={{fontSize:38,fontFamily:T.serif,fontWeight:600,color:"#1A1A2E",marginBottom:4}}>Meridian</div>
+        <div style={{fontSize:15,color:T.textMute,marginBottom:28}}>Your college life, organized.</div>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",borderBottom:`1px solid ${T.border}`,paddingBottom:10,marginBottom:32}}>
+          <div style={{display:"flex",gap:4}}>
+            {["Dashboard","Calendar","Tasks","Goals","Schedule"].map(t=>(
+              <div key={t} style={{padding:"6px 14px",fontSize:13,color:T.textMute,borderRadius:4}}>{t}</div>
             ))}
           </div>
-          {/* Fake dashboard */}
-          <div style={{ padding: "32px", background: "#161B22" }}>
-            <div style={{ fontSize: "28px", marginBottom: "6px", color: "#E6EDF3" }}>Good morning.</div>
-            <div style={{ fontSize: "11px", color: "#8B949E", letterSpacing: "2px", textTransform: "uppercase", marginBottom: "28px" }}>Your day at a glance</div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "16px", marginBottom: "20px" }}>
-              {[["Tasks Remaining", "4"], ["Today's Events", "2"], ["Active Goals", "3"]].map(([lbl, val]) => (
-                <div key={lbl} style={{ background: "#161B22", border: "1px solid #333333", padding: "18px" }}>
-                  <div style={{ fontSize: "9px", letterSpacing: "2px", textTransform: "uppercase", color: "#8B949E", marginBottom: "10px" }}>{lbl}</div>
-                  <div style={{ fontSize: "36px", color: "#E6EDF3" }}>{val}</div>
-                </div>
-              ))}
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: "16px" }}>
-              <div style={{ background: "#161B22", border: "1px solid #333333", padding: "18px" }}>
-                <div style={{ fontSize: "12px", fontWeight: "600", color: "#8B949E", marginBottom: "12px" }}>Upcoming Tasks</div>
-                {[["Finish research paper", "high", "#FF3D5A"], ["Submit Oxford application", "high", "#1A3A5C"], ["Club meeting prep", "med", "#1A3A20"]].map(([t, p, c]) => (
-                  <div key={t} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "8px 0", borderBottom: "1px solid #2A2A2A" }}>
-                    <div style={{ width: "14px", height: "14px", border: "1.5px solid #555555" }} />
-                    <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: c }} />
-                    <div style={{ fontSize: "12px", color: "#E6EDF3", flex: 1 }}>{t}</div>
-                    <div style={{ fontSize: "9px", padding: "2px 6px", background: c + "20", color: c }}>{p}</div>
-                  </div>
-                ))}
-              </div>
-              <div style={{ background: "#161B22", border: "1px solid #333333", padding: "18px" }}>
-                <div style={{ fontSize: "12px", fontWeight: "600", color: "#8B949E", marginBottom: "12px" }}>Goals Overview</div>
-                {[["Oxford Internship", "#FF3D5A", 70], ["TAMU Research", "#1A3A5C", 45], ["Academics", "#0E2535", 80]].map(([lbl, c, pct]) => (
-                  <div key={lbl} style={{ marginBottom: "14px" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}>
-                      <div style={{ fontSize: "11px", color: "#C9D1D9" }}>{lbl}</div>
-                      <div style={{ fontSize: "12px", color: "#8B949E" }}>{pct}%</div>
-                    </div>
-                    <div style={{ height: "4px", background: "#2D333B" }}>
-                      <div style={{ height: "4px", width: `${pct}%`, background: c }} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+          <button onClick={onLogin} style={S.btn}>Sign in →</button>
         </div>
-
-        {/* Blur overlay with CTA */}
-        <div style={{ position: "absolute", inset: 0, backdropFilter: "blur(6px)", background: "rgba(14,12,10,0.6)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-          <div style={{ fontSize: "14px", fontFamily: "'DM Serif Display', serif", color: "#39D2C0", marginBottom: "12px" }}>Your dashboard awaits ✦</div>
-          <div style={{ fontSize: "15px", color: "#E6EDF3", marginBottom: "28px" }}>Sign in to access your personal Meridian.</div>
-          <button onClick={onLogin}
-            style={{ padding: "14px 40px", background: "#39D2C0", color: "#0D1117", border: "none", fontSize: "14px", fontWeight: "600", cursor: "pointer", fontFamily: "'DM Sans', sans-serif", borderRadius: "8px" }}>
-            Sign In / Sign Up
-          </button>
+        <div style={{padding:"10px 14px",background:T.bgSoft,borderRadius:6,fontSize:13,color:T.textMid,marginBottom:28,display:"flex",gap:24,flexWrap:"wrap"}}>
+          <span>📌 <strong style={{color:T.text}}>Major</strong> @ __ University</span>
+          <span>📅 <strong style={{color:T.text}}>Semester</strong> Fall 2025</span>
+          <span>🎯 <strong style={{color:T.text}}>Goals</strong> Active</span>
         </div>
-      </div>
-
-      {/* Features */}
-      <div style={{ padding: "0 48px 80px" }}>
-        <div style={{ fontSize: "13px", letterSpacing: "1px", color: "#8B949E", textAlign: "center", marginBottom: "40px", fontWeight: "500" }}>Everything you need ✦</div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: "20px" }}>
-          {features.map(f => (
-            <div key={f.title} style={{ padding: "28px 24px", border: "1px solid #222222" }}>
-              <div style={{ fontSize: "15px", fontFamily: "'DM Serif Display', serif", color: "#39D2C0", marginBottom: "10px" }}>{f.title}</div>
-              <div style={{ fontSize: "13px", color: "#8B949E", lineHeight: "1.7" }}>{f.desc}</div>
+        <div style={{fontSize:20,fontFamily:T.serif,fontWeight:600,color:T.text,marginBottom:12}}>📋 What's inside</div>
+        <div style={{border:`1px solid ${T.border}`,borderRadius:8,overflow:"hidden",marginBottom:44}}>
+          {items.map((item,i)=>(
+            <div key={item.label} onClick={onLogin}
+              style={{display:"flex",alignItems:"center",gap:14,padding:"12px 16px",
+                background:ROW_COLORS[i%ROW_COLORS.length],
+                borderBottom:i<items.length-1?`1px solid ${T.border}`:"none",cursor:"pointer"}}>
+              <span style={{fontSize:18}}>{item.icon}</span>
+              <span style={{fontSize:14,fontWeight:500,color:T.text,flex:1}}>{item.label}</span>
+              <span style={{fontSize:13,color:T.textMute}}>{item.desc}</span>
+              <span style={{fontSize:12,color:T.textMute}}>→</span>
             </div>
           ))}
         </div>
-      </div>
-
-      {/* Footer */}
-      <div style={{ borderTop: "1px solid #222222", padding: "24px 48px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div style={{ fontSize: "9px", letterSpacing: "2px", color: "#2D333B", textTransform: "uppercase" }}>© 2026 Chebiyyam</div>
-        <div style={{ fontSize: "9px", letterSpacing: "2px", color: "#2D333B", textTransform: "uppercase" }}>Meridian</div>
+        <div style={{textAlign:"center",padding:"32px 0 56px"}}>
+          <div style={{fontSize:28,fontFamily:T.serif,fontWeight:600,marginBottom:12,color:T.text}}>Your dashboard awaits.</div>
+          <div style={{fontSize:15,color:T.textMute,marginBottom:28}}>Sign in to access your personal Meridian workspace.</div>
+          <div style={{display:"flex",gap:12,justifyContent:"center"}}>
+            <button onClick={onLogin} style={{...S.btn,padding:"12px 32px",fontSize:15}}>Get Started</button>
+            <button onClick={onLogin} style={{...S.btnOut,padding:"12px 32px",fontSize:15}}>Sign In</button>
+          </div>
+        </div>
+        <div style={{borderTop:`1px solid ${T.border}`,padding:"20px 0",display:"flex",justifyContent:"space-between"}}>
+          <span style={{fontSize:12,color:T.textMute}}>© 2026 Chebiyyam</span>
+          <span style={{fontSize:12,fontFamily:T.serif,fontStyle:"italic",color:T.textMute}}>Meridian</span>
+        </div>
       </div>
     </div>
   );
 }
-function AuthScreen({ onBack }) {
-  const [mode, setMode] = useState("login");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
 
-  const handle = async () => {
-    setError(""); setMessage(""); setLoading(true);
-    if (mode === "login") {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) setError(error.message);
-    } else {
-      const { error } = await supabase.auth.signUp({ email, password });
-      if (error) setError(error.message);
+function AuthScreen({onBack}){
+  const [mode,setMode]=useState("login");
+  const [email,setEmail]=useState("");
+  const [password,setPassword]=useState("");
+  const [error,setError]=useState("");
+  const [message,setMessage]=useState("");
+  const [loading,setLoading]=useState(false);
+  const handle=async()=>{
+    setError("");setMessage("");setLoading(true);
+    if(mode==="login"){
+      const{error}=await supabase.auth.signInWithPassword({email,password});
+      if(error)setError(error.message);
+    }else{
+      const{error}=await supabase.auth.signUp({email,password});
+      if(error)setError(error.message);
       else setMessage("Account created! Check your email to confirm, then sign in.");
     }
     setLoading(false);
   };
-
-  return (
-    <div style={{ minHeight: "100vh", background: "#0D1117", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'DM Sans', sans-serif" }}>
-      <div style={{ width: "400px", padding: "48px", background: "#1C2128", border: "1px solid #222222" }}>
-        <div style={{ fontSize: "32px", fontFamily: "'DM Serif Display', serif", color: "#39D2C0", marginBottom: "6px" }}>Meridian</div>
-        <div style={{ fontSize: "11px", color: "#C9D1D9", letterSpacing: "2px", textTransform: "uppercase", marginBottom: "40px" }}>Your operating system</div>
-        {error   && <div style={{ fontSize: "11px", color: "#FF3D5A", marginBottom: "16px", padding: "8px 12px", background: "#FF3D5A18", border: "1px solid #8B1A1A40" }}>{error}</div>}
-        {message && <div style={{ fontSize: "11px", color: "#1A3A20", marginBottom: "16px", padding: "8px 12px", background: "#1A3A2018", border: "1px solid #2C4A2E40" }}>{message}</div>}
-        {[["Email","email",email,setEmail],["Password","password",password,setPassword]].map(([lbl,type,val,set]) => (
-          <div key={lbl}>
-            <div style={{ fontSize: "12px", fontWeight: "500", color: "#8B949E", marginBottom: "6px" }}>{lbl}</div>
-            <input type={type} value={val} onChange={e => set(e.target.value)} onKeyDown={e => e.key === "Enter" && handle()}
-              style={{ width: "100%", padding: "12px 14px", background: "#0D1117", border: "1px solid #222222", color: "#E6EDF3", fontSize: "13px", fontFamily: "'DM Sans', sans-serif", outline: "none", boxSizing: "border-box", marginBottom: "16px" }} />
+  return(
+    <div style={{minHeight:"100vh",background:T.bgSoft,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:T.font}}>
+      <div style={{width:420,padding:48,background:"#FFF",border:`1px solid ${T.border}`,borderRadius:14,boxShadow:"0 4px 32px rgba(0,0,0,0.08)"}}>
+        <div style={{fontSize:36,marginBottom:4}}>🎓</div>
+        <div style={{fontSize:28,fontFamily:T.serif,fontWeight:600,color:T.text,marginBottom:4}}>Meridian</div>
+        <div style={{fontSize:14,color:T.textMute,marginBottom:32}}>Your college life, organized</div>
+        {error&&<div style={{fontSize:13,color:T.red,marginBottom:14,padding:"10px 12px",background:"#FEE2E2",borderRadius:6}}>{error}</div>}
+        {message&&<div style={{fontSize:13,color:T.green,marginBottom:14,padding:"10px 12px",background:"#DCFCE7",borderRadius:6}}>{message}</div>}
+        {[["Email","email",email,setEmail],["Password","password",password,setPassword]].map(([lbl,type,val,set])=>(
+          <div key={lbl} style={{marginBottom:14}}>
+            <div style={S.label}>{lbl}</div>
+            <input type={type} value={val} onChange={e=>set(e.target.value)} onKeyDown={e=>e.key==="Enter"&&handle()} style={S.input}/>
           </div>
         ))}
-        <button onClick={handle} disabled={loading}
-          style={{ width: "100%", padding: "14px", background: "#39D2C0", color: "#0D1117", border: "none", fontSize: "14px", fontWeight: "600", cursor: "pointer", fontFamily: "'DM Sans', sans-serif", marginTop: "8px", borderRadius: "8px" }}>
-          {loading ? "..." : mode === "login" ? "Sign In" : "Create Account"}
+        <button onClick={handle} disabled={loading} style={{...S.btn,width:"100%",padding:13,fontSize:15,marginTop:8}}>
+          {loading?"...":mode==="login"?"Sign In":"Create Account"}
         </button>
-        <div onClick={() => { setMode(mode === "login" ? "signup" : "login"); setError(""); setMessage(""); }}
-          style={{ fontSize: "11px", color: "#C9D1D9", textAlign: "center", marginTop: "24px", cursor: "pointer" }}>
-          {mode === "login" ? "No account? Sign up" : "Have an account? Sign in"}
+        <div onClick={()=>{setMode(mode==="login"?"signup":"login");setError("");setMessage("");}}
+          style={{fontSize:13,color:T.textMid,textAlign:"center",marginTop:20,cursor:"pointer"}}>
+          {mode==="login"?"No account? Sign up →":"Have an account? Sign in →"}
         </div>
-        {onBack && <div onClick={onBack} style={{ fontSize: "11px", color: "#2D333B", textAlign: "center", marginTop: "12px", cursor: "pointer" }}>Back to home</div>}
+        {onBack&&<div onClick={onBack} style={{fontSize:12,color:T.textMute,textAlign:"center",marginTop:10,cursor:"pointer"}}>← Back to home</div>}
       </div>
     </div>
   );
 }
 
-// ── SMART SCHEDULER ──────────────────────────────────────────────────────────
-function AIScheduler({ user, refreshKey }) {
-  const [items, setItems] = useState([{ name: "", hours: "", priority: "high", deadline: "" }]);
-  const [schedule, setSchedule] = useState(null);
-  const [syncing, setSyncing] = useState(false);
-  const isFirstRender = useRef(true);
-
-  // Load from Supabase on mount
-  useEffect(() => {
-    const load = async () => {
-      const { data } = await supabase.from("schedules").select("*").eq("user_id", user.id).order("updated_at", { ascending: false }).limit(1);
-      if (data && data.length > 0) {
-        if (data[0].items && data[0].items.length > 0) setItems(data[0].items);
-        if (data[0].result) setSchedule(data[0].result);
-      }
-    };
-    load();
-  }, [user.id, refreshKey]);
-
-  const save = async (newItems, newSchedule) => {
+function AIScheduler({user,refreshKey}){
+  const [items,setItems]=useState([{name:"",hours:"",priority:"high",deadline:""}]);
+  const [schedule,setSchedule]=useState(null);
+  const [syncing,setSyncing]=useState(false);
+  const isFirst=useRef(true);
+  useEffect(()=>{
+    (async()=>{
+      const{data}=await supabase.from("schedules").select("*").eq("user_id",user.id).order("updated_at",{ascending:false}).limit(1);
+      if(data&&data.length>0){if(data[0].items?.length>0)setItems(data[0].items);if(data[0].result)setSchedule(data[0].result);}
+    })();
+  },[user.id,refreshKey]);
+  const save=async(ni,ns)=>{
     setSyncing(true);
-    try {
-      await supabase.from("schedules").upsert(
-        { user_id: user.id, items: newItems, result: newSchedule, updated_at: new Date().toISOString() },
-        { onConflict: "user_id" }
-      );
-    } catch(e) { console.error("Save error:", e); }
+    try{await supabase.from("schedules").upsert({user_id:user.id,items:ni,result:ns,updated_at:new Date().toISOString()},{onConflict:"user_id"});}catch(e){}
     setSyncing(false);
   };
-
-  // Auto-save items as user types (debounced) - skip first render
-  useEffect(() => {
-    if (isFirstRender.current) { isFirstRender.current = false; return; }
-    const timer = setTimeout(() => save(items, schedule), 1000);
-    return () => clearTimeout(timer);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [items]);
-
-  const updateItems = (newItems) => setItems(newItems);
-  const updateSchedule = (newSchedule) => { setSchedule(newSchedule); save(items, newSchedule); };
-
-  const addItem = () => updateItems([...items, { name: "", hours: "", priority: "high", deadline: "" }]);
-  const updateItem = (i, field, val) => updateItems(items.map((t, idx) => idx === i ? { ...t, [field]: val } : t));
-  const removeItem = (i) => updateItems(items.filter((_, idx) => idx !== i));
-
-  const priorityScore = (p) => p === "high" ? 3 : p === "med" ? 2 : 1;
-
-  const daysUntil = (dateStr) => {
-    if (!dateStr) return 999;
-    const today = new Date(); today.setHours(0,0,0,0);
-    const due = new Date(dateStr + "T00:00:00");
-    return Math.ceil((due - today) / (1000 * 60 * 60 * 24));
+  useEffect(()=>{
+    if(isFirst.current){isFirst.current=false;return;}
+    const t=setTimeout(()=>save(items,schedule),1000);return()=>clearTimeout(t);
+  // eslint-disable-next-line
+  },[items]);
+  const addItem=()=>setItems(p=>[...p,{name:"",hours:"",priority:"high",deadline:""}]);
+  const upd=(i,f,v)=>setItems(p=>p.map((t,idx)=>idx===i?{...t,[f]:v}:t));
+  const rem=(i)=>setItems(p=>p.filter((_,idx)=>idx!==i));
+  const build=()=>{
+    const valid=items.filter(t=>t.name.trim()&&t.hours);if(!valid.length)return;
+    const ps=p=>p==="high"?3:p==="med"?2:1;
+    const us=d=>d<=1?10:d<=3?7:d<=7?5:d<=14?3:1;
+    const now2=new Date();now2.setHours(0,0,0,0);
+    const du=ds=>{if(!ds)return 999;const d=new Date(ds+"T00:00:00");return Math.ceil((d-now2)/86400000);};
+    const scored=valid.map(t=>{const days=du(t.deadline);return{...t,days,hours:parseFloat(t.hours),score:ps(t.priority)*3+us(days)*2};}).sort((a,b)=>b.score-a.score);
+    const r={scored};setSchedule(r);save(items,r);
   };
-
-  const urgencyScore = (days) => {
-    if (days <= 1) return 10;
-    if (days <= 3) return 7;
-    if (days <= 7) return 5;
-    if (days <= 14) return 3;
-    return 1;
-  };
-
-  const buildSchedule = () => {
-    const valid = items.filter(t => t.name.trim() && t.hours);
-    if (valid.length === 0) return;
-
-    const scored = valid.map(t => {
-      const days = daysUntil(t.deadline);
-      const score = priorityScore(t.priority) * 3 + urgencyScore(days) * 2;
-      return { ...t, days, score, hours: parseFloat(t.hours) };
-    }).sort((a, b) => b.score - a.score);
-
-    updateSchedule({ scored });
-  };
-
-  const S = {
-    input:  { width: "100%", padding: "8px 10px", border: "1px solid #333333", background: "#161B22", fontSize: "12px", fontFamily: "'DM Sans', sans-serif", color: "#E6EDF3", outline: "none", boxSizing: "border-box" },
-    select: { width: "100%", padding: "8px 10px", border: "1px solid #333333", background: "#161B22", fontSize: "12px", fontFamily: "'DM Sans', sans-serif", color: "#E6EDF3", outline: "none", cursor: "pointer" },
-    btn:    { padding: "10px 20px", background: "#1C2128", color: "#E6EDF3", border: "none", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'DM Sans', sans-serif" },
-    btnOut: { padding: "8px 14px", background: "transparent", color: "#E6EDF3", border: "1px solid #555555", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'DM Sans', sans-serif" },
-  };
-
-  const priorityColor = (p) => p === "high" ? "#FF3D5A" : p === "med" ? "#0E2535" : "#1A3A20";
-
-  return (
+  const pc=p=>p==="high"?T.red:p==="med"?T.orange:T.green;
+  return(
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
-        <div style={{ fontSize: "12px", color: "#8B949E", lineHeight: "1.7" }}>
-          Add everything you need to get done. The scheduler will prioritize by urgency and importance.
-        </div>
-        {syncing && <div style={{ fontSize: "10px", color: "#39D2C0", letterSpacing: "2px", textTransform: "uppercase" }}>Saving...</div>}
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
+        <div style={{fontSize:13,color:T.textMid}}>Add everything you need to get done. We'll prioritize by urgency + importance.</div>
+        {syncing&&<div style={{fontSize:12,color:T.accent}}>Saving…</div>}
       </div>
-
-      {/* Column headers */}
-      <div style={{ display: "grid", gridTemplateColumns: "2fr 0.7fr 0.8fr 1fr auto", gap: "8px", marginBottom: "6px" }}>
-        {["Task Name", "Hours", "Priority", "Deadline", ""].map((lbl, i) => (
-          <div key={i} style={{ fontSize: "9px", letterSpacing: "2px", textTransform: "uppercase", color: "#8B949E" }}>{lbl}</div>
-        ))}
+      <div style={{display:"grid",gridTemplateColumns:"2fr 0.7fr 0.8fr 1fr auto",gap:8,marginBottom:6}}>
+        {["Task","Hours","Priority","Deadline",""].map((l,i)=><div key={i} style={{fontSize:11,fontWeight:600,color:T.textMute}}>{l}</div>)}
       </div>
-
-      {items.map((task, i) => (
-        <div key={i} style={{ display: "grid", gridTemplateColumns: "2fr 0.7fr 0.8fr 1fr auto", gap: "8px", marginBottom: "10px", alignItems: "center" }}>
-          <input style={S.input} placeholder="e.g. Write essay" value={task.name} onChange={e => updateItem(i, "name", e.target.value)} />
-          <input style={S.input} placeholder="e.g. 2" type="number" min="0.5" step="0.5" value={task.hours} onChange={e => updateItem(i, "hours", e.target.value)} />
-          <select style={S.select} value={task.priority} onChange={e => updateItem(i, "priority", e.target.value)}>
-            <option value="high">High</option>
-            <option value="med">Medium</option>
-            <option value="low">Low</option>
+      {items.map((task,i)=>(
+        <div key={i} style={{display:"grid",gridTemplateColumns:"2fr 0.7fr 0.8fr 1fr auto",gap:8,marginBottom:8,alignItems:"center"}}>
+          <input style={S.input} placeholder="e.g. Write essay" value={task.name} onChange={e=>upd(i,"name",e.target.value)}/>
+          <input style={S.input} placeholder="2" type="number" min="0.5" step="0.5" value={task.hours} onChange={e=>upd(i,"hours",e.target.value)}/>
+          <select style={S.select} value={task.priority} onChange={e=>upd(i,"priority",e.target.value)}>
+            <option value="high">High</option><option value="med">Medium</option><option value="low">Low</option>
           </select>
-          <input style={S.input} type="date" min={new Date().toLocaleDateString('en-CA')} value={task.deadline} onChange={e => updateItem(i, "deadline", e.target.value)} />
-          <button onClick={() => removeItem(i)} style={{ background: "none", border: "none", color: "#484F58", fontSize: "18px", cursor: "pointer", padding: "0 4px" }}>x</button>
+          <input style={S.input} type="date" min={new Date().toLocaleDateString('en-CA')} value={task.deadline} onChange={e=>upd(i,"deadline",e.target.value)}/>
+          <button onClick={()=>rem(i)} style={{background:"none",border:"none",color:T.textMute,fontSize:18,cursor:"pointer",padding:"0 4px"}}>×</button>
         </div>
       ))}
-
-      <div style={{ display: "flex", gap: "12px", marginTop: "16px", marginBottom: "32px", alignItems: "center" }}>
+      <div style={{display:"flex",gap:10,marginTop:16,marginBottom:32}}>
         <button style={S.btnOut} onClick={addItem}>+ Add Task</button>
-        <button style={S.btn} onClick={buildSchedule}>Build My Schedule</button>
-        <button style={S.btnOut} onClick={() => save(items, schedule)} disabled={syncing}>
-          {syncing ? "Saving..." : "Save"}
-        </button>
+        <button style={S.btn} onClick={build}>Build Schedule</button>
+        <button style={S.btnOut} onClick={()=>save(items,schedule)} disabled={syncing}>{syncing?"Saving…":"Save"}</button>
       </div>
-
-      {schedule && (
-        <>
-          {/* Priority order */}
-          <div style={{ marginBottom: "28px" }}>
-            <div style={{ fontSize: "10px", letterSpacing: "3px", textTransform: "uppercase", color: "#8B949E", marginBottom: "12px" }}>Tackle In This Order</div>
-            {schedule.scored.map((t, i) => (
-              <div key={i} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "10px 0", borderBottom: "1px solid #2A2A2A" }}>
-                <div style={{ fontSize: "18px", color: "#39D2C0", fontWeight: "400", width: "24px" }}>{i + 1}</div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: "13px" }}>{t.name}</div>
-                  <div style={{ fontSize: "12px", color: "#8B949E", marginTop: "2px" }}>
-                    {t.hours}h needed
-                    {t.days < 999 ? ` · due in ${t.days} day${t.days !== 1 ? "s" : ""}` : " · no deadline"}
-                  </div>
-                </div>
-                <div style={{ fontSize: "9px", letterSpacing: "1px", textTransform: "uppercase", padding: "2px 8px", background: priorityColor(t.priority) + "18", color: priorityColor(t.priority) }}>{t.priority}</div>
+      {schedule&&(
+        <div>
+          <div style={{fontSize:14,fontWeight:600,color:T.text,marginBottom:12}}>Tackle In This Order</div>
+          {schedule.scored.map((t,i)=>(
+            <div key={i} style={{display:"flex",alignItems:"center",gap:12,padding:"10px 0",borderBottom:`1px solid ${T.border}`}}>
+              <div style={{fontSize:18,color:T.accent,fontWeight:600,width:24}}>{i+1}</div>
+              <div style={{flex:1}}>
+                <div style={{fontSize:13,color:T.text}}>{t.name}</div>
+                <div style={{fontSize:12,color:T.textMute,marginTop:2}}>{t.hours}h {t.days<999?`· due in ${t.days} day${t.days!==1?"s":""}`:""}</div>
               </div>
-            ))}
-          </div>
-
-
-        </>
+              <div style={{fontSize:11,fontWeight:500,padding:"2px 8px",borderRadius:4,background:pc(t.priority)+"18",color:pc(t.priority)}}>{t.priority}</div>
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );
 }
 
-// ── MAIN APP ─────────────────────────────────────────────────────────────────
-function MeridianApp({ user }) {
-  const [view, setView] = useState(() => {
-    const hash = window.location.hash.replace("#", "");
-    return ["dashboard","calendar","tasks","goals","scheduler"].includes(hash) ? hash : "dashboard";
-  });
-  const [focusMode, setFocusMode] = useState(false);
-  const [focusTask, setFocusTask] = useState(null);
-  const [focusSession, setFocusSession] = useState(1);
-  const [focusSessions, setFocusSessions] = useState(4);
-  const [focusComplete, setFocusComplete] = useState(false);
-  const [focusMins, setFocusMins] = useState(25);
-  const [ambience, setAmbience] = useState(null); // null | "brown" | "white" | "pink"
-  const ambienceRef = useRef(null);
+function FocusScreen({task,timerSeconds,timerRunning,setTimerRunning,focusComplete,ambience,setAmbience,focusMins,onExit,onMarkComplete,onNextSession}){
+  const fmt=s=>`${String(Math.floor(s/60)).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`;
+  const pct=focusMins>0?Math.round(((focusMins*60-timerSeconds)/(focusMins*60))*100):0;
+  return(
+    <div style={{position:"fixed",inset:0,background:"#FAFAF8",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",fontFamily:T.font,zIndex:500}}>
+      <button onClick={()=>onExit(true)} style={{position:"absolute",top:24,left:24,...S.btnOut}}>← Exit Focus</button>
+      {task&&<div style={{fontSize:14,color:T.textMute,marginBottom:16,maxWidth:400,textAlign:"center"}}>Focusing on: <strong style={{color:T.text}}>{task.text}</strong></div>}
+      <svg width={200} height={200} style={{marginBottom:24}}>
+        <circle cx={100} cy={100} r={88} fill="none" stroke={T.border} strokeWidth={8}/>
+        <circle cx={100} cy={100} r={88} fill="none" stroke={T.accent} strokeWidth={8}
+          strokeDasharray={2*Math.PI*88} strokeDashoffset={2*Math.PI*88*(1-pct/100)}
+          strokeLinecap="round" transform="rotate(-90 100 100)" style={{transition:"stroke-dashoffset 1s linear"}}/>
+        <text x={100} y={112} textAnchor="middle" fontSize={36} fontFamily={T.serif} fill={T.text}>{fmt(timerSeconds)}</text>
+      </svg>
+      {!focusComplete?(
+        <div style={{display:"flex",gap:12,marginBottom:32}}>
+          <button style={S.btn} onClick={()=>setTimerRunning(r=>!r)}>{timerRunning?"Pause":"Resume"}</button>
+          {task&&<button style={S.btnOut} onClick={onMarkComplete}>Mark Done ✓</button>}
+        </div>
+      ):(
+        <div style={{textAlign:"center",marginBottom:32}}>
+          <div style={{fontSize:18,fontFamily:T.serif,marginBottom:16}}>Session complete! 🎉</div>
+          <div style={{display:"flex",gap:12,justifyContent:"center"}}>
+            <button style={S.btn} onClick={onNextSession}>Next Session</button>
+            {task&&<button style={S.btnOut} onClick={onMarkComplete}>Mark Done</button>}
+            <button style={S.btnOut} onClick={()=>onExit(false)}>Done for now</button>
+          </div>
+        </div>
+      )}
+      <div style={{fontSize:12,color:T.textMute,marginBottom:10}}>Ambience</div>
+      <div style={{display:"flex",gap:8}}>
+        {[["🟤","brown","Brown"],["⬜","white","White"],["🩷","pink","Pink"],["🔇","off","Off"]].map(([icon,val,lbl])=>(
+          <button key={val} onClick={()=>setAmbience(ambience===val||val==="off"?null:val)}
+            style={{padding:"6px 14px",background:ambience===val?T.accentBg:"transparent",
+              color:ambience===val?T.accent:T.textMute,border:`1px solid ${ambience===val?T.accent:T.border}`,
+              borderRadius:20,fontSize:12,cursor:"pointer",fontFamily:T.font}}>
+            {icon} {lbl}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
 
-  const navigate = (v) => {
-    setView(v);
-    window.location.hash = v;
-  };
-  const [goals, setGoals] = useState([]);
-  const [tasks, setTasks] = useState([]);
-  const [events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState({ xp: 0, level: 1, streak: 0, deep_work_minutes: 0 });
-  const [showConfetti, setShowConfetti] = useState(false);
-  const [xpPopup, setXpPopup] = useState(null);
-  const [soundEnabled, setSoundEnabled] = useState(true);
-  const [nonNegotiables, setNonNegotiables] = useState([]);
-  const [showImport, setShowImport] = useState(false);
-  const [showNNPicker, setShowNNPicker] = useState(false);
-  const [importText, setImportText] = useState("");
-  const [importParsed, setImportParsed] = useState(null);
-  const [importLoading, setImportLoading] = useState(false);
-  const [importError, setImportError] = useState("");
-  const [nnComplete, setNnComplete] = useState(false);
-  const [timerMode, setTimerMode] = useState(null);
-  const [timerSeconds, setTimerSeconds] = useState(0);
-  const [timerRunning, setTimerRunning] = useState(false);
-  const [customMinutes, setCustomMinutes] = useState(30);
-  const [weeklySnapshots, setWeeklySnapshots] = useState([]);
-  const [showWeeklyReport, setShowWeeklyReport] = useState(false);
-  const [performanceScore, setPerformanceScore] = useState(null);
-  const [fallingOff, setFallingOff] = useState(false);
-  const [milestones, setMilestones] = useState([]);
-  const [showAllGoals, setShowAllGoals] = useState(false);
-  const [showMilestone, setShowMilestone] = useState(null);
-  const timerRef = useRef(null);
-  const today = new Date();
-  const [calMonth, setCalMonth] = useState(today.getMonth());
-  const [calYear, setCalYear]   = useState(today.getFullYear());
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [showAddTask,  setShowAddTask]  = useState(false);
-  const [showAddEvent, setShowAddEvent] = useState(false);
-  const [showAddGoal,  setShowAddGoal]  = useState(false);
-  const [newTask,  setNewTask]  = useState({ text: "", goal_id: "", due: "", priority: "med", hours: "", recurring: [] });
-  const [newEvent, setNewEvent] = useState({ title: "", goal_id: "", date: "", time: "" });
-  const [newGoal,  setNewGoal]  = useState({ label: "", color: "#E53935", deadline: "" });
-  const [editEvent, setEditEvent] = useState(null);
-  const [editTask, setEditTask] = useState(null);
-  const [quoteIdx, setQuoteIdx] = useState(() => Math.floor(Math.random() * QUOTES.length));
-  const [greeting] = useState(getGreeting());
+function MeridianApp({user}){
+  const [view,setView]=useState(()=>{const h=window.location.hash.replace("#","");return["dashboard","calendar","tasks","goals","scheduler"].includes(h)?h:"dashboard";});
+  const navigate=v=>{setView(v);window.location.hash=v;};
 
-  const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,"0")}-${String(today.getDate()).padStart(2,"0")}`;
+  const [focusMode,setFocusMode]=useState(false);
+  const [focusTask,setFocusTask]=useState(null);
+  const [focusSession,setFocusSession]=useState(1);
+  const [focusMins,setFocusMins]=useState(25);
+  const [focusComplete,setFocusComplete]=useState(false);
+  const [ambience,setAmbience]=useState(null);
+  const ambienceRef=useRef(null);
 
-  useEffect(() => { fetchAll(); fetchStats(); }, []);
+  const [timerMode,setTimerMode]=useState(null);
+  const [timerSeconds,setTimerSeconds]=useState(0);
+  const [timerRunning,setTimerRunning]=useState(false);
+  const [customMinutes,setCustomMinutes]=useState(30);
+  const timerRef=useRef(null);
 
-  const fetchStats = async () => {
-    const { data } = await supabase.from("user_stats").select("*").eq("user_id", user.id).maybeSingle();
-    if (data) {
-      // reset deep work today if it's a new day
-      const todayDate = new Date().toLocaleDateString('en-CA');
-      if (data.deep_work_date !== todayDate) {
-        const updated = { ...data, deep_work_today: 0, deep_work_date: todayDate };
-        setStats(updated);
-        supabase.from("user_stats").update({ deep_work_today: 0, deep_work_date: todayDate }).eq("user_id", user.id);
-      } else {
-        setStats(data);
+  const [goals,setGoals]=useState([]);
+  const [tasks,setTasks]=useState([]);
+  const [events,setEvents]=useState([]);
+  const [loading,setLoading]=useState(true);
+  const [stats,setStats]=useState({xp:0,level:1,streak:0,deep_work_minutes:0});
+
+  const [showConfetti,setShowConfetti]=useState(false);
+  const [xpPopup,setXpPopup]=useState(null);
+  const [soundEnabled,setSoundEnabled]=useState(true);
+  const [nonNegotiables,setNonNegotiables]=useState([]);
+  const [showImport,setShowImport]=useState(false);
+  const [showNNPicker,setShowNNPicker]=useState(false);
+  const [importText,setImportText]=useState("");
+  const [importParsed,setImportParsed]=useState(null);
+  const [importLoading,setImportLoading]=useState(false);
+  const [importError,setImportError]=useState("");
+  const [nnComplete,setNnComplete]=useState(false);
+  const [weeklySnapshots,setWeeklySnapshots]=useState([]);
+  const [showWeeklyReport,setShowWeeklyReport]=useState(false);
+  const [performanceScore,setPerformanceScore]=useState(null);
+  const [fallingOff,setFallingOff]=useState(false);
+  const [showMilestone,setShowMilestone]=useState(null);
+  const [showAllGoals,setShowAllGoals]=useState(false);
+  const [showFocusPicker,setShowFocusPicker]=useState(false);
+  const [allTasksComplete,setAllTasksComplete]=useState(false);
+
+  const today=new Date();
+  const [calMonth,setCalMonth]=useState(today.getMonth());
+  const [calYear,setCalYear]=useState(today.getFullYear());
+  const [selectedDate,setSelectedDate]=useState(null);
+
+  const [showAddTask,setShowAddTask]=useState(false);
+  const [showAddEvent,setShowAddEvent]=useState(false);
+  const [showAddGoal,setShowAddGoal]=useState(false);
+  const [newTask,setNewTask]=useState({text:"",goal_id:"",due:"",priority:"med",hours:"",recurring:[]});
+  const [newEvent,setNewEvent]=useState({title:"",goal_id:"",date:"",time:""});
+  const [newGoal,setNewGoal]=useState({label:"",color:"#E53935",deadline:""});
+  const [editEvent,setEditEvent]=useState(null);
+  const [editTask,setEditTask]=useState(null);
+
+  const [examNotifs,setExamNotifs]=useState([]);
+  const [notifDismissed,setNotifDismissed]=useState(false);
+  const [nextExam,setNextExam]=useState(null);
+
+  const [quoteIdx,setQuoteIdx]=useState(()=>Math.floor(Math.random()*QUOTES.length));
+  const [greeting]=useState(getGreeting());
+
+  const todayStr=`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,"0")}-${String(today.getDate()).padStart(2,"0")}`;
+
+  useEffect(()=>{fetchAll();fetchStats();},[]);
+
+  const fetchStats=async()=>{
+    const{data}=await supabase.from("user_stats").select("*").eq("user_id",user.id).maybeSingle();
+    if(data){
+      const td=new Date().toLocaleDateString('en-CA');
+      if(data.deep_work_date!==td){const u={...data,deep_work_today:0,deep_work_date:td};setStats(u);supabase.from("user_stats").update({deep_work_today:0,deep_work_date:td}).eq("user_id",user.id);}
+      else setStats(data);
+      if(data.non_negotiables&&Array.isArray(data.non_negotiables)){
+        const td2=new Date().toLocaleDateString('en-CA');
+        if(data.nn_date===td2)setNonNegotiables(data.non_negotiables);
+        else{setNonNegotiables([]);supabase.from("user_stats").update({non_negotiables:[],nn_date:null}).eq("user_id",user.id);}
       }
-      if (data.non_negotiables && Array.isArray(data.non_negotiables)) {
-          // only restore if saved today
-          const todayDate = new Date().toLocaleDateString('en-CA');
-          if (data.nn_date === todayDate) {
-            setNonNegotiables(data.non_negotiables);
-          } else {
-            // new day — clear non-negotiables
-            setNonNegotiables([]);
-            supabase.from("user_stats").update({ non_negotiables: [], nn_date: null }).eq("user_id", user.id);
-          }
-        }
-    } else {
-      const { data: newStats } = await supabase.from("user_stats").insert({ user_id: user.id }).select().single();
-      if (newStats) setStats(newStats);
-    }
-    // fetch last 7 days of snapshots
-    const { data: snaps } = await supabase.from("daily_snapshots").select("*").eq("user_id", user.id).order("date", { ascending: false }).limit(7);
-    if (snaps) {
+    }else{const{data:ns}=await supabase.from("user_stats").insert({user_id:user.id}).select().single();if(ns)setStats(ns);}
+    const{data:snaps}=await supabase.from("daily_snapshots").select("*").eq("user_id",user.id).order("date",{ascending:false}).limit(7);
+    if(snaps){
       setWeeklySnapshots(snaps);
-      if (snaps.length > 0) {
-        const avg = Math.round(snaps.reduce((a, s) => a + s.score, 0) / snaps.length);
-        setPerformanceScore(avg);
-        const recent = snaps.slice(0, 2);
-        if (recent.length === 2 && recent.every(s => s.score < 30)) setFallingOff(true);
+      if(snaps.length>0){
+        const avg=Math.round(snaps.reduce((a,s)=>a+s.score,0)/snaps.length);setPerformanceScore(avg);
+        if(snaps.slice(0,2).length===2&&snaps.slice(0,2).every(s=>s.score<30))setFallingOff(true);
       }
-      const lastWeeklyShown = localStorage.getItem("meridian_weekly_shown");
-      const thisWeek = new Date().toLocaleDateString('en-CA', { year: 'numeric', month: '2-digit', day: '2-digit' }).slice(0,7);
-      if (new Date().getDay() === 0 && snaps.length >= 5 && lastWeeklyShown !== thisWeek) {
-        setShowWeeklyReport(true);
-        localStorage.setItem("meridian_weekly_shown", thisWeek);
-      }
+      const lw=localStorage.getItem("meridian_weekly_shown");
+      const tw=new Date().toLocaleDateString('en-CA',{year:'numeric',month:'2-digit',day:'2-digit'}).slice(0,7);
+      if(new Date().getDay()===0&&snaps.length>=5&&lw!==tw){setShowWeeklyReport(true);localStorage.setItem("meridian_weekly_shown",tw);}
     }
   };
 
-  const saveDailySnapshot = async (allTasks) => {
-    const todayDate = new Date().toLocaleDateString('en-CA');
-    const todayDay = new Date().toLocaleDateString('en-US', { weekday: 'short' }).toLowerCase();
-    // only count tasks due today OR recurring today
-    const todayTasks = allTasks.filter(t => {
-      if (t.due === todayDate) return true;
-      if (!t.recurring) return false;
-      try { const d = JSON.parse(t.recurring); return Array.isArray(d) && d.includes(todayDay); } catch { return false; }
-    });
-    const total = todayTasks.length;
-    const completed = todayTasks.filter(t => t.done).length;
-    const score = total > 0 ? Math.round((completed / total) * 100) : 0;
-    await supabase.from("daily_snapshots").upsert(
-      { user_id: user.id, date: todayDate, total_tasks: total, completed_tasks: completed, score },
-      { onConflict: "user_id,date" }
-    );
+  const saveDailySnapshot=async(all)=>{
+    const td=new Date().toLocaleDateString('en-CA');
+    const tday=new Date().toLocaleDateString('en-US',{weekday:'short'}).toLowerCase();
+    const tt=all.filter(t=>{if(t.due===td)return true;if(!t.recurring)return false;try{const d=JSON.parse(t.recurring);return Array.isArray(d)&&d.includes(tday);}catch{return false;}});
+    const total=tt.length,completed=tt.filter(t=>t.done).length,score=total>0?Math.round((completed/total)*100):0;
+    await supabase.from("daily_snapshots").upsert({user_id:user.id,date:td,total_tasks:total,completed_tasks:completed,score},{onConflict:"user_id,date"});
   };
 
-  const checkMilestones = (allTasks) => {
-    const done = allTasks.filter(t => t.done).length;
-    const milestoneList = [
-      { count: 1,   label: "First Step", emoji: "🚀" },
-      { count: 5,   label: "Getting Going", emoji: "⚡" },
-      { count: 10,  label: "In The Zone", emoji: "🎯" },
-      { count: 25,  label: "On A Roll", emoji: "🔥" },
-      { count: 50,  label: "Half Century", emoji: "💎" },
-      { count: 100, label: "Century", emoji: "👑" },
-    ];
-    const hit = milestoneList.find(m => m.count === done);
-    if (hit) setShowMilestone(hit);
+  const checkMilestones=all=>{
+    const done=all.filter(t=>t.done).length;
+    const ms=[{count:1,label:"First Step",emoji:"🚀"},{count:5,label:"Getting Going",emoji:"⚡"},{count:10,label:"In The Zone",emoji:"🎯"},{count:25,label:"On A Roll",emoji:"🔥"},{count:50,label:"Half Century",emoji:"💎"},{count:100,label:"Century",emoji:"👑"}];
+    const hit=ms.find(m=>m.count===done);if(hit)setShowMilestone(hit);
   };
 
-  const playSound = () => {
-    if (!soundEnabled) return;
-    try {
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      const notes = [392, 440, 523]; // G4, A4, C5 — soft ascending chime
-      notes.forEach((freq, i) => {
-        const o = ctx.createOscillator();
-        const g = ctx.createGain();
-        o.connect(g); g.connect(ctx.destination);
-        o.type = "sine";
-        o.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.15);
-        g.gain.setValueAtTime(0, ctx.currentTime + i * 0.15);
-        g.gain.linearRampToValueAtTime(0.18, ctx.currentTime + i * 0.15 + 0.05);
-        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.15 + 0.6);
-        o.start(ctx.currentTime + i * 0.15);
-        o.stop(ctx.currentTime + i * 0.15 + 0.6);
+  const playSound=()=>{
+    if(!soundEnabled)return;
+    try{
+      const ctx=new(window.AudioContext||window.webkitAudioContext)();
+      [392,440,523].forEach((freq,i)=>{
+        const o=ctx.createOscillator(),g=ctx.createGain();
+        o.connect(g);g.connect(ctx.destination);o.type="sine";
+        o.frequency.setValueAtTime(freq,ctx.currentTime+i*0.15);
+        g.gain.setValueAtTime(0,ctx.currentTime+i*0.15);
+        g.gain.linearRampToValueAtTime(0.18,ctx.currentTime+i*0.15+0.05);
+        g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+i*0.15+0.6);
+        o.start(ctx.currentTime+i*0.15);o.stop(ctx.currentTime+i*0.15+0.6);
       });
-    } catch(e) {}
+    }catch(e){}
   };
 
-  const triggerXpPopup = (amount) => {
-    setXpPopup(amount);
-    setTimeout(() => setXpPopup(null), 1500);
-  };
+  const triggerXpPopup=a=>{setXpPopup(a);setTimeout(()=>setXpPopup(null),1500);};
 
-  const addXp = async (amount) => {
-    const newXp = Math.max(0, (stats.xp || 0) + amount);
-    const newLevel = Math.floor(newXp / 100) + 1;
-    const updated = { ...stats, xp: newXp, level: newLevel };
-    setStats(updated);
-    triggerXpPopup(amount);
-    await supabase.from("user_stats").upsert({ ...updated, user_id: user.id }, { onConflict: "user_id" });
+  const addXp=async amount=>{
+    const nx=Math.max(0,(stats.xp||0)+amount),nl=Math.floor(nx/100)+1;
+    const updated={...stats,xp:nx,level:nl};setStats(updated);triggerXpPopup(amount);
+    await supabase.from("user_stats").upsert({...updated,user_id:user.id},{onConflict:"user_id"});
     return updated;
   };
 
-  const updateStreak = async (currentStats) => {
-    const base = currentStats || stats;
-    const todayDate = new Date().toLocaleDateString('en-CA');
-    const yesterday = new Date(Date.now() - 86400000).toLocaleDateString('en-CA');
-    let newStreak = base.streak || 0;
-    if (base.last_completed_date === yesterday) newStreak += 1;
-    else if (base.last_completed_date !== todayDate) newStreak = 1;
-    const updated = { ...base, streak: newStreak, last_completed_date: todayDate };
-    setStats(updated);
-    await supabase.from("user_stats").upsert({ ...updated, user_id: user.id }, { onConflict: "user_id" });
+  const updateStreak=async current=>{
+    const base=current||stats;
+    const td=new Date().toLocaleDateString('en-CA');
+    const yest=new Date(Date.now()-86400000).toLocaleDateString('en-CA');
+    let streak=base.streak||0;
+    if(base.last_completed_date===yest)streak+=1;
+    else if(base.last_completed_date!==td)streak=1;
+    const updated={...base,streak,last_completed_date:td};setStats(updated);
+    await supabase.from("user_stats").upsert({...updated,user_id:user.id},{onConflict:"user_id"});
   };
 
-  // Timer logic
-  useEffect(() => {
-    if (timerRunning && timerSeconds > 0) {
-      timerRef.current = setTimeout(() => setTimerSeconds(s => s - 1), 1000);
-    } else if (timerRunning && timerSeconds === 0) {
-      setTimerRunning(false);
-      playSound();
-      const mins = timerMode === 25 ? 25 : timerMode === 50 ? 50 : focusMins;
-      const newMinsTotal = (stats.deep_work_minutes || 0) + mins;
-      const newMinsToday = (stats.deep_work_today || 0) + mins;
-      const newXp = focusMode ? Math.max(0, (stats.xp || 0) + 50) : (stats.xp || 0);
-      const newLevel = Math.floor(newXp / 100) + 1;
-      const todayDate = new Date().toLocaleDateString('en-CA');
-      const updated = { ...stats, deep_work_minutes: newMinsTotal, deep_work_today: newMinsToday, deep_work_date: todayDate, xp: newXp, level: newLevel };
-      setStats(updated);
-      if (focusMode) { triggerXpPopup(50); setFocusComplete(true); }
-      supabase.from("user_stats").upsert({ ...updated, user_id: user.id }, { onConflict: "user_id" });
+  useEffect(()=>{
+    if(timerRunning&&timerSeconds>0){timerRef.current=setTimeout(()=>setTimerSeconds(s=>s-1),1000);}
+    else if(timerRunning&&timerSeconds===0){
+      setTimerRunning(false);playSound();
+      const mins=timerMode===25?25:timerMode===50?50:focusMins;
+      const nmt=(stats.deep_work_minutes||0)+mins,ntt=(stats.deep_work_today||0)+mins;
+      const nx=focusMode?Math.max(0,(stats.xp||0)+50):(stats.xp||0);
+      const updated={...stats,deep_work_minutes:nmt,deep_work_today:ntt,deep_work_date:new Date().toLocaleDateString('en-CA'),xp:nx,level:Math.floor(nx/100)+1};
+      setStats(updated);if(focusMode){triggerXpPopup(50);setFocusComplete(true);}
+      supabase.from("user_stats").upsert({...updated,user_id:user.id},{onConflict:"user_id"});
     }
-    return () => clearTimeout(timerRef.current);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timerRunning, timerSeconds]);
+    return()=>clearTimeout(timerRef.current);
+  // eslint-disable-next-line
+  },[timerRunning,timerSeconds]);
 
-  // Ambience audio using Web Audio API
-  useEffect(() => {
-    if (!ambience) { if (ambienceRef.current) { ambienceRef.current.stop?.(); ambienceRef.current = null; } return; }
-    try {
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      const bufferSize = ctx.sampleRate * 3;
-      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-      const data = buffer.getChannelData(0);
+  useEffect(()=>{
+    if(!ambience){if(ambienceRef.current){ambienceRef.current.stop?.();ambienceRef.current=null;}return;}
+    try{
+      const ctx=new(window.AudioContext||window.webkitAudioContext)();
+      const bs=ctx.sampleRate*3,buf=ctx.createBuffer(1,bs,ctx.sampleRate),data=buf.getChannelData(0);
+      if(ambience==="white"){for(let i=0;i<bs;i++)data[i]=Math.random()*2-1;}
+      else if(ambience==="brown"){let last=0;for(let i=0;i<bs;i++){const w=Math.random()*2-1;data[i]=(last+(0.02*w))/1.02;last=data[i];data[i]*=3.5;}}
+      else if(ambience==="pink"){let b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0;for(let i=0;i<bs;i++){const w=Math.random()*2-1;b0=0.99886*b0+w*0.0555179;b1=0.99332*b1+w*0.0750759;b2=0.96900*b2+w*0.1538520;b3=0.86650*b3+w*0.3104856;b4=0.55000*b4+w*0.5329522;b5=-0.7616*b5-w*0.0168980;data[i]=(b0+b1+b2+b3+b4+b5+b6+w*0.5362)*0.11;b6=w*0.115926;}}
+      const src=ctx.createBufferSource();src.buffer=buf;src.loop=true;
+      const gain=ctx.createGain();gain.gain.value=0.6;src.connect(gain);gain.connect(ctx.destination);src.start();
+      ambienceRef.current={stop:()=>{try{src.stop();ctx.close();}catch(e){}}};
+    }catch(e){}
+    return()=>{if(ambienceRef.current){ambienceRef.current.stop?.();ambienceRef.current=null;}};
+  // eslint-disable-next-line
+  },[ambience]);
 
-      if (ambience === "white") {
-        // White noise — equal energy at all frequencies
-        for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
-      } else if (ambience === "brown") {
-        // Brown noise — deeper, rumbling, like rain on a roof
-        let lastOut = 0;
-        for (let i = 0; i < bufferSize; i++) {
-          const white = Math.random() * 2 - 1;
-          data[i] = (lastOut + (0.02 * white)) / 1.02;
-          lastOut = data[i];
-          data[i] *= 3.5;
-        }
-      } else if (ambience === "pink") {
-        // Pink noise — balanced, not too harsh, great for focus
-        let b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0;
-        for (let i = 0; i < bufferSize; i++) {
-          const white = Math.random() * 2 - 1;
-          b0 = 0.99886*b0 + white*0.0555179; b1 = 0.99332*b1 + white*0.0750759;
-          b2 = 0.96900*b2 + white*0.1538520; b3 = 0.86650*b3 + white*0.3104856;
-          b4 = 0.55000*b4 + white*0.5329522; b5 = -0.7616*b5 - white*0.0168980;
-          data[i] = (b0+b1+b2+b3+b4+b5+b6+white*0.5362) * 0.11;
-          b6 = white * 0.115926;
-        }
-      }
+  const enterFocusMode=(task,mins=25)=>{setFocusTask(task);setFocusMins(mins);setFocusComplete(false);setFocusMode(true);setTimerMode(mins);setTimerSeconds(mins*60);setTimerRunning(true);};
+  const exitFocusMode=()=>{setTimerRunning(false);setTimerSeconds(0);setFocusMode(false);setFocusTask(null);setFocusComplete(false);setAmbience(null);};
 
-      const source = ctx.createBufferSource();
-      source.buffer = buffer; source.loop = true;
-      const gain = ctx.createGain(); gain.gain.value = 0.6;
-      source.connect(gain); gain.connect(ctx.destination);
-      source.start();
-      ambienceRef.current = { stop: () => { try { source.stop(); ctx.close(); } catch(e){} } };
-    } catch(e) {}
-    return () => { if (ambienceRef.current) { ambienceRef.current.stop?.(); ambienceRef.current = null; } };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ambience]);
+  useEffect(()=>{
+    const tt=tasks.filter(t=>t.due===todayStr);
+    if(tt.length>0&&tt.every(t=>t.done)&&!allTasksComplete){setAllTasksComplete(true);setShowConfetti(true);playSound();setTimeout(()=>setShowConfetti(false),4000);}
+    else if(tt.length===0||!tt.every(t=>t.done))setAllTasksComplete(false);
+  // eslint-disable-next-line
+  },[tasks]);
 
-  const enterFocusMode = (task, mins = 25) => {
-    setFocusTask(task);
-    setFocusMins(mins);
-    setFocusComplete(false);
-    setFocusMode(true);
-    setTimerMode(mins);
-    setTimerSeconds(mins * 60);
-    setTimerRunning(true);
-  };
+  const isExam=title=>{const t=(title||"").toLowerCase();return t.includes("exam")||t.includes("test")||t.includes("ap ")||t.includes("final")||t.includes("quiz");};
+  useEffect(()=>{
+    if(!events.length)return;
+    const now2=new Date();now2.setHours(0,0,0,0);
+    const td2=now2.toLocaleDateString('en-CA');
+    if(localStorage.getItem("meridian_notif_dismissed")===td2)setNotifDismissed(true);
+    const upcoming=events.filter(e=>{if(!isExam(e.title))return false;const d=new Date(e.date+"T00:00:00");return Math.ceil((d-now2)/86400000)>=0&&Math.ceil((d-now2)/86400000)<=15;});
+    const byDate={};upcoming.forEach(e=>{if(!byDate[e.date])byDate[e.date]=[];byDate[e.date].push(e);});
+    setExamNotifs(Object.entries(byDate).map(([date,evs])=>({date,events:evs,daysLeft:Math.ceil((new Date(date+"T00:00:00")-now2)/86400000)})).sort((a,b)=>a.daysLeft-b.daysLeft));
+    const ae=events.filter(e=>isExam(e.title)&&new Date(e.date+"T00:00:00")>=now2).sort((a,b)=>a.date.localeCompare(b.date));
+    if(ae.length){const n=ae[0];setNextExam({...n,daysLeft:Math.ceil((new Date(n.date+"T00:00:00")-now2)/86400000)});}
+    else setNextExam(null);
+  // eslint-disable-next-line
+  },[events]);
 
-  const [showFocusPicker, setShowFocusPicker] = useState(false);
-  const [focusPickerTask, setFocusPickerTask] = useState(null);
-  const [focusPickerMins, setFocusPickerMins] = useState(25);
+  const dismissNotif=()=>{localStorage.setItem("meridian_notif_dismissed",new Date().toLocaleDateString('en-CA'));setNotifDismissed(true);};
 
-  // Update browser tab title with timer
-  useEffect(() => {
-    if (timerRunning && timerSeconds > 0) {
-      document.title = `${formatTimer(timerSeconds)} — Meridian`;
-    } else {
-      document.title = "Meridian";
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timerSeconds, timerRunning]);
-
-  const exitFocusMode = (earlyExit = false) => {
-    setTimerRunning(false);
-    setTimerSeconds(0);
-    setFocusMode(false);
-    setFocusTask(null);
-    setFocusComplete(false);
-    setAmbience(null);
-  };
-
-  const formatTimer = (s) => `${String(Math.floor(s/60)).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`;
-
-  const startTimer = (mins) => {
-    setTimerMode(mins);
-    setTimerSeconds((mins === "custom" ? customMinutes : mins) * 60);
-    setTimerRunning(true);
-  };
-
-  const [allTasksComplete, setAllTasksComplete] = useState(false);
-
-  // Check all today's tasks complete → confetti
-  useEffect(() => {
-    const todayTasks = tasks.filter(t => t.due === todayStr);
-    if (todayTasks.length > 0 && todayTasks.every(t => t.done) && !allTasksComplete) {
-      setAllTasksComplete(true);
-      setShowConfetti(true);
-      playSound();
-      setTimeout(() => setShowConfetti(false), 4000);
-    } else if (todayTasks.length === 0 || !todayTasks.every(t => t.done)) {
-      setAllTasksComplete(false);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tasks]);
-
-
-  // ── EXAM NOTIFICATIONS ────────────────────────────────────────────────────
-  const [examNotifs, setExamNotifs] = useState([]);
-  const [notifDismissed, setNotifDismissed] = useState(false);
-  const [nextExam, setNextExam] = useState(null);
-
-  const isExamEvent = (title) => {
-    const t = (title || "").toLowerCase();
-    return t.includes("exam") || t.includes("test") || t.includes("ap ") || t.includes("final") || t.includes("quiz");
-  };
-
-  useEffect(() => {
-    if (!events.length) return;
-    const today = new Date();
-    today.setHours(0,0,0,0);
-    const todayStr2 = today.toLocaleDateString('en-CA');
-
-    // Check if already dismissed today
-    const lastDismissed = localStorage.getItem("meridian_notif_dismissed");
-    if (lastDismissed === todayStr2) { setNotifDismissed(true); }
-
-    // Only show in morning (before noon) and once per day
-    const hour = new Date().getHours();
-    const alreadyShown = localStorage.getItem("meridian_notif_shown");
-
-    // Find exams in next 15 days
-    const upcoming = events.filter(e => {
-      if (!isExamEvent(e.title)) return false;
-      const d = new Date(e.date + "T00:00:00");
-      const diff = Math.ceil((d - today) / 86400000);
-      return diff >= 0 && diff <= 15;
-    });
-
-    // Group by date
-    const byDate = {};
-    upcoming.forEach(e => {
-      if (!byDate[e.date]) byDate[e.date] = [];
-      byDate[e.date].push(e);
-    });
-
-    const notifs = Object.entries(byDate).map(([date, evs]) => {
-      const d = new Date(date + "T00:00:00");
-      const diff = Math.ceil((d - today) / 86400000);
-      return { date, events: evs, daysLeft: diff };
-    }).sort((a,b) => a.daysLeft - b.daysLeft);
-
-    setExamNotifs(notifs);
-
-    // Next exam for countdown
-    const allExams = events.filter(e => {
-      if (!isExamEvent(e.title)) return false;
-      const d = new Date(e.date + "T00:00:00");
-      return d >= today;
-    }).sort((a,b) => a.date.localeCompare(b.date));
-    if (allExams.length) {
-      const next = allExams[0];
-      const d = new Date(next.date + "T00:00:00");
-      const diff = Math.ceil((d - today) / 86400000);
-      setNextExam({ ...next, daysLeft: diff });
-    } else {
-      setNextExam(null);
-    }
-
-    // Show notification once per day in morning
-    if (notifs.length > 0 && (hour < 12 || true) && alreadyShown !== todayStr2) {
-      localStorage.setItem("meridian_notif_shown", todayStr2);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [events]);
-
-  const dismissNotif = () => {
-    const todayStr2 = new Date().toLocaleDateString('en-CA');
-    localStorage.setItem("meridian_notif_dismissed", todayStr2);
-    setNotifDismissed(true);
-  };
-
-  const fetchAll = async () => {
+  const fetchAll=async()=>{
     setLoading(true);
-    const [{ data: g }, { data: t }, { data: e }] = await Promise.all([
-      supabase.from("goals").select("*").order("created_at"),
-      supabase.from("tasks").select("*").order("created_at"),
-      supabase.from("events").select("*").order("date"),
-    ]);
-    setGoals(g || []);
-    setEvents(e || []);
-
-    const allTasks = t || [];
-    const todayStr2 = new Date().toLocaleDateString('en-CA'); // "2026-03-19"
-    const todayDay = new Date().toLocaleDateString('en-US', { weekday: 'short' }).toLowerCase();
-
-    // Only reset recurring tasks once per day — check last reset date in localStorage
-    const lastReset = localStorage.getItem("meridian_last_reset");
-    if (lastReset !== todayStr2) {
-      const tasksToReset = allTasks.filter(task => {
-        if (!task.recurring || !task.done) return false;
-        try {
-          const days = JSON.parse(task.recurring);
-          return Array.isArray(days) && days.length > 0 && days.includes(todayDay);
-        } catch { return false; }
-      });
-      if (tasksToReset.length > 0) {
-        await Promise.all(tasksToReset.map(task =>
-          supabase.from("tasks").update({ done: false }).eq("id", task.id)
-        ));
-        const resetIds = tasksToReset.map(t => t.id);
-        setTasks(allTasks.map(t => resetIds.includes(t.id) ? { ...t, done: false } : t));
-      } else {
-        setTasks(allTasks);
-      }
-      localStorage.setItem("meridian_last_reset", todayStr2);
-    } else {
-      setTasks(allTasks);
-    }
+    const [{data:g},{data:t},{data:e}]=await Promise.all([supabase.from("goals").select("*").order("created_at"),supabase.from("tasks").select("*").order("created_at"),supabase.from("events").select("*").order("date")]);
+    setGoals(g||[]);setEvents(e||[]);
+    const all=t||[];const td=new Date().toLocaleDateString('en-CA');const tday=new Date().toLocaleDateString('en-US',{weekday:'short'}).toLowerCase();
+    const lr=localStorage.getItem("meridian_last_reset");
+    if(lr!==td){
+      const toReset=all.filter(task=>{if(!task.recurring||!task.done)return false;try{const d=JSON.parse(task.recurring);return Array.isArray(d)&&d.length>0&&d.includes(tday);}catch{return false;}});
+      if(toReset.length>0){await Promise.all(toReset.map(task=>supabase.from("tasks").update({done:false}).eq("id",task.id)));const ids=toReset.map(t=>t.id);setTasks(all.map(t=>ids.includes(t.id)?{...t,done:false}:t));}
+      else setTasks(all);
+      localStorage.setItem("meridian_last_reset",td);
+    }else setTasks(all);
     setLoading(false);
   };
 
-  const addGoal = async () => {
-    if (!newGoal.label.trim()) return;
-    const { data } = await supabase.from("goals").insert({ ...newGoal, user_id: user.id }).select().single();
-    if (data) { setGoals([...goals, data]); setNewGoal({ label: "", color: "#E53935", deadline: "" }); setShowAddGoal(false); }
-  };
+  const addGoal=async()=>{if(!newGoal.label.trim())return;const{data}=await supabase.from("goals").insert({...newGoal,user_id:user.id}).select().single();if(data){setGoals([...goals,data]);setNewGoal({label:"",color:"#E53935",deadline:""});setShowAddGoal(false);}};
+  const deleteGoal=async id=>{await supabase.from("goals").delete().eq("id",id);setGoals(goals.filter(g=>g.id!==id));setTasks(tasks.filter(t=>t.goal_id!==id));setEvents(events.filter(e=>e.goal_id!==id));};
 
-  const parseWithClaude = async () => {
-    if (!importText.trim()) return;
-    setImportLoading(true);
-    setImportError("");
-    setImportParsed(null);
-
-    try {
-      const colors = ["#E53935","#58A6FF","#3FB950","#F0883E","#8E24AA","#00ACC1","#D81B60","#7CB342","#3949AB","#FFB300","#00BCD4","#F4511E","#26A69A","#7986CB","#EC407A","#29B6F6","#8D9B6A","#39D2C0","#FF6B6B","#6D4C41"];
-      const goals = [];
-      const tasks = [];
-      let currentGoal = null;
-      let colorIdx = 0;
-
-      const lines = importText.split("\n").map(l => l.trim()).filter(Boolean);
-
-      for (const line of lines) {
-        // detect goal line: doesn't start with bullet, ends with colon, or has "Goal:" prefix
-        const isGoalLine = (
-          line.startsWith("Goal:") ||
-          (!line.startsWith("*") && !line.startsWith("-") && !line.startsWith("•") && line.endsWith(":")) ||
-          (!line.startsWith("*") && !line.startsWith("-") && !line.startsWith("•") && line.includes("—") && line.length < 80)
-        );
-
-        if (isGoalLine) {
-          const label = line.replace(/^Goal:\s*/i, "").replace(/:$/, "").replace(/\s*—.*$/, "").trim();
-          if (label) {
-            currentGoal = { label, color: colors[colorIdx % colors.length], deadline: null };
-            colorIdx++;
-            if (!goals.find(g => g.label === label)) goals.push(currentGoal);
-          }
-          continue;
-        }
-
-        // detect task line
-        const isTaskLine = line.startsWith("*") || line.startsWith("-") || line.startsWith("•");
-        if (isTaskLine && currentGoal) {
-          let text = line.replace(/^[*\-•]\s*/, "").trim();
-
-          // extract due date
-          let due = null;
-          const dueMatch = text.match(/—\s*due\s+([A-Za-z]+\s+\d+)/i) || text.match(/due\s+([A-Za-z]+\s+\d+)/i);
-          if (dueMatch) {
-            const parsed = new Date(`${dueMatch[1]} 2026`);
-            if (!isNaN(parsed)) due = parsed.toLocaleDateString('en-CA');
-            text = text.replace(/\s*—?\s*due\s+[A-Za-z]+\s+\d+/i, "").trim();
-          }
-
-          // detect priority
-          let priority = "med";
-          if (/high priority/i.test(text)) { priority = "high"; text = text.replace(/,?\s*high priority/i, "").trim(); }
-          else if (/low priority/i.test(text)) { priority = "low"; text = text.replace(/,?\s*low priority/i, "").trim(); }
-          else if (/past exam|practice test/i.test(text)) priority = "high";
-
-          if (text) tasks.push({ text, goal: currentGoal.label, priority, due });
-        }
-      }
-
-      if (goals.length === 0) {
-        setImportError("Couldn't detect any goals. Make sure each goal is on its own line ending with a colon (e.g. 'AP Calc BC:') and tasks are bullet points below it.");
-        setImportLoading(false);
-        return;
-      }
-
-      setImportParsed({ goals, tasks });
-    } catch(e) {
-      setImportError("Something went wrong parsing. Try again.");
+  const toggleTask=async task=>{
+    const{data}=await supabase.from("tasks").update({done:!task.done}).eq("id",task.id).select().single();
+    if(data){
+      const updated=tasks.map(t=>t.id===task.id?data:t);setTasks(updated);
+      if(!task.done){playSound();const us=await addXp(10);await updateStreak(us);saveDailySnapshot(updated);checkMilestones(updated);setFallingOff(false);
+        const{data:sched}=await supabase.from("schedules").select("*").eq("user_id",user.id).maybeSingle();
+        if(sched?.items)await supabase.from("schedules").update({items:sched.items.filter(i=>i.name!==task.text),updated_at:new Date().toISOString()}).eq("user_id",user.id);
+      }else saveDailySnapshot(updated);
     }
+  };
+  const deleteTask=async id=>{await supabase.from("tasks").delete().eq("id",id);setTasks(tasks.filter(t=>t.id!==id));};
+  const saveEditTask=async()=>{
+    if(!editTask)return;
+    const rv=Array.isArray(editTask.recurring)&&editTask.recurring.length>0?JSON.stringify(editTask.recurring):null;
+    const{data}=await supabase.from("tasks").update({text:editTask.text,goal_id:editTask.goal_id,due:editTask.due,priority:editTask.priority,hours:editTask.hours,recurring:rv}).eq("id",editTask.id).select().single();
+    if(data){setTasks(tasks.map(t=>t.id===data.id?data:t));setEditTask(null);}
+  };
+  const addTask=async()=>{
+    if(!newTask.text.trim()||!newTask.goal_id)return;
+    const td={text:newTask.text,goal_id:newTask.goal_id,due:newTask.due||null,priority:newTask.priority,user_id:user.id,done:false};
+    if(newTask.hours)td.hours=parseFloat(newTask.hours);
+    if(newTask.recurring?.length>0)td.recurring=JSON.stringify(newTask.recurring);
+    const{data}=await supabase.from("tasks").insert(td).select().single();
+    if(data){
+      setTasks([...tasks,data]);setNewTask({text:"",goal_id:"",due:"",priority:"med",hours:"",recurring:[]});setShowAddTask(false);
+      if(newTask.hours){const si={name:newTask.text,hours:String(newTask.hours),priority:newTask.priority,deadline:newTask.due||""};const{data:ex}=await supabase.from("schedules").select("*").eq("user_id",user.id).maybeSingle();if(ex)await supabase.from("schedules").update({items:[...(ex.items||[]),si],updated_at:new Date().toISOString()}).eq("user_id",user.id);else await supabase.from("schedules").insert({user_id:user.id,items:[si],result:null});}
+    }
+  };
+  const addEvent=async()=>{if(!newEvent.title.trim()||!newEvent.date||!newEvent.goal_id)return;const{data}=await supabase.from("events").insert({...newEvent,user_id:user.id}).select().single();if(data){setEvents([...events,data]);setNewEvent({title:"",goal_id:goals[0]?.id||"",date:"",time:""});setShowAddEvent(false);}};
+  const deleteEvent=async id=>{await supabase.from("events").delete().eq("id",id);setEvents(events.filter(e=>e.id!==id));};
+  const saveEditEvent=async()=>{if(!editEvent)return;const{data}=await supabase.from("events").update({title:editEvent.title,date:editEvent.date,time:editEvent.time,goal_id:editEvent.goal_id}).eq("id",editEvent.id).select().single();if(data){setEvents(events.map(e=>e.id===data.id?data:e));setEditEvent(null);}};
+  const signOut=()=>supabase.auth.signOut();
+  const nextQuote=()=>setQuoteIdx(i=>(i+1)%QUOTES.length);
+
+  const parseWithClaude=async()=>{
+    if(!importText.trim())return;setImportLoading(true);setImportError("");setImportParsed(null);
+    try{
+      const colors=["#E53935","#1E88E5","#43A047","#FB8C00","#8E24AA","#00ACC1","#D81B60","#7CB342","#3949AB","#FFB300","#00BCD4","#F4511E","#26A69A","#7986CB","#EC407A","#29B6F6","#8D9B6A","#BF5700","#FF6B6B","#6D4C41"];
+      const pg=[],pt=[];let cg=null,ci=0;
+      for(const line of importText.split("\n").map(l=>l.trim()).filter(Boolean)){
+        const isG=line.startsWith("Goal:")||(!line.startsWith("*")&&!line.startsWith("-")&&!line.startsWith("•")&&line.endsWith(":"))||(!line.startsWith("*")&&!line.startsWith("-")&&!line.startsWith("•")&&line.includes("—")&&line.length<80);
+        if(isG){const label=line.replace(/^Goal:\s*/i,"").replace(/:$/,"").replace(/\s*—.*$/,"").trim();if(label){cg={label,color:colors[ci%colors.length],deadline:null};ci++;if(!pg.find(g=>g.label===label))pg.push(cg);}continue;}
+        const isT=line.startsWith("*")||line.startsWith("-")||line.startsWith("•");
+        if(isT&&cg){
+          let text=line.replace(/^[*\-•]\s*/,"").trim(),due=null;
+          const dm=text.match(/—\s*due\s+([A-Za-z]+\s+\d+)/i)||text.match(/due\s+([A-Za-z]+\s+\d+)/i);
+          if(dm){const p=new Date(`${dm[1]} 2026`);if(!isNaN(p))due=p.toLocaleDateString('en-CA');text=text.replace(/\s*—?\s*due\s+[A-Za-z]+\s+\d+/i,"").trim();}
+          let priority="med";
+          if(/high priority/i.test(text)){priority="high";text=text.replace(/,?\s*high priority/i,"").trim();}
+          else if(/low priority/i.test(text)){priority="low";text=text.replace(/,?\s*low priority/i,"").trim();}
+          else if(/past exam|practice test/i.test(text))priority="high";
+          if(text)pt.push({text,goal:cg.label,priority,due});
+        }
+      }
+      if(pg.length===0){setImportError("Couldn't detect goals. Make sure each goal line ends with a colon.");setImportLoading(false);return;}
+      setImportParsed({goals:pg,tasks:pt});
+    }catch(e){setImportError("Something went wrong. Try again.");}
     setImportLoading(false);
   };
 
-  const importAll = async () => {
-    if (!importParsed) return;
+  const importAll=async()=>{
+    if(!importParsed)return;setImportLoading(true);
+    const fuzz=label=>{const words=label.toLowerCase().split(/\s+/).filter(w=>w.length>2);return goals.find(eg=>{const el=eg.label.toLowerCase();if(el===label.toLowerCase())return true;if(label.toLowerCase().includes(el)||el.includes(label.toLowerCase()))return true;return words.some(w=>el.includes(w));});};
+    const gm={};
+    for(const g of importParsed.goals){const ex=fuzz(g.label);if(ex){gm[g.label]=ex.id;continue;}const{data}=await supabase.from("goals").insert({label:g.label,color:g.color,deadline:g.deadline||null,user_id:user.id}).select().single();if(data)gm[g.label]=data.id;}
+    const{data:ng}=await supabase.from("goals").select("*").order("created_at");if(ng)setGoals(ng);
+    const na=[];
+    for(const t of importParsed.tasks){const gid=gm[t.goal];if(!gid)continue;const{data}=await supabase.from("tasks").insert({text:t.text,goal_id:gid,priority:t.priority||"med",due:t.due||null,done:false,user_id:user.id}).select().single();if(data)na.push(data);}
+    setTasks(prev=>[...prev,...na]);setImportLoading(false);setShowImport(false);setImportText("");setImportParsed(null);
+  };
+
+  const seedData=async()=>{
     setImportLoading(true);
-
-    // fuzzy match: find existing goal that contains any word from parsed goal name
-    const fuzzyMatch = (parsedLabel) => {
-      const words = parsedLabel.toLowerCase().split(/\s+/).filter(w => w.length > 2);
-      return goals.find(eg => {
-        const el = eg.label.toLowerCase();
-        // exact match first
-        if (el === parsedLabel.toLowerCase()) return true;
-        // check if existing goal label is contained in parsed label or vice versa
-        if (parsedLabel.toLowerCase().includes(el)) return true;
-        if (el.includes(parsedLabel.toLowerCase())) return true;
-        // check keyword overlap (e.g. "MACRO" matches "AP Macro", "MECH" matches "AP Physics C Mech")
-        return words.some(w => el.includes(w));
-      });
-    };
-
-    const goalMap = {};
-    for (const g of importParsed.goals) {
-      const existing = fuzzyMatch(g.label);
-      if (existing) { goalMap[g.label] = existing.id; continue; }
-      const { data } = await supabase.from("goals").insert({ label: g.label, color: g.color, deadline: g.deadline || null, user_id: user.id }).select().single();
-      if (data) goalMap[g.label] = data.id;
-    }
-    // reload goals
-    const { data: newGoals } = await supabase.from("goals").select("*").order("created_at");
-    if (newGoals) setGoals(newGoals);
-    // create tasks
-    const newTasksArr = [];
-    for (const t of importParsed.tasks) {
-      const goal_id = goalMap[t.goal];
-      if (!goal_id) continue;
-      const { data } = await supabase.from("tasks").insert({ text: t.text, goal_id, priority: t.priority || "med", due: t.due || null, done: false, user_id: user.id }).select().single();
-      if (data) newTasksArr.push(data);
-    }
-    setTasks(prev => [...prev, ...newTasksArr]);
-    setImportLoading(false);
-    setShowImport(false);
-    setImportText("");
-    setImportParsed(null);
+    const colors=["#E53935","#1E88E5","#43A047","#FB8C00","#8E24AA","#00ACC1","#D81B60","#7CB342","#3949AB","#FFB300","#00BCD4","#F4511E"];
+    const gd=[{label:"AP Gov",color:colors[0],deadline:"2026-05-05"},{label:"AP Macro",color:colors[1],deadline:"2026-05-08"},{label:"AP Calc BC",color:colors[2],deadline:"2026-05-11"},{label:"AP Physics C Mech",color:colors[3],deadline:"2026-05-13"},{label:"AP Physics C E&M",color:colors[4],deadline:"2026-05-14"},{label:"Oxford Research",color:colors[5],deadline:"2026-05-20"},{label:"PHYS 206",color:colors[6],deadline:"2026-08-24"},{label:"MATH 251",color:colors[7],deadline:"2026-08-24"},{label:"STAT 211",color:colors[8],deadline:"2026-08-24"},{label:"ENGR 102",color:colors[9],deadline:"2026-08-24"},{label:"POLS 207",color:colors[10],deadline:"2026-08-24"},{label:"Discipline",color:colors[11],deadline:null}];
+    const ig=[];
+    for(const g of gd){const ex=(await supabase.from("goals").select("*").eq("user_id",user.id).eq("label",g.label).maybeSingle()).data;if(ex)ig.push(ex);else{const{data}=await supabase.from("goals").insert({...g,user_id:user.id}).select().single();if(data)ig.push(data);}}
+    const fG=name=>ig.find(g=>g.label.toLowerCase()===name.toLowerCase())||ig.find(g=>name.toLowerCase().split(/\s+/).filter(w=>w.length>2).every(w=>g.label.toLowerCase().includes(w)));
+    const td=[{goal:"AP Gov",text:"Unit 4 review",due:"2026-04-05",priority:"med"},{goal:"AP Gov",text:"Unit 5 review",due:"2026-04-10",priority:"med"},{goal:"AP Gov",text:"Units 1-3 revision",due:"2026-04-12",priority:"high"},{goal:"AP Gov",text:"Past exam 1",due:"2026-04-15",priority:"high"},{goal:"AP Gov",text:"Past exam 2",due:"2026-04-20",priority:"high"},{goal:"AP Gov",text:"Past exam 3",due:"2026-04-25",priority:"high"},{goal:"AP Gov",text:"Past exam 4",due:"2026-05-01",priority:"high"},{goal:"AP Macro",text:"Unit 1 review",due:"2026-04-03",priority:"med"},{goal:"AP Macro",text:"Unit 2 review",due:"2026-04-05",priority:"med"},{goal:"AP Macro",text:"Unit 3 review",due:"2026-04-07",priority:"med"},{goal:"AP Macro",text:"Unit 4 review",due:"2026-04-09",priority:"med"},{goal:"AP Macro",text:"Unit 5 review",due:"2026-04-11",priority:"med"},{goal:"AP Macro",text:"Unit 6 review",due:"2026-04-13",priority:"med"},{goal:"AP Macro",text:"Past exam 1",due:"2026-04-15",priority:"high"},{goal:"AP Macro",text:"Past exam 2",due:"2026-04-20",priority:"high"},{goal:"AP Macro",text:"Past exam 3",due:"2026-04-25",priority:"high"},{goal:"AP Macro",text:"Past exam 4",due:"2026-05-05",priority:"high"},{goal:"AP Calc BC",text:"Practice test 1",due:"2026-04-03",priority:"high"},{goal:"AP Calc BC",text:"Practice test 2",due:"2026-04-08",priority:"high"},{goal:"AP Calc BC",text:"Practice test 3",due:"2026-04-13",priority:"high"},{goal:"AP Calc BC",text:"Practice test 4",due:"2026-04-18",priority:"high"},{goal:"AP Calc BC",text:"Practice test 5",due:"2026-04-25",priority:"high"},{goal:"AP Calc BC",text:"Practice test 6",due:"2026-05-05",priority:"high"},{goal:"AP Physics C Mech",text:"Work and energy theorem",due:"2026-04-03",priority:"med"},{goal:"AP Physics C Mech",text:"Potential energy and conservation",due:"2026-04-05",priority:"med"},{goal:"AP Physics C Mech",text:"Conservation of linear momentum",due:"2026-04-07",priority:"med"},{goal:"AP Physics C Mech",text:"Rotational motion",due:"2026-04-09",priority:"med"},{goal:"AP Physics C Mech",text:"Torque and angular momentum",due:"2026-04-11",priority:"med"},{goal:"AP Physics C Mech",text:"Harmonic motion",due:"2026-04-13",priority:"med"},{goal:"AP Physics C Mech",text:"Past exam 1",due:"2026-04-15",priority:"high"},{goal:"AP Physics C Mech",text:"Past exam 2",due:"2026-04-20",priority:"high"},{goal:"AP Physics C Mech",text:"Past exam 3",due:"2026-04-25",priority:"high"},{goal:"AP Physics C Mech",text:"Past exam 4",due:"2026-05-01",priority:"high"},{goal:"AP Physics C Mech",text:"Past exam 5",due:"2026-05-08",priority:"high"},{goal:"AP Physics C E&M",text:"Past exam 1",due:"2026-04-03",priority:"high"},{goal:"AP Physics C E&M",text:"Past exam 2",due:"2026-04-08",priority:"high"},{goal:"AP Physics C E&M",text:"Past exam 3",due:"2026-04-13",priority:"high"},{goal:"AP Physics C E&M",text:"Past exam 4",due:"2026-04-20",priority:"high"},{goal:"AP Physics C E&M",text:"Past exam 5",due:"2026-05-01",priority:"high"},{goal:"AP Physics C E&M",text:"Past exam 6",due:"2026-05-08",priority:"high"},{goal:"Oxford Research",text:"Finish 3B1B neural networks",due:"2026-04-10",priority:"high"},{goal:"Oxford Research",text:"StatQuest CNN series complete",due:"2026-04-25",priority:"high"},{goal:"Oxford Research",text:"Read Oxford paper 1",due:"2026-05-01",priority:"med"},{goal:"Discipline",text:"Morning workout",due:null,priority:"high",recurring:JSON.stringify(["mon","tue","wed","thu","fri","sat","sun"])},{goal:"Discipline",text:"10-min meditation",due:null,priority:"med",recurring:JSON.stringify(["mon","tue","wed","thu","fri","sat","sun"])}];
+    for(const t of td){const g=fG(t.goal);if(!g)continue;await supabase.from("tasks").insert({text:t.text,goal_id:g.id,priority:t.priority,due:t.due||null,done:false,recurring:t.recurring||null,user_id:user.id});}
+    await fetchAll();setImportLoading(false);setShowImport(false);
   };
 
-  const seedData = async () => {
+  const seedSubtasks=async()=>{
     setImportLoading(true);
-    const colors = ["#E53935","#58A6FF","#3FB950","#F0883E","#8E24AA","#00ACC1","#D81B60","#7CB342","#3949AB","#FFB300","#00BCD4","#F4511E"];
-    const goalDefs = [
-      { label: "AP Gov",            color: colors[0],  deadline: "2026-05-05" },
-      { label: "AP Macro",          color: colors[1],  deadline: "2026-05-08" },
-      { label: "AP Calc BC",        color: colors[2],  deadline: "2026-05-11" },
-      { label: "AP Physics C Mech", color: colors[3],  deadline: "2026-05-13" },
-      { label: "AP Physics C E&M",  color: colors[4],  deadline: "2026-05-14" },
-      { label: "Oxford Research",   color: colors[5],  deadline: "2026-05-20" },
-      { label: "PHYS 206",          color: colors[6],  deadline: "2026-08-24" },
-      { label: "MATH 251",          color: colors[7],  deadline: "2026-08-24" },
-      { label: "STAT 211",          color: colors[8],  deadline: "2026-08-24" },
-      { label: "ENGR 102",          color: colors[9],  deadline: "2026-08-24" },
-      { label: "POLS 207",          color: colors[10], deadline: "2026-08-24" },
-      { label: "Discipline",        color: colors[11], deadline: null },
-    ];
-    const taskDefs = [
-      // AP Gov
-      { goal: "AP Gov", text: "Unit 4 review",      due: "2026-04-05", priority: "med" },
-      { goal: "AP Gov", text: "Unit 5 review",      due: "2026-04-10", priority: "med" },
-      { goal: "AP Gov", text: "Units 1-3 revision", due: "2026-04-12", priority: "high" },
-      { goal: "AP Gov", text: "Past exam 1",        due: "2026-04-15", priority: "high" },
-      { goal: "AP Gov", text: "Past exam 2",        due: "2026-04-20", priority: "high" },
-      { goal: "AP Gov", text: "Past exam 3",        due: "2026-04-25", priority: "high" },
-      { goal: "AP Gov", text: "Past exam 4",        due: "2026-05-01", priority: "high" },
-      // AP Macro
-      { goal: "AP Macro", text: "Unit 1 review",   due: "2026-04-03", priority: "med" },
-      { goal: "AP Macro", text: "Unit 2 review",   due: "2026-04-05", priority: "med" },
-      { goal: "AP Macro", text: "Unit 3 review",   due: "2026-04-07", priority: "med" },
-      { goal: "AP Macro", text: "Unit 4 review",   due: "2026-04-09", priority: "med" },
-      { goal: "AP Macro", text: "Unit 5 review",   due: "2026-04-11", priority: "med" },
-      { goal: "AP Macro", text: "Unit 6 review",   due: "2026-04-13", priority: "med" },
-      { goal: "AP Macro", text: "Past exam 1",     due: "2026-04-15", priority: "high" },
-      { goal: "AP Macro", text: "Past exam 2",     due: "2026-04-20", priority: "high" },
-      { goal: "AP Macro", text: "Past exam 3",     due: "2026-04-25", priority: "high" },
-      { goal: "AP Macro", text: "Past exam 4",     due: "2026-05-05", priority: "high" },
-      // AP Calc BC
-      { goal: "AP Calc BC", text: "Practice test 1", due: "2026-04-03", priority: "high" },
-      { goal: "AP Calc BC", text: "Practice test 2", due: "2026-04-08", priority: "high" },
-      { goal: "AP Calc BC", text: "Practice test 3", due: "2026-04-13", priority: "high" },
-      { goal: "AP Calc BC", text: "Practice test 4", due: "2026-04-18", priority: "high" },
-      { goal: "AP Calc BC", text: "Practice test 5", due: "2026-04-25", priority: "high" },
-      { goal: "AP Calc BC", text: "Practice test 6", due: "2026-05-05", priority: "high" },
-      // AP Physics C Mech
-      { goal: "AP Physics C Mech", text: "Work and energy theorem",        due: "2026-04-03", priority: "med" },
-      { goal: "AP Physics C Mech", text: "Potential energy and conservation", due: "2026-04-05", priority: "med" },
-      { goal: "AP Physics C Mech", text: "Conservation of linear momentum",  due: "2026-04-07", priority: "med" },
-      { goal: "AP Physics C Mech", text: "Rotational motion",               due: "2026-04-09", priority: "med" },
-      { goal: "AP Physics C Mech", text: "Torque and angular momentum",     due: "2026-04-11", priority: "med" },
-      { goal: "AP Physics C Mech", text: "Harmonic motion",                 due: "2026-04-13", priority: "med" },
-      { goal: "AP Physics C Mech", text: "Past exam 1",                     due: "2026-04-15", priority: "high" },
-      { goal: "AP Physics C Mech", text: "Past exam 2",                     due: "2026-04-20", priority: "high" },
-      { goal: "AP Physics C Mech", text: "Past exam 3",                     due: "2026-04-25", priority: "high" },
-      { goal: "AP Physics C Mech", text: "Past exam 4",                     due: "2026-05-01", priority: "high" },
-      { goal: "AP Physics C Mech", text: "Past exam 5",                     due: "2026-05-08", priority: "high" },
-      // AP Physics C E&M
-      { goal: "AP Physics C E&M", text: "Past exam 1", due: "2026-04-03", priority: "high" },
-      { goal: "AP Physics C E&M", text: "Past exam 2", due: "2026-04-08", priority: "high" },
-      { goal: "AP Physics C E&M", text: "Past exam 3", due: "2026-04-13", priority: "high" },
-      { goal: "AP Physics C E&M", text: "Past exam 4", due: "2026-04-20", priority: "high" },
-      { goal: "AP Physics C E&M", text: "Past exam 5", due: "2026-05-01", priority: "high" },
-      { goal: "AP Physics C E&M", text: "Past exam 6", due: "2026-05-08", priority: "high" },
-      // Oxford Research
-      { goal: "Oxford Research", text: "Finish 3B1B neural networks",    due: "2026-04-10", priority: "high" },
-      { goal: "Oxford Research", text: "StatQuest CNN series complete",   due: "2026-04-25", priority: "high" },
-      { goal: "Oxford Research", text: "Read Oxford paper 1",             due: "2026-05-01", priority: "med" },
-      { goal: "Oxford Research", text: "Read Oxford paper 2",             due: "2026-05-05", priority: "med" },
-      { goal: "Oxford Research", text: "Read Oxford paper 3",             due: "2026-05-08", priority: "med" },
-      { goal: "Oxford Research", text: "Read Oxford paper 4",             due: "2026-05-10", priority: "med" },
-      { goal: "Oxford Research", text: "Email Dr. He",                    due: "2026-05-20", priority: "high" },
-      // PHYS 206
-      { goal: "PHYS 206", text: "Erukhimova 1D/2D/Newton's review", due: "2026-05-25", priority: "med" },
-      { goal: "PHYS 206", text: "Erukhimova Work/Energy",           due: "2026-06-05", priority: "med" },
-      { goal: "PHYS 206", text: "Erukhimova Momentum",              due: "2026-06-15", priority: "med" },
-      { goal: "PHYS 206", text: "Erukhimova Rotation/Torque",       due: "2026-06-25", priority: "med" },
-      { goal: "PHYS 206", text: "Erukhimova Harmonic Motion",       due: "2026-07-05", priority: "med" },
-      { goal: "PHYS 206", text: "Erukhimova E&M full series",       due: "2026-07-15", priority: "med" },
-      { goal: "PHYS 206", text: "Past exam 1",                      due: "2026-07-20", priority: "high" },
-      { goal: "PHYS 206", text: "Past exam 2",                      due: "2026-07-27", priority: "high" },
-      { goal: "PHYS 206", text: "Past exam 3",                      due: "2026-08-05", priority: "high" },
-      { goal: "PHYS 206", text: "Past exam 4",                      due: "2026-08-10", priority: "high" },
-      // MATH 251
-      { goal: "MATH 251", text: "Stewart Ch 12 + Leonard videos", due: "2026-06-05", priority: "med" },
-      { goal: "MATH 251", text: "Stewart Ch 13 + Leonard videos", due: "2026-06-20", priority: "med" },
-      { goal: "MATH 251", text: "Stewart Ch 14 + Leonard videos", due: "2026-07-10", priority: "med" },
-      { goal: "MATH 251", text: "Stewart Ch 15 + Leonard videos", due: "2026-07-25", priority: "med" },
-      { goal: "MATH 251", text: "Zelenko past exam 1",            due: "2026-07-28", priority: "high" },
-      { goal: "MATH 251", text: "Zelenko past exam 2",            due: "2026-08-05", priority: "high" },
-      { goal: "MATH 251", text: "Zelenko past exam 3",            due: "2026-08-10", priority: "high" },
-      // STAT 211
-      { goal: "STAT 211", text: "StatQuest probability basics", due: "2026-06-20", priority: "med" },
-      { goal: "STAT 211", text: "Distributions",                due: "2026-07-05", priority: "med" },
-      { goal: "STAT 211", text: "Hypothesis testing",           due: "2026-07-20", priority: "med" },
-      { goal: "STAT 211", text: "Past exam 1",                  due: "2026-08-01", priority: "high" },
-      { goal: "STAT 211", text: "Past exam 2",                  due: "2026-08-10", priority: "high" },
-      // ENGR 102
-      { goal: "ENGR 102", text: "Bro Code Python basics",            due: "2026-06-15", priority: "med" },
-      { goal: "ENGR 102", text: "Variables/conditionals/loops",       due: "2026-06-30", priority: "med" },
-      { goal: "ENGR 102", text: "Functions/lists/file handling",      due: "2026-07-15", priority: "med" },
-      { goal: "ENGR 102", text: "NumPy and Matplotlib",               due: "2026-07-31", priority: "med" },
-      { goal: "ENGR 102", text: "Build 3 small engineering scripts",  due: "2026-08-10", priority: "high" },
-      // POLS 207
-      { goal: "POLS 207", text: "Set reminders for all tests", due: "2026-08-24", priority: "high" },
-      { goal: "POLS 207", text: "Never miss a deadline",       due: null,          priority: "med", recurring: JSON.stringify(["mon","tue","wed","thu","fri"]) },
-      // Discipline
-      { goal: "Discipline", text: "No PMO today",           due: null, priority: "high", recurring: JSON.stringify(["mon","tue","wed","thu","fri","sat","sun"]) },
-      { goal: "Discipline", text: "Lights out 12am",        due: null, priority: "high", recurring: JSON.stringify(["mon","tue","wed","thu","fri","sat","sun"]) },
-      { goal: "Discipline", text: "CNN Oxford prep 30 min", due: null, priority: "high", recurring: JSON.stringify(["mon","tue","wed","thu","fri","sat","sun"]) },
-    ];
-
-    // insert goals
-    const goalMap = {};
-    for (const g of goalDefs) {
-      const existing = goals.find(eg => eg.label === g.label);
-      if (existing) { goalMap[g.label] = existing.id; continue; }
-      const { data } = await supabase.from("goals").insert({ label: g.label, color: g.color, deadline: g.deadline, user_id: user.id }).select().single();
-      if (data) goalMap[g.label] = data.id;
-    }
-    // insert tasks
-    const insertedTasks = [];
-    for (const t of taskDefs) {
-      const goal_id = goalMap[t.goal];
-      if (!goal_id) continue;
-      const { data } = await supabase.from("tasks").insert({ text: t.text, goal_id, priority: t.priority, due: t.due || null, done: false, recurring: t.recurring || null, user_id: user.id }).select().single();
-      if (data) insertedTasks.push(data);
-    }
-    // reload everything
-    const { data: newGoals } = await supabase.from("goals").select("*").order("created_at");
-    const { data: newTasks } = await supabase.from("tasks").select("*").order("created_at");
-    if (newGoals) setGoals(newGoals);
-    if (newTasks) setTasks(newTasks);
-    setImportLoading(false);
-    setShowImport(false);
+    const st=[{goal:"AP Gov",text:"Units 1-3 quick recall",due:"2026-04-11",priority:"high"},{goal:"AP Macro",text:"Unit 3 review extra",due:"2026-04-07",priority:"med"},{goal:"AP Calc BC",text:"Practice test 6 timed",due:"2026-04-25",priority:"high"},{goal:"AP Physics C Mech",text:"Past exam 2 timed",due:"2026-04-20",priority:"high"},{goal:"AP Physics C E&M",text:"Past exam 3 full timed",due:"2026-04-12",priority:"high"},{goal:"Oxford Research",text:"3B1B neural networks 30min",due:null,priority:"high",recurring:JSON.stringify(["mon","tue","wed","thu","fri","sat","sun"])}];
+    const{data:cg}=await supabase.from("goals").select("*").eq("user_id",user.id);
+    const fG=name=>{if(!cg)return null;const ex=cg.find(g=>g.label.toLowerCase()===name.toLowerCase());if(ex)return ex;const w=name.toLowerCase().split(/\s+/).filter(w=>w.length>2);return cg.find(g=>w.every(w=>g.label.toLowerCase().includes(w)));};
+    for(const t of st){const g=fG(t.goal);if(!g)continue;await supabase.from("tasks").insert({text:t.text,goal_id:g.id,priority:t.priority,due:t.due||null,done:false,recurring:t.recurring||null,user_id:user.id});}
+    const{data:nt}=await supabase.from("tasks").select("*").order("created_at");if(nt)setTasks(nt);
+    setImportLoading(false);setShowImport(false);
   };
 
-  const seedSubtasks = async () => {
-    setImportLoading(true);
-    const subtasks = [
-      // AP Macro
-      { goal: "AP Macro", text: "Watch Unit 1 video",          due: "2026-04-01", priority: "med" },
-      { goal: "AP Macro", text: "Unit 1 notes + practice MCQs", due: "2026-04-02", priority: "med" },
-      { goal: "AP Macro", text: "Unit 1 review",               due: "2026-04-03", priority: "high" },
-      { goal: "AP Macro", text: "Watch Unit 2 video",          due: "2026-04-04", priority: "med" },
-      { goal: "AP Macro", text: "Unit 2 practice MCQs",        due: "2026-04-05", priority: "high" },
-      { goal: "AP Macro", text: "Watch Unit 3 video",          due: "2026-04-06", priority: "med" },
-      { goal: "AP Macro", text: "Unit 3 practice MCQs",        due: "2026-04-07", priority: "high" },
-      { goal: "AP Macro", text: "Watch Unit 4 video",          due: "2026-04-08", priority: "med" },
-      { goal: "AP Macro", text: "Unit 4 practice MCQs",        due: "2026-04-09", priority: "high" },
-      { goal: "AP Macro", text: "Watch Unit 5 video",          due: "2026-04-10", priority: "med" },
-      { goal: "AP Macro", text: "Unit 5 practice MCQs",        due: "2026-04-11", priority: "high" },
-      { goal: "AP Macro", text: "Watch Unit 6 video",          due: "2026-04-12", priority: "med" },
-      { goal: "AP Macro", text: "Unit 6 practice MCQs",        due: "2026-04-13", priority: "high" },
-      // AP Physics C Mech
-      { goal: "AP Physics C Mech", text: "Erukhimova Work/Energy video + problems", due: "2026-04-01", priority: "med" },
-      { goal: "AP Physics C Mech", text: "Work/Energy more problems",               due: "2026-04-02", priority: "med" },
-      { goal: "AP Physics C Mech", text: "Work/Energy cold problems",               due: "2026-04-03", priority: "high" },
-      { goal: "AP Physics C Mech", text: "Erukhimova Potential Energy + problems",  due: "2026-04-04", priority: "med" },
-      { goal: "AP Physics C Mech", text: "Potential Energy cold problems",          due: "2026-04-05", priority: "high" },
-      { goal: "AP Physics C Mech", text: "Erukhimova Momentum + problems",         due: "2026-04-06", priority: "med" },
-      { goal: "AP Physics C Mech", text: "Momentum cold problems",                 due: "2026-04-07", priority: "high" },
-      { goal: "AP Physics C Mech", text: "Erukhimova Rotational Motion + problems",due: "2026-04-08", priority: "med" },
-      { goal: "AP Physics C Mech", text: "Rotational Motion cold problems",        due: "2026-04-09", priority: "high" },
-      { goal: "AP Physics C Mech", text: "Erukhimova Torque + problems",           due: "2026-04-10", priority: "med" },
-      { goal: "AP Physics C Mech", text: "Torque cold problems",                   due: "2026-04-11", priority: "high" },
-      { goal: "AP Physics C Mech", text: "Erukhimova Harmonic Motion + problems",  due: "2026-04-12", priority: "med" },
-      { goal: "AP Physics C Mech", text: "Harmonic Motion cold problems",          due: "2026-04-13", priority: "high" },
-      // AP Gov
-      { goal: "AP Gov", text: "Watch/read Unit 4",          due: "2026-04-03", priority: "med" },
-      { goal: "AP Gov", text: "Unit 4 notes + MCQs",        due: "2026-04-04", priority: "med" },
-      { goal: "AP Gov", text: "Unit 4 done",                due: "2026-04-05", priority: "high" },
-      { goal: "AP Gov", text: "Watch/read Unit 5",          due: "2026-04-08", priority: "med" },
-      { goal: "AP Gov", text: "Unit 5 notes + MCQs",        due: "2026-04-09", priority: "med" },
-      { goal: "AP Gov", text: "Unit 5 done",                due: "2026-04-10", priority: "high" },
-      { goal: "AP Gov", text: "Units 1-2 revision",         due: "2026-04-11", priority: "med" },
-      { goal: "AP Gov", text: "Unit 3 revision",            due: "2026-04-12", priority: "high" },
-      // AP Calc BC
-      { goal: "AP Calc BC", text: "Practice test 1 — full timed", due: "2026-04-03", priority: "high" },
-      { goal: "AP Calc BC", text: "Practice test 2 — full timed", due: "2026-04-08", priority: "high" },
-      { goal: "AP Calc BC", text: "Practice test 3 — full timed", due: "2026-04-13", priority: "high" },
-      // AP Physics C E&M
-      { goal: "AP Physics C E&M", text: "Past exam 1 — full timed", due: "2026-04-02", priority: "high" },
-      { goal: "AP Physics C E&M", text: "Past exam 2 — full timed", due: "2026-04-07", priority: "high" },
-      { goal: "AP Physics C E&M", text: "Past exam 3 — full timed", due: "2026-04-12", priority: "high" },
-      // Oxford Research
-      { goal: "Oxford Research", text: "3B1B neural networks — 30 min", due: null, priority: "high", recurring: JSON.stringify(["mon","tue","wed","thu","fri","sat","sun"]) },
-    ];
+  const goalColor=id=>goals.find(g=>g.id===id)?.color||"#9B9A97";
+  const goalLabel=id=>goals.find(g=>g.id===id)?.label||"?";
+  const pendingTasks=tasks.filter(t=>!t.done);
+  const doneTasks=tasks.filter(t=>t.done);
+  const completionRate=tasks.length?Math.round((doneTasks.length/tasks.length)*100):0;
+  const futureEvents=events.filter(e=>e.date>=todayStr);
+  const eventsForDate=ds=>futureEvents.filter(e=>e.date===ds);
+  const todayEvents=eventsForDate(todayStr);
+  const upcomingTasks=pendingTasks.filter(t=>t.due).sort((a,b)=>new Date(a.due)-new Date(b.due)).slice(0,5);
+  const daysInMonth=getDaysInMonth(calYear,calMonth);
+  const firstDay=getFirstDay(calYear,calMonth);
+  const calDs=day=>`${calYear}-${String(calMonth+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
+  const noGoals=goals.length===0;
 
-    // find existing goal IDs
-    const { data: currentGoals } = await supabase.from("goals").select("*").eq("user_id", user.id);
-    const findGoal = (name) => {
-      if (!currentGoals) return null;
-      // exact match first
-      const exact = currentGoals.find(g => g.label.toLowerCase() === name.toLowerCase());
-      if (exact) return exact;
-      // only fuzzy match if no exact match, and be strict - all significant words must match
-      const words = name.toLowerCase().split(/\s+/).filter(w => w.length > 2);
-      return currentGoals.find(g => {
-        const gl = g.label.toLowerCase();
-        return words.every(w => gl.includes(w));
-      });
-    };
+  const badge=p=>({fontSize:11,fontWeight:500,padding:"2px 8px",borderRadius:4,flexShrink:0,background:p==="high"?"#FEE2E2":p==="med"?"#FEF3C7":"#DCFCE7",color:p==="high"?T.red:p==="med"?T.orange:T.green});
+  const dot=id=>({width:8,height:8,borderRadius:"50%",background:goalColor(id),flexShrink:0,marginTop:4});
+  const fill=(pct,color)=>({height:4,width:`${pct}%`,background:color||T.accent,transition:"width 0.6s",borderRadius:2});
+  const chip=id=>({fontSize:12,padding:"4px 10px",background:goalColor(id)+"18",color:goalColor(id),borderLeft:`3px solid ${goalColor(id)}`,marginBottom:6,display:"flex",justifyContent:"space-between",borderRadius:"0 4px 4px 0"});
+  const taskRow=done=>({display:"flex",alignItems:"flex-start",gap:12,padding:"10px 14px",borderBottom:`1px solid ${T.border}`,opacity:done?0.5:1,cursor:"pointer"});
+  const chk=done=>({width:16,height:16,border:`1.5px solid ${done?T.accent:T.border}`,background:done?T.accent:"transparent",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,marginTop:2,borderRadius:3});
+  const dayCell=(isToday,isSel)=>({aspectRatio:"1",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-start",padding:"6px 4px",borderRadius:6,background:isToday?T.accentBg:isSel?"#EFF6FF":"transparent",color:isToday?T.accent:T.text,cursor:"pointer",fontSize:12});
 
-    const inserted = [];
-    for (const t of subtasks) {
-      const goal = findGoal(t.goal);
-      if (!goal) continue;
-      const { data } = await supabase.from("tasks").insert({
-        text: t.text, goal_id: goal.id, priority: t.priority,
-        due: t.due || null, done: false, recurring: t.recurring || null, user_id: user.id
-      }).select().single();
-      if (data) inserted.push(data);
-    }
-
-    const { data: newTasks } = await supabase.from("tasks").select("*").order("created_at");
-    if (newTasks) setTasks(newTasks);
-    setImportLoading(false);
-    setShowImport(false);
-  };
-
-  const deleteGoal = async (id) => {
-    await supabase.from("goals").delete().eq("id", id);
-    setGoals(goals.filter(g => g.id !== id));
-    setTasks(tasks.filter(t => t.goal_id !== id));
-    setEvents(events.filter(e => e.goal_id !== id));
-  };
-
-  const toggleTask = async (task) => {
-    const { data } = await supabase.from("tasks").update({ done: !task.done }).eq("id", task.id).select().single();
-    if (data) {
-      const updatedTasks = tasks.map(t => t.id === task.id ? data : t);
-      setTasks(updatedTasks);
-      if (!task.done) {
-        // marking done
-        playSound();
-        const updatedStats = await addXp(10);
-        await updateStreak(updatedStats);
-        saveDailySnapshot(updatedTasks);
-        checkMilestones(updatedTasks);
-        setFallingOff(false);
-        const { data: sched } = await supabase.from("schedules").select("*").eq("user_id", user.id).maybeSingle();
-        if (sched && sched.items) {
-          const updatedItems = sched.items.filter(item => item.name !== task.text);
-          await supabase.from("schedules").update({ items: updatedItems, updated_at: new Date().toISOString() }).eq("user_id", user.id);
-        }
-      } else {
-        saveDailySnapshot(updatedTasks);
-        if (task.hours) {
-          const schedItem = { name: task.text, hours: String(task.hours), priority: task.priority, deadline: task.due || "" };
-          const { data: sched } = await supabase.from("schedules").select("*").eq("user_id", user.id).maybeSingle();
-          if (sched) {
-            const alreadyExists = (sched.items || []).some(i => i.name === task.text);
-            if (!alreadyExists) {
-              const updatedItems = [...(sched.items || []), schedItem];
-              await supabase.from("schedules").update({ items: updatedItems, updated_at: new Date().toISOString() }).eq("user_id", user.id);
-            }
-          } else {
-            await supabase.from("schedules").insert({ user_id: user.id, items: [schedItem], result: null });
-          }
-        }
-      }
-    }
-  };
-
-  const deleteTask = async (id) => {
-    await supabase.from("tasks").delete().eq("id", id);
-    setTasks(tasks.filter(t => t.id !== id));
-  };
-
-  const saveEditTask = async () => {
-    if (!editTask) return;
-    const recurringVal = Array.isArray(editTask.recurring) && editTask.recurring.length > 0 ? JSON.stringify(editTask.recurring) : null;
-    const { data } = await supabase.from("tasks").update({ text: editTask.text, goal_id: editTask.goal_id, due: editTask.due, priority: editTask.priority, hours: editTask.hours, recurring: recurringVal }).eq("id", editTask.id).select().single();
-    if (data) { setTasks(tasks.map(t => t.id === data.id ? data : t)); setEditTask(null); }
-  };
-
-  const addTask = async () => {
-    if (!newTask.text.trim() || !newTask.goal_id) return;
-    const taskData = { text: newTask.text, goal_id: newTask.goal_id, due: newTask.due || null, priority: newTask.priority, user_id: user.id, done: false };
-    if (newTask.hours) taskData.hours = parseFloat(newTask.hours);
-    if (newTask.recurring && newTask.recurring.length > 0) taskData.recurring = JSON.stringify(newTask.recurring);
-    const { data } = await supabase.from("tasks").insert(taskData).select().single();
-    if (data) {
-      const updatedTasks = [...tasks, data];
-      setTasks(updatedTasks);
-      setNewTask({ text: "", goal_id: "", due: "", priority: "med", hours: "", recurring: [] });
-      setShowAddTask(false);
-      // Sync to schedule builder if hours provided
-      if (newTask.hours) {
-        const schedItem = { name: newTask.text, hours: String(newTask.hours), priority: newTask.priority, deadline: newTask.due || "" };
-        const { data: existing } = await supabase.from("schedules").select("*").eq("user_id", user.id).maybeSingle();
-        if (existing) {
-          const updatedItems = [...(existing.items || []), schedItem];
-          await supabase.from("schedules").update({ items: updatedItems, updated_at: new Date().toISOString() }).eq("user_id", user.id);
-        } else {
-          await supabase.from("schedules").insert({ user_id: user.id, items: [schedItem], result: null });
-        }
-      }
-    }
-  };
-
-  const addEvent = async () => {
-    if (!newEvent.title.trim() || !newEvent.date || !newEvent.goal_id) return;
-    const { data } = await supabase.from("events").insert({ ...newEvent, user_id: user.id }).select().single();
-    if (data) { setEvents([...events, data]); setNewEvent({ title: "", goal_id: goals[0]?.id || "", date: "", time: "" }); setShowAddEvent(false); }
-  };
-
-  const deleteEvent = async (id) => {
-    await supabase.from("events").delete().eq("id", id);
-    setEvents(events.filter(e => e.id !== id));
-  };
-
-  const saveEditEvent = async () => {
-    if (!editEvent) return;
-    const { data } = await supabase.from("events").update({ title: editEvent.title, date: editEvent.date, time: editEvent.time, goal_id: editEvent.goal_id }).eq("id", editEvent.id).select().single();
-    if (data) { setEvents(events.map(e => e.id === data.id ? data : e)); setEditEvent(null); }
-  };
-
-  const signOut = () => supabase.auth.signOut();
-  const nextQuote = () => setQuoteIdx(i => (i + 1) % QUOTES.length);
-
-  const goalColor = (id) => goals.find(g => g.id === id)?.color || "#6E7681";
-  const goalLabel = (id) => goals.find(g => g.id === id)?.label || "?";
-  const pendingTasks   = tasks.filter(t => !t.done);
-  const doneTasks      = tasks.filter(t => t.done);
-  const completionRate = tasks.length ? Math.round((doneTasks.length / tasks.length) * 100) : 0;
-  const futureEvents   = events.filter(e => e.date >= todayStr);
-  const eventsForDate  = (ds) => futureEvents.filter(e => e.date === ds);
-  const todayEvents    = eventsForDate(todayStr);
-  const upcomingTasks  = pendingTasks.filter(t => t.due).sort((a,b) => new Date(a.due)-new Date(b.due)).slice(0,5);
-  const daysInMonth    = getDaysInMonth(calYear, calMonth);
-  const firstDay       = getFirstDay(calYear, calMonth);
-  const calDs          = (day) => `${calYear}-${String(calMonth+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
-  const noGoals        = goals.length === 0;
-
-  const S = {
-    card:      { background: "#161B22", border: "1px solid #333333", padding: "24px" },
-    cardTitle: { fontSize: "12px", letterSpacing: "0px", fontWeight: "600", color: "#8B949E", marginBottom: "16px", display: "flex", justifyContent: "space-between", alignItems: "center" },
-    btn:       { padding: "9px 18px", background: "#39D2C0", color: "#0D1117", border: "none", fontSize: "12px", fontWeight: "600", cursor: "pointer", fontFamily: "'DM Sans', sans-serif", borderRadius: "6px" },
-    btnOut:    { padding: "8px 16px", background: "transparent", color: "#E6EDF3", border: "1px solid #555555", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'DM Sans', sans-serif" },
-    btnDanger: { padding: "8px 16px", background: "transparent", color: "#FF3D5A", border: "1px solid #8B1A1A", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'DM Sans', sans-serif" },
-    input:     { width: "100%", padding: "10px 12px", border: "1px solid #333333", background: "#161B22", fontSize: "13px", fontFamily: "'DM Sans', sans-serif", color: "#E6EDF3", outline: "none", boxSizing: "border-box" },
-    select:    { width: "100%", padding: "10px 12px", border: "1px solid #333333", background: "#161B22", fontSize: "12px", fontFamily: "'DM Sans', sans-serif", color: "#E6EDF3", outline: "none", cursor: "pointer" },
-    modal:     { position: "fixed", inset: 0, background: "rgba(26,22,18,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 200 },
-    modalBox:  { background: "#161B22", border: "1px solid #333333", padding: "32px", width: "420px", maxWidth: "90vw", maxHeight: "90vh", overflowY: "auto" },
-  };
-
-  const navBtn = (active) => ({
-    display: "flex", alignItems: "center", padding: "12px 28px",
-    color: active ? "#E6EDF3" : "#6E7681", background: active ? "#2D333B" : "transparent",
-    cursor: "pointer", fontSize: "12px", letterSpacing: "2px", textTransform: "uppercase",
-    border: "none", width: "100%", textAlign: "left", fontFamily: "'DM Sans', sans-serif",
-    borderLeft: active ? "2px solid #39D2C0" : "2px solid transparent",
-  });
-
-  const taskRow  = (done) => ({ display: "flex", alignItems: "flex-start", gap: "12px", padding: "12px 0", borderBottom: "1px solid #2A2A2A", opacity: done ? 0.5 : 1, cursor: "pointer" });
-  const chk      = (done) => ({ width: "16px", height: "16px", border: `1.5px solid ${done ? "#39D2C0" : "#484F58"}`, background: done ? "#39D2C0" : "transparent", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: "2px" });
-  const dot      = (id)   => ({ width: "6px", height: "6px", borderRadius: "50%", background: goalColor(id), flexShrink: 0, marginTop: "6px" });
-  const fill     = (pct, color) => ({ height: "4px", width: `${pct}%`, background: color || "#090D13", transition: "width 0.6s" });
-  const chip     = (id)   => ({ fontSize: "11px", padding: "4px 10px", background: goalColor(id)+"18", color: goalColor(id), borderLeft: `2px solid ${goalColor(id)}`, marginBottom: "6px", display: "flex", justifyContent: "space-between" });
-  const badge    = (p)    => ({ fontSize: "9px", letterSpacing: "1px", textTransform: "uppercase", padding: "2px 6px", flexShrink: 0, background: p==="high"?"#FF3D5A20":p==="med"?"#FF6B8A20":"#2C4A2E20", color: p==="high"?"#FF3D5A":p==="med"?"#0E2535":"#1A3A20" });
-  const dayCell  = (isToday, isSel) => ({ aspectRatio: "1", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", padding: "6px 4px", background: isToday ? "#0D3040" : isSel ? "#1C2D3A" : "transparent", color: isToday ? "#5AE4D5" : "#C9D1D9", cursor: "pointer", fontSize: "12px", borderRadius: "6px" });
-
-  if (loading) return (
-    <div style={{ minHeight: "100vh", background: "#161B22", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'DM Sans', sans-serif" }}>
-      <div style={{ fontSize: "14px", fontFamily: "'DM Serif Display', serif", color: "#39D2C0" }}>Loading...</div>
+  if(loading)return(
+    <div style={{minHeight:"100vh",background:"#FFF",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:T.font}}>
+      <div style={{textAlign:"center"}}>
+        <div style={{fontSize:40,marginBottom:12}}>🎓</div>
+        <div style={{fontSize:20,fontFamily:T.serif,color:T.text}}>Meridian</div>
+        <div style={{fontSize:13,color:T.textMute,marginTop:6}}>Loading your workspace…</div>
+      </div>
     </div>
   );
 
-  const isMobile = window.innerWidth < 768;
+  const isMobile=window.innerWidth<768;
 
-  return (
-    <div style={{ minHeight: "100vh", background: "#0D1117", fontFamily: "'DM Sans', sans-serif", color: "#E6EDF3" }}>
-      {showConfetti && <Confetti />}
-      {focusMode && (
-        <FocusScreen
-          task={focusTask}
-          timerSeconds={timerSeconds}
-          timerRunning={timerRunning}
-          setTimerRunning={setTimerRunning}
-          focusComplete={focusComplete}
-          focusSession={focusSession}
-          focusSessions={focusSessions}
-          deepWorkMins={stats.deep_work_minutes}
-          stats={stats}
-          nonNegotiables={nonNegotiables}
-          nonNegotiableIdx={nonNegotiables.indexOf(focusTask?.id)}
-          goalColor={goalColor}
-          goalLabel={goalLabel}
-          ambience={ambience}
-          setAmbience={setAmbience}
-          focusMins={focusMins}
-          onExit={(early) => exitFocusMode(early)}
-          onMarkComplete={() => { if (focusTask) toggleTask(focusTask); exitFocusMode(false); }}
-          onNextSession={() => { setFocusSession(s => s + 1); setFocusComplete(false); setTimerSeconds(focusMins * 60); setTimerRunning(true); }}
-        />
-      )}
+  return(
+    <div style={{minHeight:"100vh",background:"#FFFFFF",fontFamily:T.font,color:T.text}}>
+      {showConfetti&&<Confetti/>}
+      {xpPopup&&<div style={{position:"fixed",top:20,right:20,background:T.accent,color:"#FFF",padding:"8px 16px",borderRadius:8,fontSize:14,fontWeight:600,zIndex:999,pointerEvents:"none"}}>+{xpPopup} XP</div>}
+      {focusMode&&<FocusScreen task={focusTask} timerSeconds={timerSeconds} timerRunning={timerRunning} setTimerRunning={setTimerRunning} focusComplete={focusComplete} ambience={ambience} setAmbience={setAmbience} focusMins={focusMins} onExit={exitFocusMode} onMarkComplete={()=>{if(focusTask)toggleTask(focusTask);exitFocusMode();}} onNextSession={()=>{setFocusSession(s=>s+1);setFocusComplete(false);setTimerSeconds(focusMins*60);setTimerRunning(true);}}/>}
 
+      {/* COVER */}
+      <div style={{width:"100%",height:isMobile?110:180,background:"linear-gradient(135deg,#FFECD2 0%,#FCB69F 30%,#A1C4FD 70%,#C2E9FB 100%)",position:"relative",overflow:"hidden"}}>
+        <div style={{position:"absolute",inset:0,opacity:.07,backgroundImage:"repeating-linear-gradient(90deg,#000 0,#000 3px,transparent 3px,transparent 70px),repeating-linear-gradient(180deg,#000 0,#000 1px,transparent 1px,transparent 40px)"}}/>
+        <div style={{position:"absolute",bottom:0,left:0,right:0,height:50,background:"linear-gradient(to top,#fff,transparent)"}}/>
+      </div>
 
-      {/* Sidebar - desktop only */}
-      {!isMobile && (
-        <div style={{ position: "fixed", left: 0, top: 0, bottom: 0, width: "220px", background: "#1C2128", display: "flex", flexDirection: "column", zIndex: 100 }}>
-          <div style={{ padding: "32px 28px 24px", borderBottom: "1px solid #222222" }}>
-            <div style={{ fontSize: "22px", fontFamily: "'DM Serif Display', serif", color: "#39D2C0", letterSpacing: "1px" }}>Meridian</div>
-            <div style={{ fontSize: "10px", color: "#C9D1D9", letterSpacing: "2px", marginTop: "4px", textTransform: "uppercase" }}>Your operating system</div>
-          </div>
-          <nav style={{ padding: "20px 0", flex: 1 }}>
-            {[["dashboard","Dashboard"],["calendar","Calendar"],["tasks","Tasks"],["goals","Goals"],["scheduler","Schedule Builder"]].map(([id,lbl]) => (
-              <button key={id} style={navBtn(view===id)} onClick={() => navigate(id)}>{lbl}</button>
-            ))}
-            <button style={{ ...navBtn(false), color: "#39D2C0", marginTop: "8px", borderTop: "1px solid #222222", paddingTop: "20px" }} onClick={() => setShowImport(true)}>⚡ Import from Claude</button>
-          </nav>
-          <div style={{ padding: "16px 28px", borderTop: "1px solid #222222" }}>
-            <div style={{ fontSize: "12px", color: "#8B949E", marginBottom: "4px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.email}</div>
-            <div style={{ fontSize: "12px", color: "#8B949E", marginBottom: "8px" }}>Done: {completionRate}%</div>
-            <div style={{ height: "3px", background: "#1E1E1E", marginBottom: "14px" }}><div style={fill(completionRate, "#39D2C0")} /></div>
-            <button onClick={signOut} style={{ background: "none", border: "none", color: "#6E7681", fontSize: "12px", cursor: "pointer", padding: "6px 0", fontFamily: "'DM Sans', sans-serif" }}>Sign Out</button>
-            <div style={{ fontSize: "11px", color: "#6E7681", marginTop: "8px" }}>© 2026 Chebiyyam</div>
-            <div style={{ marginTop: "12px", borderTop: "1px solid #222222", paddingTop: "12px" }}>
-              <div style={{ fontSize: "12px", color: "#8B949E" }}>⏱ {Math.floor((stats.deep_work_minutes||0)/60)}h {(stats.deep_work_minutes||0)%60}m deep work</div>
-              <div style={{ fontSize: "12px", color: "#C9D1D9", marginTop: "3px" }}>⏱ {Math.floor((stats.deep_work_minutes||0)/60)}h {(stats.deep_work_minutes||0)%60}m deep work</div>
-              <button onClick={() => setSoundEnabled(s => !s)} style={{ marginTop: "8px", background: "none", border: "none", color: soundEnabled ? "#39D2C0" : "#6E7681", fontSize: "10px", cursor: "pointer", fontFamily: "'DM Sans', sans-serif", padding: 0 }}>
-                {soundEnabled ? "🔊 Sound on" : "🔇 Sound off"}
-              </button>
-            </div>
+      {/* PAGE WRAPPER */}
+      <div style={{maxWidth:920,margin:"0 auto",padding:isMobile?"0 16px":"0 56px"}}>
+        <div style={{fontSize:isMobile?44:56,marginTop:-22,lineHeight:1,marginBottom:6}}>🎓</div>
+        <div style={{fontSize:isMobile?26:34,fontFamily:T.serif,fontWeight:600,color:"#1A1A2E",marginBottom:2}}>Meridian</div>
+        <div style={{fontSize:14,color:T.textMute,marginBottom:16}}>Your college life, organized</div>
+
+        {/* PROPERTY BAR */}
+        <div style={{display:"flex",gap:20,flexWrap:"wrap",padding:"10px 14px",background:T.bgSoft,borderRadius:6,fontSize:13,color:T.textMid,marginBottom:14,alignItems:"center"}}>
+          <span>👤 {user.email}</span>
+          <span>✅ <strong style={{color:T.text}}>{completionRate}%</strong> done</span>
+          <span>⏱ <strong style={{color:T.text}}>{Math.floor((stats.deep_work_minutes||0)/60)}h</strong> deep work</span>
+          {stats.streak>0&&<span>🔥 <strong style={{color:T.text}}>{stats.streak}</strong> day streak</span>}
+          <div style={{marginLeft:"auto",display:"flex",gap:8,alignItems:"center"}}>
+            <button onClick={()=>setSoundEnabled(s=>!s)} style={{background:"none",border:"none",fontSize:16,cursor:"pointer",color:soundEnabled?T.accent:T.textMute}}>{soundEnabled?"🔊":"🔇"}</button>
+            <button onClick={signOut} style={{...S.btnOut,padding:"4px 12px",fontSize:12}}>Sign out</button>
           </div>
         </div>
-      )}
 
-      {/* Mobile top bar */}
-      {isMobile && (
-        <div style={{ position: "fixed", top: 0, left: 0, right: 0, background: "#1C2128", padding: "14px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", zIndex: 100 }}>
-          <div style={{ fontSize: "20px", fontFamily: "'DM Serif Display', serif", color: "#39D2C0" }}>Meridian</div>
-          <button onClick={signOut} style={{ background: "none", border: "none", color: "#8B949E", fontSize: "12px", cursor: "pointer", fontFamily: "'DM Sans', sans-serif" }}>Sign Out</button>
+        {/* TOP NAV TABS */}
+        <div style={{display:"flex",alignItems:"center",borderBottom:`1px solid ${T.border}`,marginBottom:24,overflowX:"auto",gap:2}}>
+          {[["dashboard","🏠 Dashboard"],["calendar","📅 Calendar"],["tasks","✅ Tasks"],["goals","🎯 Goals"],["scheduler","⚡ Schedule"]].map(([id,lbl])=>(
+            <button key={id} onClick={()=>navigate(id)} style={{padding:"8px 16px",background:"none",border:"none",cursor:"pointer",fontSize:13,fontWeight:view===id?600:400,color:view===id?T.text:T.textMute,borderBottom:view===id?`2px solid ${T.accent}`:"2px solid transparent",fontFamily:T.font,marginBottom:-1,whiteSpace:"nowrap"}}>{lbl}</button>
+          ))}
+          <button onClick={()=>setShowImport(true)} style={{padding:"8px 16px",background:"none",border:"none",cursor:"pointer",fontSize:13,color:T.accent,fontFamily:T.font,marginLeft:"auto",whiteSpace:"nowrap"}}>📥 Import</button>
         </div>
-      )}
 
-      {/* Main */}
-      <div style={{ marginLeft: isMobile ? "0" : "220px", padding: isMobile ? "70px 16px 80px" : "40px 48px", minHeight: "100vh" }}>
-
-        {/* Notion-style Page Header */}
-        <div style={{ marginBottom: isMobile ? "24px" : "36px" }}>
-          {/* Cover banner strip */}
-          <div style={{ height: "8px", borderRadius: "4px", marginBottom: "28px", background: "linear-gradient(90deg, #39D2C0 0%, #58A6FF 50%, #FF6B8A 100%)" }} />
-          {/* Page icon + title */}
-          <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-              <div style={{ fontSize: isMobile ? "36px" : "44px", lineHeight: 1 }}>
-                {view === "dashboard" ? "🎓" : view === "calendar" ? "📅" : view === "tasks" ? "✅" : view === "goals" ? "🎯" : "⚡"}
-              </div>
-              <div>
-                <div style={{ fontSize: isMobile ? "26px" : "34px", fontFamily: "'DM Serif Display', serif", fontWeight: "400", color: "#E6EDF3", lineHeight: 1.1 }}>
-                  {view === "dashboard" ? greeting : view === "calendar" ? "Calendar" : view === "tasks" ? "Tasks" : view === "goals" ? "Goals" : "Schedule Builder"}
-                </div>
-                <div style={{ fontSize: "12px", color: "#8B949E", marginTop: "6px" }}>
-                  {DAYS[today.getDay()]}, {MONTHS[today.getMonth()]} {today.getDate()}, {today.getFullYear()}
-                </div>
-              </div>
-            </div>
-            {/* Quote pill */}
-            <div onClick={nextQuote} title="Click for a new quote"
-              style={{ padding: "8px 14px", background: "#1C2128", border: "1px solid #21262D", borderRadius: "20px", color: "#8B949E", fontSize: "11px", fontStyle: "italic", maxWidth: isMobile ? "100%" : "300px", textAlign: "right", cursor: "pointer", userSelect: "none" }}>
-              "{QUOTES[quoteIdx]}"
-            </div>
+        {/* PAGE TITLE ROW */}
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16,flexWrap:"wrap",gap:8}}>
+          <div style={{fontSize:isMobile?20:24,fontFamily:T.serif,fontWeight:600,color:T.text}}>
+            {view==="dashboard"?greeting:view==="calendar"?"📅 Calendar":view==="tasks"?"✅ Tasks":view==="goals"?"🎯 Goals":"⚡ Schedule Builder"}
           </div>
-          <div style={{ height: "1px", background: "#21262D", marginTop: "20px" }} />
+          <div onClick={nextQuote} style={{fontSize:12,fontStyle:"italic",color:T.textMute,cursor:"pointer",maxWidth:280,textAlign:"right"}}>"{QUOTES[quoteIdx]}"</div>
         </div>
+        <div style={{height:1,background:T.border,marginBottom:20}}/>
 
-        {/* DASHBOARD */}
-        {view === "dashboard" && (
+        {/* ── DASHBOARD ── */}
+        {view==="dashboard"&&(
           <>
-            {/* Exam notification banner - once per day morning */}
-            {examNotifs.length > 0 && !notifDismissed && (
-              <div style={{ background: "#0D1E2E", border: "1px solid #39D2C0", borderLeft: "4px solid #39D2C0", padding: "14px 20px", marginBottom: "20px", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                <div>
-                  <div style={{ fontSize: "12px", letterSpacing: "2px", textTransform: "uppercase", color: "#5AE4D5", marginBottom: "8px" }}>⚠️ Upcoming Exams</div>
-                  {examNotifs.map(n => (
-                    <div key={n.date} style={{ fontSize: "14px", color: "#E6EDF3", marginBottom: "4px" }}>
-                      {n.events.length > 1
-                        ? <><strong style={{color:"#5AE4D5"}}>{n.events.map(e=>e.title).join(" + ")}</strong> — {n.daysLeft === 0 ? "TODAY" : n.daysLeft === 1 ? "Tomorrow" : `${n.daysLeft} days away`}</>
-                        : <><strong style={{color:"#5AE4D5"}}>{n.events[0].title}</strong> — {n.daysLeft === 0 ? "TODAY" : n.daysLeft === 1 ? "Tomorrow" : `${n.daysLeft} days away`}</>
-                      }
-                    </div>
-                  ))}
+            {examNotifs.length>0&&!notifDismissed&&(
+              <div style={{...S.card,marginBottom:16,borderLeft:`3px solid ${T.orange}`,background:"#FFF7ED",display:"flex",alignItems:"flex-start",gap:12}}>
+                <div style={{flex:1}}>
+                  <div style={{fontSize:13,fontWeight:600,color:T.orange,marginBottom:4}}>📚 Upcoming Exams</div>
+                  {examNotifs.slice(0,3).map((n,i)=><div key={i} style={{fontSize:13,color:T.text,marginBottom:2}}>{n.events.map(e=>e.title).join(", ")} — <strong>{n.daysLeft===0?"Today":n.daysLeft===1?"Tomorrow":`${n.daysLeft} days`}</strong></div>)}
                 </div>
-                <button onClick={dismissNotif} style={{ background: "none", border: "none", color: "#39D2C0", fontSize: "22px", cursor: "pointer", padding: "0 0 0 16px", lineHeight: 1 }}>×</button>
+                <button onClick={dismissNotif} style={{background:"none",border:"none",color:T.textMute,fontSize:18,cursor:"pointer"}}>×</button>
               </div>
             )}
-            {/* Next exam countdown card */}
-            {nextExam && (
-              <div style={{ background: "#0D2030", border: "1px solid #3D2200", padding: "14px 20px", marginBottom: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <div>
-                  <div style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#5AE4D5", marginBottom: "4px" }}>Next Exam</div>
-                  <div style={{ fontSize: "15px", color: "#E6EDF3", fontWeight: "600" }}>{nextExam.title}</div>
-                </div>
-                <div style={{ textAlign: "right" }}>
-                  <div style={{ fontSize: "38px", fontWeight: "700", lineHeight: 1, color: nextExam.daysLeft <= 3 ? "#E53935" : nextExam.daysLeft <= 7 ? "#F0883E" : "#39D2C0" }}>
-                    {nextExam.daysLeft === 0 ? "TODAY" : nextExam.daysLeft === 1 ? "1" : nextExam.daysLeft}
-                  </div>
-                  {nextExam.daysLeft > 1 && <div style={{ fontSize: "11px", color: "#6E7681" }}>days away</div>}
-                </div>
+            {nonNegotiables.length>0&&(
+              <div style={{...S.card,marginBottom:16,borderLeft:`3px solid ${T.accent}`}}>
+                <div style={{fontSize:13,fontWeight:600,color:T.accent,marginBottom:10}}>🎯 Today's Non-Negotiables {nnComplete&&"✅"}</div>
+                {nonNegotiables.map(id=>{const t=tasks.find(t=>t.id===id);if(!t)return null;return(<div key={id} style={taskRow(t.done)} onClick={()=>toggleTask(t)}><div style={chk(t.done)}>{t.done&&<span style={{fontSize:10,color:"#FFF"}}>✓</span>}</div><div style={dot(t.goal_id)}/><div style={{flex:1,fontSize:13}}>{t.text}</div><div style={badge(t.priority)}>{t.priority}</div></div>);})}
               </div>
             )}
-            {noGoals && (
-              <div style={{ ...S.card, borderLeft: "3px solid #39D2C0", marginBottom: "24px" }}>
-                <div style={{ fontSize: "14px", marginBottom: "8px" }}>Welcome to Meridian.</div>
-                <div style={{ fontSize: "12px", color: "#8B949E", marginBottom: "16px" }}>Start by creating your goals. Add the commitments you want to track and stay accountable to.</div>
-                <button style={S.btn} onClick={() => { navigate("goals"); setShowAddGoal(true); }}>Create Your First Goal</button>
+            {fallingOff&&(
+              <div style={{...S.card,marginBottom:16,borderLeft:`3px solid ${T.orange}`,background:"#FFF7ED"}}>
+                <div style={{fontSize:13,color:T.orange,marginBottom:4}}>📉 You were more consistent last week.</div>
+                <div style={{fontSize:12,color:T.textMid}}>No pressure — let's get back on track. Even one task today counts.</div>
+                <button style={{...S.btnOut,marginTop:10,borderColor:T.orange,color:T.orange}} onClick={()=>setFallingOff(false)}>Got it 💪</button>
               </div>
             )}
-            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr", gap: "16px", marginBottom: "24px" }}>
-              {/* Tasks card */}
-              <div style={{ ...S.card, borderLeft: `3px solid ${pendingTasks.length === 0 ? "#3FB950" : pendingTasks.filter(t=>t.due&&t.due<todayStr).length > 0 ? "#E53935" : "#39D2C0"}` }}>
-                <div style={S.cardTitle}>
-                  {pendingTasks.filter(t=>t.due&&t.due<todayStr).length > 0
-                    ? <span style={{color:"#E53935"}}>⚠️ {pendingTasks.filter(t=>t.due&&t.due<todayStr).length} overdue</span>
-                    : pendingTasks.length === 0 ? <span style={{color:"#3FB950"}}>✅ All clear</span>
-                    : "Tasks Remaining"}
-                </div>
-                <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                  <div>
-                    <div style={{ fontSize: "48px", fontWeight: "400", lineHeight: 1 }}>{pendingTasks.length}</div>
-                    <div style={{ fontSize: "11px", color: "#8B949E", marginTop: "8px" }}>of {tasks.length} total</div>
-                  </div>
-                  <svg width="60" height="60" style={{ flexShrink: 0 }}>
-                    <circle cx="30" cy="30" r="24" fill="none" stroke="#2D333B" strokeWidth="5" />
-                    <circle cx="30" cy="30" r="24" fill="none" stroke={completionRate === 100 ? "#3FB950" : "#39D2C0"} strokeWidth="5"
-                      strokeDasharray={`${2 * Math.PI * 24}`}
-                      strokeDashoffset={`${2 * Math.PI * 24 * (1 - completionRate / 100)}`}
-                      strokeLinecap="round" transform="rotate(-90 30 30)"
-                      style={{ transition: "stroke-dashoffset 0.8s ease" }} />
-                    <text x="30" y="35" textAnchor="middle" fontSize="11" fill="#090D13" fontFamily="Georgia, serif">{completionRate}%</text>
-                  </svg>
-                </div>
-              </div>
-
-              {/* Today card */}
-              <div style={{ ...S.card, borderLeft: `3px solid ${todayEvents.length > 0 ? "#58A6FF" : "#2D333B"}` }}>
-                <div style={S.cardTitle}>Today</div>
-                <div style={{ fontSize: "11px", color: "#8B949E", marginBottom: "8px" }}>
-                  {DAYS[today.getDay()]}, {MONTHS[today.getMonth()]} {today.getDate()}
-                </div>
-                {todayEvents.length === 0
-                  ? <div style={{ fontSize: "12px", color: "#484F58" }}>No events today</div>
-                  : todayEvents.map(e => (
-                    <div key={e.id} style={{ display: "flex", alignItems: "center", gap: "8px", padding: "5px 0", borderBottom: "1px solid #2A2A2A" }}>
-                      <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: goalColor(e.goal_id), flexShrink: 0 }} />
-                      <div style={{ fontSize: "11px", flex: 1 }}>{e.title}</div>
-                      <div style={{ fontSize: "12px", color: "#8B949E" }}>{e.time}</div>
-                    </div>
-                  ))}
-                {/* Tasks due today */}
-                {tasks.filter(t=>t.due===todayStr&&!t.done).slice(0,2).map(t => (
-                  <div key={t.id} style={{ display: "flex", alignItems: "center", gap: "8px", padding: "5px 0", borderBottom: "1px solid #2A2A2A" }}>
-                    <div style={{ width: "6px", height: "6px", borderRadius: "1px", background: goalColor(t.goal_id), flexShrink: 0 }} />
-                    <div style={{ fontSize: "11px", flex: 1, color: "#E53935" }}>{t.text}</div>
-                    <div style={{ fontSize: "10px", color: "#E53935" }}>due</div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Goals card */}
-              <div style={{ ...S.card, borderLeft: "3px solid #333333" }}>
-                <div style={S.cardTitle}>Goals</div>
-                <div style={{ fontSize: "48px", fontWeight: "400", lineHeight: 1, marginBottom: "8px" }}>{goals.length}</div>
-                <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-                  {goals.slice(0, 4).map(g => {
-                    const gt = tasks.filter(t => t.goal_id === g.id);
-                    const pct = gt.length ? Math.round((gt.filter(t=>t.done).length / gt.length) * 100) : 0;
-                    return (
-                      <div key={g.id} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                        <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: g.color, flexShrink: 0 }} />
-                        <div style={{ fontSize: "10px", flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{g.label}</div>
-                        <div style={{ fontSize: "12px", color: "#8B949E" }}>{pct}%</div>
-                      </div>
-                    );
-                  })}
-                  {goals.length > 4 && <div style={{ fontSize: "12px", color: "#8B949E" }}>+{goals.length - 4} more</div>}
-                </div>
-              </div>
+            <div style={{display:"flex",gap:20,flexWrap:"wrap",padding:"12px 16px",background:T.bgSoft,borderRadius:8,marginBottom:16,fontSize:13}}>
+              <span><span style={{color:T.textMute}}>Tasks remaining </span><strong style={{color:pendingTasks.filter(t=>t.due&&t.due<todayStr).length>0?T.red:T.text}}>{pendingTasks.length}</strong><span style={{color:T.textMute}}> / {tasks.length}</span></span>
+              <span><span style={{color:T.textMute}}>Today's events </span><strong>{todayEvents.length}</strong></span>
+              <span><span style={{color:T.textMute}}>Active goals </span><strong>{goals.length}</strong></span>
+              {nextExam&&<span><span style={{color:T.textMute}}>Next exam </span><strong style={{color:nextExam.daysLeft<=3?T.red:T.orange}}>{nextExam.title} in {nextExam.daysLeft}d</strong></span>}
             </div>
-
-            {/* Today's Tasks */}
-            {(() => {
-              const todayDay = today.toLocaleDateString('en-US', { weekday: 'short' }).toLowerCase();
-              const recurringToday = tasks.filter(t => {
-                if (!t.recurring) return false;
-                try { const d = JSON.parse(t.recurring); return Array.isArray(d) && d.includes(todayDay); } catch { return false; }
-              });
-              const todayTasks = [...tasks.filter(t => t.due === todayStr), ...recurringToday.filter(t => !tasks.find(t2 => t2.id === t.id && t2.due === todayStr))];
-              const uniqueTodayTasks = [...new Map(todayTasks.map(t => [t.id, t])).values()];
-              const doneTodayCount = uniqueTodayTasks.filter(t => t.done).length;
-              const allDoneToday = uniqueTodayTasks.length > 0 && doneTodayCount === uniqueTodayTasks.length;
-              return (
-                <div style={{ ...S.card, marginBottom: "24px", borderLeft: allDoneToday ? "3px solid #43A047" : "3px solid #39D2C0" }}>
-                  <div style={S.cardTitle}>
-                    <span>🎯 Today's Tasks {uniqueTodayTasks.length > 0 ? `(${doneTodayCount}/${uniqueTodayTasks.length})` : ""} {allDoneToday ? "— ✅ Done!" : ""}</span>
-                    <button style={S.btnOut} onClick={() => { setNewTask({ text: "", goal_id: "", due: todayStr, priority: "high", hours: "", recurring: [] }); setShowAddTask(true); }}>+ Add</button>
-                  </div>
-                  {uniqueTodayTasks.length === 0 && <div style={{ fontSize: "12px", color: "#8B949E" }}>No tasks due today. Add one or check your upcoming tasks below.</div>}
-                  {uniqueTodayTasks.map(task => (
-                    <div key={task.id} onClick={() => toggleTask(task)} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "10px 0", borderBottom: "1px solid #2A2A2A", cursor: "pointer" }}>
-                      <div style={{ ...chk(task.done), border: `1.5px solid ${task.done ? "#3FB950" : "#39D2C0"}`, background: task.done ? "#3FB950" : "transparent" }}>
-                        {task.done && <span style={{ fontSize: "10px", color: "#fff" }}>✓</span>}
-                      </div>
-                      <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: goalColor(task.goal_id), flexShrink: 0 }} />
-                      <div style={{ flex: 1, fontSize: "13px", textDecoration: task.done ? "line-through" : "none", color: task.done ? "#777777" : "#E6EDF3" }}>{task.text}</div>
-                      <div style={{ fontSize: "12px", color: "#8B949E" }}>{goalLabel(task.goal_id)}</div>
-                      <div style={badge(task.priority)}>{task.priority}</div>
-                    </div>
-                  ))}
-                  {allDoneToday && <div style={{ fontSize: "12px", color: "#3FB950", marginTop: "10px", letterSpacing: "1px" }}>🎉 You crushed today. Remarkable.</div>}
+            {performanceScore!==null&&(
+              <div style={{...S.card,marginBottom:16}}>
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
+                  <div style={{fontSize:14,fontWeight:600}}>📈 Daily Performance</div>
+                  <button style={S.btnOut} onClick={()=>setShowWeeklyReport(true)}>Weekly Report</button>
                 </div>
-              );
-            })()}
-
-            {/* Flow Timer */}
-            <div style={{ ...S.card, marginBottom: "24px" }}>
-              <div style={S.cardTitle}>
-                <span>⏱ Flow Mode</span>
-                <span style={{ fontSize: "12px", color: "#8B949E" }}>{Math.floor((stats.deep_work_today||0)/60)}h {(stats.deep_work_today||0)%60}m deep work today</span>
-              </div>
-              {!timerRunning && timerSeconds === 0 && (
-                <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-                  <button style={S.btn} onClick={() => enterFocusMode(null, 25)}>25 min</button>
-                  <button style={S.btn} onClick={() => enterFocusMode(null, 50)}>50 min</button>
-                  <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-                    <input type="number" min="1" max="120" value={customMinutes} onChange={e => setCustomMinutes(Number(e.target.value))}
-                      style={{ ...S.input, width: "60px", padding: "8px" }} />
-                    <button style={S.btn} onClick={() => enterFocusMode(null, customMinutes)}>Custom</button>
-                  </div>
-                </div>
-              )}
-              {!timerRunning && timerSeconds === 0 && timerMode && (
-                <div style={{ fontSize: "11px", color: "#3FB950", marginTop: "8px" }}>✅ Session complete! Deep work logged.</div>
-              )}
-            </div>
-            {/* Falling Off Detection */}
-            {fallingOff && (
-              <div style={{ ...S.card, marginBottom: "24px", borderLeft: "3px solid #FB8C00", background: "#F0883E08" }}>
-                <div style={{ fontSize: "13px", color: "#F0883E", marginBottom: "4px" }}>📉 You were more consistent last week.</div>
-                <div style={{ fontSize: "11px", color: "#8B949E" }}>No pressure — but let's get back on track. Even one task today counts.</div>
-                <button style={{ ...S.btnOut, marginTop: "10px", borderColor: "#F0883E", color: "#F0883E" }} onClick={() => setFallingOff(false)}>Got it, I'm back 💪</button>
-              </div>
-            )}
-
-            {/* Performance Score + Weekly Report */}
-            {performanceScore !== null && (
-              <div style={{ ...S.card, marginBottom: "24px" }}>
-                <div style={S.cardTitle}>
-                  <span>📈 Daily Performance</span>
-                  <button style={S.btnOut} onClick={() => setShowWeeklyReport(true)}>Weekly Report</button>
-                </div>
-                <div style={{ display: "flex", alignItems: "center", gap: "20px", flexWrap: "wrap" }}>
+                <div style={{display:"flex",alignItems:"center",gap:24,flexWrap:"wrap"}}>
                   <div>
-                    <div style={{ fontSize: "48px", fontWeight: "400", lineHeight: 1, color: performanceScore >= 70 ? "#3FB950" : performanceScore >= 40 ? "#F0883E" : "#39D2C0" }}>{performanceScore}</div>
-                    <div style={{ fontSize: "11px", color: "#8B949E", marginTop: "4px" }}>7-day avg</div>
-                    <div style={{ fontSize: "12px", color: "#8B949E", marginTop: "2px" }}>
-                      {performanceScore < 30 ? "You're just getting started 💪" : performanceScore < 60 ? "Building momentum 🔥" : "You're on a roll ⚡"}
-                    </div>
+                    <div style={{fontSize:48,fontFamily:T.serif,lineHeight:1,color:performanceScore>=70?T.green:performanceScore>=40?T.orange:T.red}}>{performanceScore}</div>
+                    <div style={{fontSize:12,color:T.textMute,marginTop:4}}>7-day avg · {performanceScore<30?"Getting started 💪":performanceScore<60?"Building momentum 🔥":"On a roll ⚡"}</div>
                   </div>
-                  <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "6px" }}>
-                    {weeklySnapshots.slice(0, 5).reverse().map((s, i) => (
-                      <div key={i} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                        <div style={{ fontSize: "12px", color: "#8B949E", width: "36px" }}>{s.date.slice(5)}</div>
-                        <div style={{ flex: 1, height: "6px", background: "#2D333B", borderRadius: "3px" }}>
-                          <div style={{ height: "100%", width: `${s.score}%`, background: "#39D2C0", borderRadius: "3px", transition: "width 0.6s" }} />
-                        </div>
-                        <div style={{ fontSize: "12px", color: "#8B949E", width: "50px" }}>{s.completed_tasks}/{s.total_tasks}</div>
+                  <div style={{flex:1,display:"flex",flexDirection:"column",gap:6}}>
+                    {weeklySnapshots.slice(0,5).reverse().map((s,i)=>(
+                      <div key={i} style={{display:"flex",alignItems:"center",gap:8}}>
+                        <div style={{fontSize:11,color:T.textMute,width:36}}>{s.date.slice(5)}</div>
+                        <div style={{flex:1,height:6,background:T.border,borderRadius:3}}><div style={{height:6,width:`${s.score}%`,background:T.accent,borderRadius:3,transition:"width 0.6s"}}/></div>
+                        <div style={{fontSize:11,color:T.textMute,width:50}}>{s.completed_tasks}/{s.total_tasks}</div>
                       </div>
                     ))}
                   </div>
                 </div>
               </div>
             )}
-
-            {/* Goal Forecast */}
-            {goals.length > 0 && (
-              <div style={{ ...S.card, marginBottom: "24px" }}>
-                <div style={{ ...S.cardTitle, marginBottom: "14px" }}>
-                  <span style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#8B949E" }}>🔮 Goal Forecast</span>
-                  {goals.filter(g => tasks.filter(t=>t.goal_id===g.id&&!t.done).length > 0).length > 5 && (
-                    <button style={{ background: "none", border: "none", fontSize: "10px", color: "#39D2C0", cursor: "pointer", fontFamily: "'DM Sans', sans-serif", letterSpacing: "1px" }} onClick={() => setShowAllGoals(s => !s)}>
-                      {showAllGoals ? "Show less" : `See all (${goals.filter(g => tasks.filter(t=>t.goal_id===g.id&&!t.done).length > 0).length})`}
-                    </button>
-                  )}
+            {goals.length>0&&(
+              <div style={{marginBottom:16}}>
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+                  <div style={{fontSize:14,fontWeight:600}}>🔮 Goal Forecast</div>
+                  {goals.filter(g=>tasks.filter(t=>t.goal_id===g.id&&!t.done).length>0).length>5&&<button style={{background:"none",border:"none",fontSize:13,color:T.accent,cursor:"pointer",fontFamily:T.font}} onClick={()=>setShowAllGoals(s=>!s)}>{showAllGoals?"Show less":`See all (${goals.filter(g=>tasks.filter(t=>t.goal_id===g.id&&!t.done).length>0).length})`}</button>}
                 </div>
-                {goals.filter(g => {
-                  const gt = tasks.filter(t => t.goal_id === g.id);
-                  return gt.length > 0 && gt.filter(t => !t.done).length > 0;
-                }).sort((a, b) => {
-                  if (a.deadline && b.deadline) return new Date(a.deadline) - new Date(b.deadline);
-                  if (a.deadline) return -1;
-                  if (b.deadline) return 1;
-                  return 0;
-                }).filter((_, i) => showAllGoals || i < 5).map(g => {
-                  const gt = tasks.filter(t => t.goal_id === g.id);
-                  const done = gt.filter(t => t.done).length;
-                  const remaining = gt.length - done;
-                  const pct = Math.round((done / gt.length) * 100);
-                  let urgencyColor = goalColor(g.id);
-                  let forecastLine = null;
-
-                  if (g.deadline) {
-                    const deadlineDate = new Date(g.deadline);
-                    const daysLeft = Math.ceil((deadlineDate - Date.now()) / 86400000);
-                    const tasksPerDay = daysLeft > 0 ? (remaining / daysLeft).toFixed(1) : null;
-                    const deadlineStr = deadlineDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                    if (daysLeft <= 0) { urgencyColor = "#E53935"; forecastLine = `⚠️ Deadline passed — ${remaining} left`; }
-                    else if (daysLeft <= 7) { urgencyColor = "#E53935"; forecastLine = `🔴 ${daysLeft}d left (${deadlineStr}) · ${tasksPerDay}/day needed`; }
-                    else if (daysLeft <= 14) { urgencyColor = "#F0883E"; forecastLine = `🟠 ${daysLeft}d until ${deadlineStr} · ${tasksPerDay}/day`; }
-                    else { urgencyColor = "#3FB950"; forecastLine = `🟢 ${daysLeft}d until ${deadlineStr} · ${tasksPerDay}/day`; }
-                  } else {
-                    const daysLeft = Math.ceil(remaining / 2);
-                    const completionStr = new Date(Date.now() + daysLeft * 86400000).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                    forecastLine = `~${completionStr} at 2/day`;
-                  }
-
-                  return (
-                    <div key={g.id} style={{ marginBottom: "14px", paddingBottom: "14px", borderBottom: "1px solid #2A2A2A" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                          <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: g.color, flexShrink: 0 }} />
-                          <div style={{ fontSize: "12px", fontWeight: "600" }}>{g.label}</div>
+                <div style={{border:`1px solid ${T.border}`,borderRadius:8,overflow:"hidden"}}>
+                  {goals.filter(g=>{const gt=tasks.filter(t=>t.goal_id===g.id);return gt.length>0&&gt.filter(t=>!t.done).length>0;})
+                    .sort((a,b)=>{if(a.deadline&&b.deadline)return new Date(a.deadline)-new Date(b.deadline);if(a.deadline)return-1;if(b.deadline)return 1;return 0;})
+                    .filter((_,i)=>showAllGoals||i<5)
+                    .map((g,idx,arr)=>{
+                      const gt=tasks.filter(t=>t.goal_id===g.id);
+                      const d2=gt.filter(t=>t.done).length,rem=gt.length-d2,pct=Math.round((d2/gt.length)*100);
+                      let uc=g.color,fl=null;
+                      if(g.deadline){const dl=new Date(g.deadline),days=Math.ceil((dl-Date.now())/86400000),tpd=days>0?(rem/days).toFixed(1):null,ds2=dl.toLocaleDateString('en-US',{month:'short',day:'numeric'});if(days<=0){uc=T.red;fl=`⚠️ Deadline passed — ${rem} left`;}else if(days<=7){uc=T.red;fl=`🔴 ${days}d left (${ds2}) · ${tpd}/day`;}else if(days<=14){uc=T.orange;fl=`🟠 ${days}d until ${ds2} · ${tpd}/day`;}else{uc=T.green;fl=`🟢 ${days}d until ${ds2} · ${tpd}/day`;}}
+                      else{const est=new Date(Date.now()+Math.ceil(rem/2)*86400000).toLocaleDateString('en-US',{month:'short',day:'numeric'});fl=`~${est} at 2/day`;}
+                      return(
+                        <div key={g.id} style={{padding:"12px 16px",background:ROW_COLORS[idx%ROW_COLORS.length],borderBottom:idx<arr.length-1?`1px solid ${T.border}`:"none"}}>
+                          <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:6}}>
+                            <div style={{width:10,height:10,borderRadius:"50%",background:g.color,flexShrink:0}}/>
+                            <div style={{fontSize:13,fontWeight:500,flex:1}}>{g.label}</div>
+                            <div style={{fontSize:12,color:uc}}>{fl}</div>
+                          </div>
+                          <div style={{height:4,background:T.border,borderRadius:2}}><div style={fill(pct,g.color)}/></div>
+                          <div style={{display:"flex",justifyContent:"space-between",marginTop:4,fontSize:11,color:T.textMute}}><span>{pct}% done</span><span>{rem} remaining</span></div>
                         </div>
-                        <div style={{ fontSize: "10px", color: urgencyColor }}>{forecastLine}</div>
-                      </div>
-                      <div style={{ height: "4px", background: "#2D333B", borderRadius: "2px" }}>
-                        <div style={{ height: "100%", width: `${pct}%`, background: g.color, borderRadius: "2px", transition: "width 0.6s" }} />
-                      </div>
-                      <div style={{ display: "flex", justifyContent: "space-between", marginTop: "4px", fontSize: "12px", color: "#8B949E" }}>
-                        <span>{pct}% done</span><span>{remaining} remaining</span>
-                      </div>
-                    </div>
-                  );
-                })}
+                      );
+                    })}
+                </div>
               </div>
             )}
-
-            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.4fr 1fr", gap: "16px" }}>
+            <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1.4fr 1fr",gap:16}}>
               <div style={S.card}>
-                <div style={S.cardTitle}>
-                  <span>Upcoming Tasks</span>
-                  <button style={S.btnOut} onClick={() => { if(noGoals){navigate("goals");setShowAddGoal(true);}else{ setNewTask({ text: "", goal_id: "", due: "", priority: "med", hours: "", recurring: [] }); setShowAddTask(true); }}}>+ Add</button>
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
+                  <div style={{fontSize:14,fontWeight:600}}>Upcoming Tasks</div>
+                  <div style={{display:"flex",gap:8}}>
+                    <button style={S.btnOut} onClick={()=>{if(noGoals){navigate("goals");setShowAddGoal(true);}else{setNewTask({text:"",goal_id:"",due:"",priority:"med",hours:"",recurring:[]});setShowAddTask(true);}}}>+ Add</button>
+                    <button style={{...S.btnOut,borderColor:T.accent,color:T.accent}} onClick={()=>setShowNNPicker(true)}>🎯 Focus</button>
+                  </div>
                 </div>
-                {upcomingTasks.length === 0 && <div style={{ fontSize: "13px", color: "#8B949E" }}>{noGoals ? "Create a goal first to start adding tasks." : "No tasks yet."}</div>}
-                {upcomingTasks.map(task => (
-                  <div key={task.id} style={taskRow(task.done)} onClick={() => toggleTask(task)}>
-                    <div style={chk(task.done)}>{task.done && <span style={{ fontSize: "10px", color: "#FFFFFF" }}>✓</span>}</div>
-                    <div style={dot(task.goal_id)} />
-                    <div style={{ flex: 1, fontSize: "13px", color: "#E6EDF3" }}>{task.text}</div>
+                {upcomingTasks.length===0&&<div style={{fontSize:13,color:T.textMute}}>{noGoals?"Create a goal first.":"No tasks yet."}</div>}
+                {upcomingTasks.map(task=>(
+                  <div key={task.id} style={taskRow(task.done)} onClick={()=>toggleTask(task)}>
+                    <div style={chk(task.done)}>{task.done&&<span style={{fontSize:10,color:"#FFF"}}>✓</span>}</div>
+                    <div style={dot(task.goal_id)}/>
+                    <div style={{flex:1,fontSize:13}}>{task.text}</div>
                     <div style={badge(task.priority)}>{task.priority}</div>
-                    {task.due && <div style={{ fontSize: "12px", color: "#8B949E", flexShrink: 0 }}>{task.due.slice(5)}</div>}
+                    {task.due&&<div style={{fontSize:11,color:T.textMute,flexShrink:0}}>{task.due.slice(5)}</div>}
+                    <button onClick={e=>{e.stopPropagation();enterFocusMode(task);}} style={{background:"none",border:"none",fontSize:14,cursor:"pointer",padding:0,color:T.textMute}}>⏱</button>
                   </div>
                 ))}
               </div>
               <div style={S.card}>
-                <div style={S.cardTitle}>Goals Overview</div>
-                {goals.length === 0 && <div style={{ fontSize: "12px", color: "#484F58" }}>No goals yet.</div>}
-                {goals.map(g => {
-                  const gt = tasks.filter(t => t.goal_id === g.id);
-                  const d  = gt.filter(t => t.done).length;
-                  const p  = gt.length ? Math.round((d/gt.length)*100) : 0;
-                  return (
-                    <div key={g.id} style={{ marginBottom: "16px" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}>
-                        <div style={{ fontSize: "11px", color: "#C9D1D9" }}>{g.label}</div>
-                        <div style={{ fontSize: "12px", color: "#8B949E" }}>{d}/{gt.length}</div>
-                      </div>
-                      <div style={{ height: "4px", background: "#2D333B" }}><div style={fill(p, g.color)} /></div>
-                    </div>
-                  );
-                })}
-                <div style={{ marginTop: "16px", paddingTop: "16px", borderTop: "1px solid #2A2A2A" }}>
-                  <div style={{ fontSize: "11px", fontWeight: "600", color: "#8B949E", marginBottom: "8px" }}>Today's Focus</div>
-                  {todayEvents.map(e => <div key={e.id} style={chip(e.goal_id)}><span>{e.title}</span><span>{e.time}</span></div>)}
-                  {todayEvents.length === 0 && <div style={{ fontSize: "12px", color: "#484F58" }}>No events today</div>}
+                <div style={{fontSize:14,fontWeight:600,marginBottom:14}}>Goals Overview</div>
+                {goals.length===0&&<div style={{fontSize:13,color:T.textMute}}>No goals yet.</div>}
+                {goals.map(g=>{const gt=tasks.filter(t=>t.goal_id===g.id);const d2=gt.filter(t=>t.done).length;const p=gt.length?Math.round((d2/gt.length)*100):0;return(<div key={g.id} style={{marginBottom:14}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}><div style={{fontSize:13}}>{g.label}</div><div style={{fontSize:11,color:T.textMute}}>{d2}/{gt.length}</div></div><div style={{height:4,background:T.border,borderRadius:2}}><div style={fill(p,g.color)}/></div></div>);})}
+                <div style={{marginTop:14,paddingTop:14,borderTop:`1px solid ${T.border}`}}>
+                  <div style={{fontSize:12,fontWeight:600,color:T.textMid,marginBottom:8}}>Today's Events</div>
+                  {todayEvents.map(e=><div key={e.id} style={chip(e.goal_id)}><span>{e.title}</span><span>{e.time}</span></div>)}
+                  {todayEvents.length===0&&<div style={{fontSize:12,color:T.textMute}}>No events today</div>}
                 </div>
               </div>
             </div>
           </>
         )}
 
-        {/* CALENDAR */}
-        {view === "calendar" && (
-          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 320px", gap: "16px" }}>
+        {/* ── CALENDAR ── */}
+        {view==="calendar"&&(
+          <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 300px",gap:16}}>
             <div style={S.card}>
-              <div style={S.cardTitle}>
-                <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                  <button style={{ background: "none", border: "none", cursor: "pointer", fontSize: "18px", color: "#E6EDF3" }}
-                    onClick={() => { if(calMonth===0){setCalMonth(11);setCalYear(y=>y-1);}else setCalMonth(m=>m-1); }}>&lt;</button>
-                  <span style={{ fontSize: "14px", fontWeight: "600" }}>{MONTHS[calMonth].toUpperCase()} {calYear}</span>
-                  <button style={{ background: "none", border: "none", cursor: "pointer", fontSize: "18px", color: "#E6EDF3" }}
-                    onClick={() => { if(calMonth===11){setCalMonth(0);setCalYear(y=>y+1);}else setCalMonth(m=>m+1); }}>&gt;</button>
+              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16}}>
+                <div style={{display:"flex",alignItems:"center",gap:16}}>
+                  <button style={{background:"none",border:"none",cursor:"pointer",fontSize:18,color:T.text}} onClick={()=>{if(calMonth===0){setCalMonth(11);setCalYear(y=>y-1);}else setCalMonth(m=>m-1);}}>‹</button>
+                  <span style={{fontSize:15,fontWeight:600}}>{MONTHS[calMonth]} {calYear}</span>
+                  <button style={{background:"none",border:"none",cursor:"pointer",fontSize:18,color:T.text}} onClick={()=>{if(calMonth===11){setCalMonth(0);setCalYear(y=>y+1);}else setCalMonth(m=>m+1);}}>›</button>
                 </div>
-                <button style={S.btnOut} onClick={() => { if(noGoals){navigate("goals");setShowAddGoal(true);}else setShowAddEvent(true); }}>+ Event</button>
+                <button style={S.btnOut} onClick={()=>{if(noGoals){navigate("goals");setShowAddGoal(true);}else setShowAddEvent(true);}}>+ Event</button>
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: "2px" }}>
-                {DAYS.map(d => <div key={d} style={{ textAlign: "center", fontSize: "11px", fontWeight: "600", color: "#8B949E", padding: "8px 0" }}>{d}</div>)}
+              <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:2}}>
+                {DAYS.map(d=><div key={d} style={{textAlign:"center",fontSize:11,fontWeight:600,color:T.textMute,padding:"6px 0"}}>{d}</div>)}
                 {Array.from({length:firstDay}).map((_,i)=><div key={`e${i}`}/>)}
                 {Array.from({length:daysInMonth}).map((_,i)=>{
-                  const day=i+1, ds=calDs(day), evs=eventsForDate(ds), isToday=ds===todayStr, isSel=ds===selectedDate;
-                  const dueTasks = tasks.filter(t => t.due === ds && !t.done);
-                  const goalDeadlines = goals.filter(g => g.deadline === ds);
-                  // get unique goal colors for due tasks
-                  const uniqueGoalColors = [...new Set(dueTasks.map(t => goalColor(t.goal_id)))].slice(0, 4);
-                  return (
+                  const day=i+1,ds=calDs(day),evs=eventsForDate(ds),isToday=ds===todayStr,isSel=ds===selectedDate;
+                  const dt=tasks.filter(t=>t.due===ds&&!t.done);const gd=goals.filter(g=>g.deadline===ds);
+                  const uc=[...new Set(dt.map(t=>goalColor(t.goal_id)))].slice(0,4);
+                  return(
                     <div key={day} style={dayCell(isToday,isSel)} onClick={()=>setSelectedDate(isSel?null:ds)}>
-                      <span>{day}</span>
-                      <div style={{display:"flex",gap:"2px",flexWrap:"wrap",justifyContent:"center",marginTop:"2px"}}>
-                        {evs.slice(0,2).map(e=><div key={e.id} style={{width:"4px",height:"4px",borderRadius:"50%",background:isToday?"#39D2C0":goalColor(e.goal_id)}}/>)}
-                        {uniqueGoalColors.map((c,i)=><div key={i} style={{width:"4px",height:"4px",borderRadius:"1px",background:isToday?"#E6EDF3":c}}/>)}
-                        {goalDeadlines.slice(0,1).map(g=><div key={g.id} style={{width:"5px",height:"5px",borderRadius:"50%",background:g.color,border:`1px solid ${isToday?"#E6EDF3":"#090D13"}`}}/>)}
+                      <span style={{fontWeight:isToday?700:400}}>{day}</span>
+                      <div style={{display:"flex",gap:2,flexWrap:"wrap",justifyContent:"center",marginTop:2}}>
+                        {evs.slice(0,2).map(e=><div key={e.id} style={{width:4,height:4,borderRadius:"50%",background:goalColor(e.goal_id)}}/>)}
+                        {uc.map((c,i)=><div key={i} style={{width:4,height:4,borderRadius:1,background:c}}/>)}
+                        {gd.slice(0,1).map(g=><div key={g.id} style={{width:5,height:5,borderRadius:"50%",background:g.color,border:"1px solid #FFF"}}/>)}
                       </div>
                     </div>
                   );
@@ -1793,822 +885,416 @@ function MeridianApp({ user }) {
               </div>
             </div>
             <div style={S.card}>
-              <div style={S.cardTitle}>{selectedDate || "Upcoming Events"}</div>
-              {/* Goal deadlines */}
-              {selectedDate && goals.filter(g => g.deadline === selectedDate).map(g => (
-                <div key={g.id} style={{...chip(g.id), flexDirection:"column", gap:"2px", alignItems:"flex-start", marginBottom:"8px", borderLeft:`3px solid ${g.color}`}}>
-                  <div style={{fontWeight:"600", fontSize:"12px"}}>🏁 {g.label} deadline</div>
-                  <div style={{fontSize:"10px", opacity:0.7}}>Goal deadline</div>
-                </div>
-              ))}
-              {/* Task due dates */}
-              {selectedDate && tasks.filter(t => t.due === selectedDate && !t.done).map(t => (
-                <div key={t.id} style={{...chip(t.goal_id), flexDirection:"column", gap:"2px", alignItems:"flex-start", marginBottom:"8px"}}>
-                  <div style={{fontWeight:"600", fontSize:"12px"}}>📌 {t.text}</div>
-                  <div style={{fontSize:"10px", opacity:0.7}}>Task due · {goalLabel(t.goal_id)}</div>
-                </div>
-              ))}
-              {/* Events */}
-              {(selectedDate ? eventsForDate(selectedDate) : [...futureEvents].sort((a,b)=>a.date.localeCompare(b.date))).map(e=>(
-                <div key={e.id} style={{...chip(e.goal_id),flexDirection:"column",gap:"2px",alignItems:"flex-start",marginBottom:"8px"}}>
+              <div style={{fontSize:14,fontWeight:600,marginBottom:14}}>{selectedDate||"Upcoming Events"}</div>
+              {selectedDate&&goals.filter(g=>g.deadline===selectedDate).map(g=><div key={g.id} style={{...chip(g.id),flexDirection:"column",gap:2,alignItems:"flex-start",marginBottom:8,borderLeft:`3px solid ${g.color}`}}><div style={{fontWeight:600,fontSize:12}}>🏁 {g.label} deadline</div><div style={{fontSize:11,opacity:.7}}>Goal deadline</div></div>)}
+              {selectedDate&&tasks.filter(t=>t.due===selectedDate&&!t.done).map(t=><div key={t.id} style={{...chip(t.goal_id),flexDirection:"column",gap:2,alignItems:"flex-start",marginBottom:8}}><div style={{fontWeight:600,fontSize:12}}>📌 {t.text}</div><div style={{fontSize:11,opacity:.7}}>Due · {goalLabel(t.goal_id)}</div></div>)}
+              {(selectedDate?eventsForDate(selectedDate):[...futureEvents].sort((a,b)=>a.date.localeCompare(b.date))).map(e=>(
+                <div key={e.id} style={{...chip(e.goal_id),flexDirection:"column",gap:2,alignItems:"flex-start",marginBottom:8}}>
                   <div style={{display:"flex",justifyContent:"space-between",width:"100%",alignItems:"center"}}>
-                    <div style={{fontWeight:"600",fontSize:"12px"}}>{e.title}</div>
-                    <button onClick={() => setEditEvent({...e})} style={{background:"none",border:"none",color:"inherit",fontSize:"10px",cursor:"pointer",opacity:0.7,padding:"0 0 0 8px"}}>Edit</button>
+                    <div style={{fontWeight:600,fontSize:12}}>{e.title}</div>
+                    <button onClick={()=>setEditEvent({...e})} style={{background:"none",border:"none",color:"inherit",fontSize:11,cursor:"pointer",opacity:.7}}>Edit</button>
                   </div>
-                  <div style={{fontSize:"10px",opacity:0.7}}>{e.date} at {e.time} - {goalLabel(e.goal_id)}</div>
+                  <div style={{fontSize:11,opacity:.7}}>{selectedDate?"":e.date+" · "}{e.time} · {goalLabel(e.goal_id)}</div>
+                  <button onClick={()=>deleteEvent(e.id)} style={{background:"none",border:"none",color:T.textMute,fontSize:11,cursor:"pointer",padding:0,opacity:.5}}>Remove</button>
                 </div>
               ))}
-              {futureEvents.length===0 && !selectedDate && <div style={{fontSize:"12px",color:"#484F58"}}>No upcoming events.</div>}
-              {selectedDate && eventsForDate(selectedDate).length===0 && tasks.filter(t=>t.due===selectedDate&&!t.done).length===0 && goals.filter(g=>g.deadline===selectedDate).length===0 && <div style={{fontSize:"12px",color:"#484F58"}}>Nothing on this day.</div>}
-              {/* Legend */}
-              <div style={{marginTop:"16px", paddingTop:"12px", borderTop:"1px solid #2A2A2A", display:"flex", gap:"16px", flexWrap:"wrap"}}>
-                <div style={{display:"flex",alignItems:"center",gap:"5px",fontSize:"10px",color:"#6E7681"}}><div style={{width:"8px",height:"8px",borderRadius:"50%",background:"#39D2C0"}}/> Event</div>
-                <div style={{display:"flex",alignItems:"center",gap:"5px",fontSize:"10px",color:"#6E7681"}}><div style={{width:"8px",height:"8px",borderRadius:"1px",background:"#6E7681"}}/> Task due</div>
-                <div style={{display:"flex",alignItems:"center",gap:"5px",fontSize:"10px",color:"#6E7681"}}><div style={{width:"8px",height:"8px",borderRadius:"50%",border:"1.5px solid #999999"}}/> Goal deadline</div>
-              </div>
+              {!selectedDate&&futureEvents.length===0&&<div style={{fontSize:13,color:T.textMute}}>No upcoming events</div>}
+              {selectedDate&&eventsForDate(selectedDate).length===0&&tasks.filter(t=>t.due===selectedDate&&!t.done).length===0&&goals.filter(g=>g.deadline===selectedDate).length===0&&<div style={{fontSize:13,color:T.textMute}}>Nothing on this date</div>}
             </div>
           </div>
         )}
 
-        {/* TASKS */}
-        {view === "tasks" && (
-          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-
-            {/* Today's tasks */}
-            {(() => {
-              const todayDay = today.toLocaleDateString('en-US', { weekday: 'short' }).toLowerCase();
-              const recurringToday = pendingTasks.filter(t => {
-                if (!t.recurring) return false;
-                try { const d = JSON.parse(t.recurring); return Array.isArray(d) && d.includes(todayDay); } catch { return false; }
-              });
-              const dueTodayTasks = pendingTasks.filter(t => t.due === todayStr);
-              const todayTasks = [...new Map([...dueTodayTasks, ...recurringToday].map(t => [t.id, t])).values()];
-              if (todayTasks.length === 0) return null;
-              return (
-                <div style={{ ...S.card, borderLeft: "3px solid #39D2C0" }}>
-                  <div style={S.cardTitle}>
-                    <span>📅 Today — {DAYS[today.getDay()]}, {MONTHS[today.getMonth()]} {today.getDate()} ({todayTasks.length})</span>
+        {/* ── TASKS ── */}
+        {view==="tasks"&&(
+          <>
+            <div style={{display:"flex",justifyContent:"flex-end",marginBottom:16,gap:8}}>
+              <button style={S.btnOut} onClick={()=>setShowNNPicker(true)}>🎯 Set Non-Negotiables</button>
+              <button style={S.btn} onClick={()=>{if(noGoals){navigate("goals");setShowAddGoal(true);}else{setNewTask({text:"",goal_id:"",due:"",priority:"med",hours:"",recurring:[]});setShowAddTask(true);}}}>+ New Task</button>
+            </div>
+            {goals.map((g,gi)=>{
+              const gt=tasks.filter(t=>t.goal_id===g.id);if(gt.length===0)return null;
+              return(
+                <div key={g.id} style={{marginBottom:20}}>
+                  <div style={{display:"flex",alignItems:"center",gap:8,padding:"10px 14px",background:ROW_COLORS[gi%ROW_COLORS.length],borderRadius:"8px 8px 0 0",border:`1px solid ${T.border}`,borderBottom:"none"}}>
+                    <div style={{width:10,height:10,borderRadius:"50%",background:g.color,flexShrink:0}}/>
+                    <div style={{fontSize:13,fontWeight:600,flex:1}}>{g.label}</div>
+                    {g.deadline&&<div style={{fontSize:12,color:T.textMute}}>Due {new Date(g.deadline+"T00:00:00").toLocaleDateString('en-US',{month:'short',day:'numeric'})}</div>}
+                    <div style={{fontSize:12,color:T.textMute}}>{gt.filter(t=>t.done).length}/{gt.length}</div>
                   </div>
-                  {todayTasks.map(task => (
-                    <div key={task.id} style={taskRow(false)}>
-                      <div style={chk(false)} onClick={() => toggleTask(task)} />
-                      <div style={dot(task.goal_id)} />
-                      <div style={{ flex: 1 }} onClick={() => toggleTask(task)}>
-                        <div style={{ fontSize: "13px" }}>{task.text} {task.recurring && <span style={{fontSize:"9px",color:"#39D2C0",marginLeft:"6px"}}>↻</span>}</div>
-                        <div style={{ fontSize: "12px", color: "#8B949E", marginTop: "2px" }}>{goalLabel(task.goal_id)}</div>
+                  <div style={{border:`1px solid ${T.border}`,borderRadius:"0 0 8px 8px",overflow:"hidden"}}>
+                    {gt.map((task,ti)=>(
+                      <div key={task.id} style={{...taskRow(task.done),borderBottom:ti<gt.length-1?`1px solid ${T.border}`:"none",borderRadius:0}} onClick={()=>toggleTask(task)}>
+                        <div style={chk(task.done)}>{task.done&&<span style={{fontSize:10,color:"#FFF"}}>✓</span>}</div>
+                        <div style={{flex:1,fontSize:13}}>{task.text}</div>
+                        <div style={badge(task.priority)}>{task.priority}</div>
+                        {task.due&&<div style={{fontSize:11,color:task.due<todayStr&&!task.done?T.red:T.textMute,flexShrink:0}}>{task.due.slice(5)}</div>}
+                        <button onClick={e=>{e.stopPropagation();enterFocusMode(task);}} style={{background:"none",border:"none",fontSize:13,cursor:"pointer",padding:"0 4px",color:T.textMute}}>⏱</button>
+                        <button onClick={e=>{e.stopPropagation();setEditTask({...task,recurring:task.recurring?JSON.parse(task.recurring):[]});}} style={{background:"none",border:"none",fontSize:13,cursor:"pointer",padding:"0 4px",color:T.textMute}}>✏️</button>
+                        <button onClick={e=>{e.stopPropagation();deleteTask(task.id);}} style={{background:"none",border:"none",fontSize:14,cursor:"pointer",padding:"0 4px",color:T.textMute,opacity:.5}}>×</button>
                       </div>
-                      <div style={badge(task.priority)}>{task.priority}</div>
-                      <button onClick={() => setEditTask({...task})} style={{background:"none",border:"none",color:"#6E7681",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>Edit</button>
-                      <button onClick={() => { setFocusPickerTask(task); setFocusPickerMins(25); setShowFocusPicker(true); }} style={{background:"none",border:"none",color:"#58A6FF",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>Focus</button>
-                      <button onClick={() => deleteTask(task.id)} style={{background:"none",border:"none",color:"#FF3D5A",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>x</button>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               );
-            })()}
-
-            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "16px" }}>
-              <div style={S.card}>
-                <div style={S.cardTitle}>
-                  <span>All Pending ({pendingTasks.length})</span>
-                  <button style={S.btnOut} onClick={() => { if(noGoals){navigate("goals");setShowAddGoal(true);}else{ setNewTask({ text: "", goal_id: "", due: "", priority: "med", hours: "", recurring: [] }); setShowAddTask(true); }}}>+ Task</button>
-                </div>
-                {pendingTasks.length===0 && <div style={{fontSize:"13px",color:"#6E7681"}}>{noGoals?"Create a goal first.":"All caught up. Remarkable."}</div>}
-                {pendingTasks.map(task=>(
-                  <div key={task.id} style={taskRow(false)}>
-                    <div style={chk(false)} onClick={()=>toggleTask(task)}/>
-                    <div style={dot(task.goal_id)}/>
-                    <div style={{flex:1}} onClick={()=>toggleTask(task)}>
-                      <div style={{fontSize:"13px"}}>{task.text} {task.recurring && (() => { try { const d = JSON.parse(task.recurring); return <span style={{fontSize:"9px",color:"#39D2C0",letterSpacing:"1px",textTransform:"uppercase",marginLeft:"6px"}}>↻ {d.join(", ")}</span>; } catch { return null; } })()}</div>
-                      <div style={{fontSize:"10px",color:"#6E7681",marginTop:"2px"}}>{goalLabel(task.goal_id)}{task.due?` - due ${task.due}`:""}</div>
-                    </div>
-                    <div style={badge(task.priority)}>{task.priority}</div>
-                    <button onClick={() => setEditTask({...task})} style={{background:"none",border:"none",color:"#6E7681",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>Edit</button>
-                    <button onClick={() => { setFocusPickerTask(task); setFocusPickerMins(25); setShowFocusPicker(true); }} style={{background:"none",border:"none",color:"#58A6FF",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>Focus</button>
-                    <button onClick={() => deleteTask(task.id)} style={{background:"none",border:"none",color:"#FF3D5A",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>x</button>
-                  </div>
-                ))}
-              </div>
-              <div style={S.card}>
-                <div style={S.cardTitle}>
-                  <span>Completed ({doneTasks.length})</span>
-                  {doneTasks.length > 0 && (
-                    <button style={{ ...S.btnOut, color: "#E53935", borderColor: "#E53935", fontSize: "9px" }} onClick={async () => {
-                      if (!window.confirm("Delete all completed tasks?")) return;
-                      await supabase.from("tasks").delete().eq("user_id", user.id).eq("done", true);
-                      setTasks(tasks.filter(t => !t.done));
-                    }}>Clear All</button>
-                  )}
-                </div>
-                {doneTasks.length===0 && <div style={{fontSize:"13px",color:"#6E7681"}}>Nothing yet.</div>}
-                {doneTasks.map(task=>(
-                  <div key={task.id} style={taskRow(true)}>
-                    <div style={chk(true)} onClick={()=>toggleTask(task)}><span style={{fontSize:"10px",color:"#FDFAF6"}}>v</span></div>
-                    <div style={dot(task.goal_id)}/>
-                    <div style={{fontSize:"13px",textDecoration:"line-through",color:"#888880",flex:1}} onClick={()=>toggleTask(task)}>{task.text}</div>
-                    <button onClick={() => deleteTask(task.id)} style={{background:"none",border:"none",color:"#FF3D5A",fontSize:"10px",cursor:"pointer",padding:"0 4px",fontFamily:"Georgia,serif"}}>x</button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+            })}
+            {tasks.length===0&&<div style={{...S.card,textAlign:"center",padding:48,color:T.textMute}}>No tasks yet. Create a goal first, then add tasks.</div>}
+          </>
         )}
 
-        {/* GOALS */}
-        {view === "goals" && (
+        {/* ── GOALS ── */}
+        {view==="goals"&&(
           <>
-            <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "20px" }}>
-              <button style={S.btn} onClick={() => setShowAddGoal(true)}>+ New Goal</button>
+            <div style={{display:"flex",justifyContent:"flex-end",marginBottom:16}}>
+              <button style={S.btn} onClick={()=>setShowAddGoal(true)}>+ New Goal</button>
             </div>
-            {goals.length === 0 && (
-              <div style={{ ...S.card, textAlign: "center", padding: "48px" }}>
-                <div style={{ fontSize: "14px", marginBottom: "8px", color: "#8B949E" }}>No goals yet.</div>
-                <div style={{ fontSize: "12px", color: "#484F58", marginBottom: "24px" }}>Add the commitments you want to track.</div>
-                <button style={S.btn} onClick={() => setShowAddGoal(true)}>Create Your First Goal</button>
-              </div>
-            )}
-            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "16px" }}>
-              {goals.map(g => {
-                const gt = tasks.filter(t => t.goal_id === g.id);
-                const d  = gt.filter(t => t.done).length;
-                const p  = gt.length ? Math.round((d/gt.length)*100) : 0;
-                const ge = events.filter(e => e.goal_id === g.id).sort((a,b)=>a.date.localeCompare(b.date));
-                return (
-                  <div key={g.id} style={{ ...S.card, borderLeft: `3px solid ${g.color}` }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
-                      <div style={{ fontSize: "14px", letterSpacing: "1px" }}>{g.label}</div>
-                      <button onClick={() => deleteGoal(g.id)} style={{ background: "none", border: "none", color: "#484F58", fontSize: "18px", cursor: "pointer", padding: "0 0 0 8px", lineHeight: 1 }}>x</button>
+            <div style={{border:`1px solid ${T.border}`,borderRadius:8,overflow:"hidden",marginBottom:20}}>
+              {goals.map((g,idx)=>{
+                const gt=tasks.filter(t=>t.goal_id===g.id);const d2=gt.filter(t=>t.done).length;const p=gt.length?Math.round((d2/gt.length)*100):0;
+                return(
+                  <div key={g.id} style={{background:ROW_COLORS[idx%ROW_COLORS.length],borderBottom:idx<goals.length-1?`1px solid ${T.border}`:"none",padding:"12px 16px"}}>
+                    <div style={{display:"flex",alignItems:"center",gap:12,flexWrap:"wrap"}}>
+                      <div style={{width:12,height:12,borderRadius:"50%",background:g.color,flexShrink:0}}/>
+                      <div style={{fontSize:14,fontWeight:500,flex:1}}>{g.label}</div>
+                      {g.deadline&&<div style={{fontSize:12,color:T.textMute}}>{new Date(g.deadline+"T00:00:00").toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</div>}
+                      <div style={{fontSize:12,fontWeight:600,color:g.color}}>{p}%</div>
+                      <div style={{width:80,height:4,background:T.border,borderRadius:2,flexShrink:0}}><div style={{width:`${p}%`,height:4,background:g.color,borderRadius:2,transition:"width 0.5s"}}/></div>
+                      <div style={{fontSize:12,color:T.textMute}}>{d2}/{gt.length} tasks</div>
+                      <button onClick={()=>deleteGoal(g.id)} style={{background:"none",border:"none",color:T.textMute,fontSize:16,cursor:"pointer",padding:"0 0 0 4px",opacity:.4}}>×</button>
                     </div>
-                    <div style={{ fontSize: "12px", color: "#8B949E", marginBottom: "20px" }}>
-                      {g.deadline ? `Due ${new Date(g.deadline).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}` : "No deadline set"}
-                    </div>
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "20px" }}>
-                      {[{label:"Tasks Done",val:`${d}/${gt.length}`},{label:"Progress",val:`${p}%`}].map(stat=>(
-                        <div key={stat.label} style={{textAlign:"center"}}>
-                          <div style={{fontSize:"22px",color:g.color}}>{stat.val}</div>
-                          <div style={{fontSize:"10px",color:"#6E7681",textTransform:"uppercase"}}>{stat.label}</div>
-                        </div>
-                      ))}
-                    </div>
-                    <div style={{height:"4px",background:"#2D333B",marginBottom:"16px"}}><div style={fill(p,g.color)}/></div>
-                    {ge.length > 0 && (
-                      <>
-                        <div style={{fontSize:"10px",color:"#6E7681",letterSpacing:"2px",textTransform:"uppercase",marginBottom:"8px"}}>Upcoming</div>
-                        {ge.slice(0,2).map(e=>(
-                          <div key={e.id} style={{fontSize:"11px",color:"#6E7681",padding:"4px 0",borderBottom:"1px solid #2A2A2A",display:"flex",justifyContent:"space-between"}}>
-                            <span>{e.title}</span><span style={{color:"#6E7681"}}>{e.date.slice(5)}</span>
-                          </div>
-                        ))}
-                      </>
-                    )}
-                    {ge.length === 0 && <div style={{fontSize:"11px",color:"#484F58"}}>No upcoming events</div>}
                   </div>
                 );
               })}
+              {goals.length===0&&<div style={{padding:32,textAlign:"center",color:T.textMute,fontSize:14}}>No goals yet. Add one to start tracking.</div>}
             </div>
           </>
         )}
 
-        {/* AI SCHEDULER */}
-        {view === "scheduler" && (
-          <div style={S.card}>
-            <div style={S.cardTitle}>Schedule Builder</div>
-            <AIScheduler user={user} refreshKey={doneTasks.length} />
-          </div>
+        {/* ── SCHEDULER ── */}
+        {view==="scheduler"&&(
+          <div style={S.card}><AIScheduler user={user} refreshKey={doneTasks.length}/></div>
         )}
-      </div>
 
-      {/* CLAUDE IMPORT MODAL */}
-      {showImport && (
-        <div style={S.modal} onClick={() => { setShowImport(false); setImportParsed(null); setImportText(""); }}>
-          <div style={{ ...S.modalBox, width: "560px" }} onClick={e => e.stopPropagation()}>
-            <div style={{ fontSize: "12px", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "4px" }}>⚡ Import from Claude</div>
-            <div style={{ fontSize: "11px", color: "#8B949E", marginBottom: "20px" }}>Paste any plan, schedule, or list from Claude. We'll extract your goals and tasks automatically.</div>
-            <div style={{ ...S.card, marginBottom: "16px", borderLeft: "3px solid #39D2C0", padding: "16px" }}>
-              <div style={{ fontSize: "11px", color: "#39D2C0", marginBottom: "8px", letterSpacing: "1px" }}>⚡ QUICK LOAD</div>
-              <div style={{ fontSize: "12px", color: "#C9D1D9", marginBottom: "12px" }}>Instantly load your saved plan — all goals and tasks in one click.</div>
-              <button style={S.btn} onClick={seedData} disabled={importLoading}>{importLoading ? "Loading..." : "Load My Full Plan"}</button>
-            </div>
-            <div style={{ ...S.card, marginBottom: "16px", borderLeft: "3px solid #1E88E5", padding: "16px" }}>
-              <div style={{ fontSize: "11px", color: "#58A6FF", marginBottom: "8px", letterSpacing: "1px" }}>📅 LOAD SUBTASKS</div>
-              <div style={{ fontSize: "12px", color: "#C9D1D9", marginBottom: "12px" }}>Load your daily breakdown tasks into existing goals.</div>
-              <button style={S.btnOut} onClick={seedSubtasks} disabled={importLoading}>{importLoading ? "Loading..." : "Load Subtasks"}</button>
-            </div>
+      </div>{/* end page wrapper */}
 
-            {!importParsed ? (
+      {/* MOBILE BOTTOM NAV */}
+      {isMobile&&(
+        <div style={{position:"fixed",bottom:0,left:0,right:0,background:"#FFF",borderTop:`1px solid ${T.border}`,display:"flex",zIndex:100}}>
+          {[["dashboard","🏠"],["calendar","📅"],["tasks","✅"],["goals","🎯"],["scheduler","⚡"]].map(([id,icon])=>(
+            <button key={id} onClick={()=>navigate(id)} style={{flex:1,padding:"10px 0",background:"none",border:"none",fontSize:20,cursor:"pointer",color:view===id?T.accent:T.textMute,fontFamily:T.font}}>
+              <div>{icon}</div><div style={{fontSize:9,marginTop:1}}>{id.slice(0,3).toUpperCase()}</div>
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* ── MODALS ── */}
+      {showImport&&(
+        <div style={S.modal} onClick={()=>{setShowImport(false);setImportParsed(null);setImportText("");}}>
+          <div style={{...S.modalBox,width:560}} onClick={e=>e.stopPropagation()}>
+            <div style={{fontSize:16,fontWeight:600,marginBottom:6}}>📥 Import from Claude</div>
+            <div style={{fontSize:13,color:T.textMid,marginBottom:20}}>Paste any plan from Claude and we'll extract goals and tasks.</div>
+            <div style={{...S.card,marginBottom:12,borderLeft:`3px solid ${T.accent}`,padding:16}}>
+              <div style={{fontSize:13,fontWeight:600,color:T.accent,marginBottom:6}}>⚡ Quick Load</div>
+              <div style={{fontSize:13,color:T.textMid,marginBottom:10}}>Load your full saved plan — all goals and tasks.</div>
+              <button style={S.btn} onClick={seedData} disabled={importLoading}>{importLoading?"Loading…":"Load My Full Plan"}</button>
+            </div>
+            <div style={{...S.card,marginBottom:16,borderLeft:`3px solid ${T.blue}`,padding:16}}>
+              <div style={{fontSize:13,fontWeight:600,color:T.blue,marginBottom:6}}>📅 Load Subtasks</div>
+              <div style={{fontSize:13,color:T.textMid,marginBottom:10}}>Load daily breakdown tasks into existing goals.</div>
+              <button style={S.btnOut} onClick={seedSubtasks} disabled={importLoading}>{importLoading?"Loading…":"Load Subtasks"}</button>
+            </div>
+            {!importParsed?(
               <>
-                <textarea
-                  style={{ ...S.input, minHeight: "180px", resize: "vertical", lineHeight: "1.6" }}
-                  placeholder={`Paste your Claude plan here. For example:\n\n"Goal: UT Application\n- Research UT professors (high priority, due April 10)\n- Write personal statement (high priority, due April 20)\n\nGoal: Exercise\n- Morning workout (medium priority, every Monday)\n- Evening run (low priority, due April 15)"`}
-                  value={importText}
-                  onChange={e => setImportText(e.target.value)}
-                />
-                {importError && <div style={{ fontSize: "11px", color: "#E53935", marginTop: "8px" }}>{importError}</div>}
-                <div style={{ display: "flex", gap: "12px", marginTop: "16px" }}>
-                  <button style={S.btn} onClick={parseWithClaude} disabled={importLoading}>
-                    {importLoading ? "Parsing..." : "Parse Plan"}
-                  </button>
-                  <button style={S.btnOut} onClick={() => { setShowImport(false); setImportText(""); }}>Cancel</button>
+                <textarea style={{...S.input,minHeight:160,resize:"vertical",lineHeight:"1.6"}} placeholder={"Goal: Oxford Internship\n- Research professors (high priority, due April 10)\n- Write personal statement"} value={importText} onChange={e=>setImportText(e.target.value)}/>
+                {importError&&<div style={{fontSize:12,color:T.red,marginTop:8}}>{importError}</div>}
+                <div style={{display:"flex",gap:10,marginTop:14}}>
+                  <button style={S.btn} onClick={parseWithClaude} disabled={importLoading}>{importLoading?"Parsing…":"Parse Plan"}</button>
+                  <button style={S.btnOut} onClick={()=>{setShowImport(false);setImportText("");}}>Cancel</button>
                 </div>
               </>
-            ) : (
+            ):(
               <>
-                <div style={{ fontSize: "11px", color: "#3FB950", marginBottom: "16px" }}>✅ Found {importParsed.goals.length} goal{importParsed.goals.length !== 1 ? "s" : ""} and {importParsed.tasks.length} task{importParsed.tasks.length !== 1 ? "s" : ""}. Review below:</div>
-                <div style={{ maxHeight: "320px", overflowY: "auto", marginBottom: "16px" }}>
-                  {importParsed.goals.map((g, i) => (
-                    <div key={i} style={{ marginBottom: "16px" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px" }}>
-                        <div style={{ width: "12px", height: "12px", borderRadius: "50%", background: g.color, flexShrink: 0 }} />
-                        <div style={{ fontSize: "13px", fontWeight: "600" }}>{g.label}</div>
-                        {g.deadline && <div style={{ fontSize: "12px", color: "#8B949E" }}>due {g.deadline}</div>}
+                <div style={{fontSize:13,color:T.green,marginBottom:14}}>✅ Found {importParsed.goals.length} goals and {importParsed.tasks.length} tasks.</div>
+                <div style={{maxHeight:280,overflowY:"auto",marginBottom:14}}>
+                  {importParsed.goals.map((g,i)=>(
+                    <div key={i} style={{marginBottom:14}}>
+                      <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:6}}>
+                        <div style={{width:10,height:10,borderRadius:"50%",background:g.color,flexShrink:0}}/>
+                        <div style={{fontSize:13,fontWeight:600}}>{g.label}</div>
                       </div>
-                      {importParsed.tasks.filter(t => t.goal === g.label).map((t, j) => (
-                        <div key={j} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "6px 12px", background: "#161B22", marginBottom: "4px", marginLeft: "22px" }}>
-                          <div style={{ fontSize: "12px", flex: 1 }}>{t.text}</div>
-                          <div style={{ fontSize: "9px", padding: "2px 6px", background: t.priority === "high" ? "#E5393520" : t.priority === "med" ? "#FB8C0020" : "#43A04720", color: t.priority === "high" ? "#E53935" : t.priority === "med" ? "#F0883E" : "#3FB950" }}>{t.priority}</div>
-                          {t.due && <div style={{ fontSize: "12px", color: "#8B949E" }}>{t.due}</div>}
+                      {importParsed.tasks.filter(t=>t.goal===g.label).map((t,j)=>(
+                        <div key={j} style={{display:"flex",alignItems:"center",gap:8,padding:"6px 12px",background:T.bgSoft,marginBottom:4,marginLeft:20,borderRadius:4}}>
+                          <div style={{fontSize:12,flex:1}}>{t.text}</div>
+                          <div style={badge(t.priority)}>{t.priority}</div>
+                          {t.due&&<div style={{fontSize:11,color:T.textMute}}>{t.due}</div>}
                         </div>
                       ))}
                     </div>
                   ))}
                 </div>
-                <div style={{ display: "flex", gap: "12px" }}>
-                  <button style={S.btn} onClick={importAll} disabled={importLoading}>{importLoading ? "Importing..." : `Import All`}</button>
-                  <button style={S.btnOut} onClick={() => setImportParsed(null)}>Re-parse</button>
-                  <button style={S.btnOut} onClick={() => { setShowImport(false); setImportParsed(null); setImportText(""); }}>Cancel</button>
+                <div style={{display:"flex",gap:10}}>
+                  <button style={S.btn} onClick={importAll} disabled={importLoading}>{importLoading?"Importing…":"Import All"}</button>
+                  <button style={S.btnOut} onClick={()=>setImportParsed(null)}>Re-parse</button>
+                  <button style={S.btnOut} onClick={()=>{setShowImport(false);setImportParsed(null);setImportText("");}}>Cancel</button>
                 </div>
               </>
             )}
           </div>
         </div>
       )}
-
-      {/* ADD GOAL MODAL */}
-      {showAddGoal && (
-        <div style={S.modal} onClick={() => setShowAddGoal(false)}>
-          <div style={S.modalBox} onClick={e => e.stopPropagation()}>
-            <div style={{ fontSize: "12px", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "24px" }}>New Goal</div>
-            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-              <input style={S.input} placeholder="Goal name (e.g. Oxford Internship)" value={newGoal.label} onChange={e => setNewGoal({...newGoal, label: e.target.value})} />
+      {showAddGoal&&(
+        <div style={S.modal} onClick={()=>setShowAddGoal(false)}>
+          <div style={S.modalBox} onClick={e=>e.stopPropagation()}>
+            <div style={{fontSize:16,fontWeight:600,marginBottom:20}}>🎯 New Goal</div>
+            <div style={{display:"flex",flexDirection:"column",gap:12}}>
+              <input style={S.input} placeholder="Goal name (e.g. Oxford Internship)" value={newGoal.label} onChange={e=>setNewGoal({...newGoal,label:e.target.value})}/>
+              <div><div style={S.label}>Deadline (optional)</div><input style={S.input} type="date" value={newGoal.deadline} onChange={e=>setNewGoal({...newGoal,deadline:e.target.value})}/></div>
               <div>
-                <div style={{ fontSize: "12px", fontWeight: "500", color: "#8B949E", marginBottom: "6px" }}>Deadline (optional)</div>
-                <input style={S.input} type="date" value={newGoal.deadline} onChange={e => setNewGoal({...newGoal, deadline: e.target.value})} />
-                <div style={{ fontSize: "12px", color: "#8B949E", marginTop: "4px" }}>Used to calculate your Goal Forecast on the dashboard.</div>
-              </div>
-              <div>
-                <div style={{ fontSize: "12px", fontWeight: "500", color: "#8B949E", marginBottom: "10px" }}>Color</div>
-                <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-                  {MUTED_COLORS.map(c => (
-                    <div key={c.value} onClick={() => setNewGoal({...newGoal, color: c.value})}
-                      style={{ width: "28px", height: "28px", borderRadius: "50%", background: c.value, cursor: "pointer", border: newGoal.color === c.value ? "3px solid #39D2C0" : "3px solid transparent", boxSizing: "border-box" }} />
-                  ))}
+                <div style={S.label}>Color</div>
+                <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+                  {MUTED_COLORS.map(c=><div key={c.value} onClick={()=>setNewGoal({...newGoal,color:c.value})} style={{width:28,height:28,borderRadius:"50%",background:c.value,cursor:"pointer",border:newGoal.color===c.value?`3px solid ${T.accent}`:"3px solid transparent",boxSizing:"border-box"}}/>)}
                 </div>
               </div>
-              <div style={{ display: "flex", gap: "12px", marginTop: "8px" }}>
+              <div style={{display:"flex",gap:10,marginTop:8}}>
                 <button style={S.btn} onClick={addGoal}>Create Goal</button>
-                <button style={S.btnOut} onClick={() => setShowAddGoal(false)}>Cancel</button>
+                <button style={S.btnOut} onClick={()=>setShowAddGoal(false)}>Cancel</button>
               </div>
             </div>
           </div>
         </div>
       )}
-
-      {/* ADD TASK MODAL */}
-      {showAddTask && (
-        <div style={S.modal} onClick={() => setShowAddTask(false)}>
-          <div style={S.modalBox} onClick={e => e.stopPropagation()}>
-            <div style={{ fontSize: "12px", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "24px" }}>New Task</div>
-            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-              <input style={S.input} placeholder="Task description" value={newTask.text} onChange={e => setNewTask({...newTask, text: e.target.value})} />
-              <select style={S.select} value={newTask.goal_id} onChange={e => setNewTask({...newTask, goal_id: e.target.value})}>
+      {showAddTask&&(
+        <div style={S.modal} onClick={()=>setShowAddTask(false)}>
+          <div style={S.modalBox} onClick={e=>e.stopPropagation()}>
+            <div style={{fontSize:16,fontWeight:600,marginBottom:20}}>✅ New Task</div>
+            <div style={{display:"flex",flexDirection:"column",gap:12}}>
+              <input style={S.input} placeholder="Task description" value={newTask.text} onChange={e=>setNewTask({...newTask,text:e.target.value})}/>
+              <select style={S.select} value={newTask.goal_id} onChange={e=>setNewTask({...newTask,goal_id:e.target.value})}>
                 <option value="">Select a goal</option>
-                {goals.map(g => <option key={g.id} value={g.id}>{g.label}</option>)}
+                {goals.map(g=><option key={g.id} value={g.id}>{g.label}</option>)}
               </select>
-              <input style={S.input} type="date" min={new Date().toLocaleDateString('en-CA')} value={newTask.due} onChange={e => setNewTask({...newTask, due: e.target.value})} />
-              <select style={S.select} value={newTask.priority} onChange={e => setNewTask({...newTask, priority: e.target.value})}>
-                <option value="high">High Priority</option>
-                <option value="med">Medium Priority</option>
-                <option value="low">Low Priority</option>
+              <input style={S.input} type="date" min={new Date().toLocaleDateString('en-CA')} value={newTask.due} onChange={e=>setNewTask({...newTask,due:e.target.value})}/>
+              <select style={S.select} value={newTask.priority} onChange={e=>setNewTask({...newTask,priority:e.target.value})}>
+                <option value="high">High Priority</option><option value="med">Medium Priority</option><option value="low">Low Priority</option>
               </select>
-              <input style={S.input} type="number" min="0.5" step="0.5" placeholder="Hours needed (optional — syncs to Schedule Builder)" value={newTask.hours} onChange={e => setNewTask({...newTask, hours: e.target.value})} />
+              <input style={S.input} type="number" min="0.5" step="0.5" placeholder="Hours needed" value={newTask.hours} onChange={e=>setNewTask({...newTask,hours:e.target.value})}/>
               <div>
-                <div style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#8B949E", marginBottom: "8px" }}>Repeat on (optional)</div>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                  {["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map(day => {
-                    const val = day.toLowerCase();
-                    const selected = (newTask.recurring || []).includes(val);
-                    return (
-                      <div key={day} onClick={() => {
-                        const curr = newTask.recurring || [];
-                        setNewTask({...newTask, recurring: selected ? curr.filter(d=>d!==val) : [...curr, val]});
-                      }} style={{ padding: "6px 12px", fontSize: "11px", cursor: "pointer", border: `1px solid ${selected ? "#39D2C0" : "#2D333B"}`, background: selected ? "#39D2C0" : "transparent", color: selected ? "#0D1117" : "#6E7681", userSelect: "none" }}>
-                        {day}
-                      </div>
-                    );
-                  })}
+                <div style={S.label}>Repeat on (optional)</div>
+                <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
+                  {["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map(day=>{const val=day.toLowerCase();const sel=(newTask.recurring||[]).includes(val);return(<div key={day} onClick={()=>{const c=newTask.recurring||[];setNewTask({...newTask,recurring:sel?c.filter(d=>d!==val):[...c,val]});}} style={{padding:"5px 12px",fontSize:12,cursor:"pointer",borderRadius:4,border:`1px solid ${sel?T.accent:T.border}`,background:sel?T.accentBg:"transparent",color:sel?T.accent:T.textMid,userSelect:"none"}}>{day}</div>);})}
                 </div>
-                <div style={{ fontSize: "12px", color: "#8B949E", marginTop: "6px" }}>Recurring tasks auto-reset each selected day.</div>
               </div>
-              <div style={{ display: "flex", gap: "12px", marginTop: "8px" }}>
+              <div style={{display:"flex",gap:10,marginTop:8}}>
                 <button style={S.btn} onClick={addTask}>Add Task</button>
-                <button style={S.btnOut} onClick={() => setShowAddTask(false)}>Cancel</button>
+                <button style={S.btnOut} onClick={()=>setShowAddTask(false)}>Cancel</button>
               </div>
             </div>
           </div>
         </div>
       )}
-
-      {/* ADD EVENT MODAL */}
-      {showAddEvent && (
-        <div style={S.modal} onClick={() => setShowAddEvent(false)}>
-          <div style={S.modalBox} onClick={e => e.stopPropagation()}>
-            <div style={{ fontSize: "12px", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "24px" }}>New Event</div>
-            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-              <input style={S.input} placeholder="Event title" value={newEvent.title} onChange={e => setNewEvent({...newEvent, title: e.target.value})} />
-              <select style={S.select} value={newEvent.goal_id} onChange={e => setNewEvent({...newEvent, goal_id: e.target.value})}>
+      {showAddEvent&&(
+        <div style={S.modal} onClick={()=>setShowAddEvent(false)}>
+          <div style={S.modalBox} onClick={e=>e.stopPropagation()}>
+            <div style={{fontSize:16,fontWeight:600,marginBottom:20}}>📅 New Event</div>
+            <div style={{display:"flex",flexDirection:"column",gap:12}}>
+              <input style={S.input} placeholder="Event title" value={newEvent.title} onChange={e=>setNewEvent({...newEvent,title:e.target.value})}/>
+              <select style={S.select} value={newEvent.goal_id} onChange={e=>setNewEvent({...newEvent,goal_id:e.target.value})}>
                 <option value="">Select a goal</option>
-                {goals.map(g => <option key={g.id} value={g.id}>{g.label}</option>)}
+                {goals.map(g=><option key={g.id} value={g.id}>{g.label}</option>)}
               </select>
-              <input style={S.input} type="date" value={newEvent.date} onChange={e => setNewEvent({...newEvent, date: e.target.value})} />
-              <input style={S.input} type="time" value={newEvent.time} onChange={e => setNewEvent({...newEvent, time: e.target.value})} />
-              <div style={{ display: "flex", gap: "12px", marginTop: "8px" }}>
+              <input style={S.input} type="date" value={newEvent.date} onChange={e=>setNewEvent({...newEvent,date:e.target.value})}/>
+              <input style={S.input} type="time" value={newEvent.time} onChange={e=>setNewEvent({...newEvent,time:e.target.value})}/>
+              <div style={{display:"flex",gap:10,marginTop:8}}>
                 <button style={S.btn} onClick={addEvent}>Add Event</button>
-                <button style={S.btnOut} onClick={() => setShowAddEvent(false)}>Cancel</button>
+                <button style={S.btnOut} onClick={()=>setShowAddEvent(false)}>Cancel</button>
               </div>
             </div>
           </div>
         </div>
       )}
-
-      {/* WEEKLY REPORT MODAL */}
-      {showWeeklyReport && weeklySnapshots.length > 0 && (() => {
-        const scores = weeklySnapshots.map(s => s.score);
-        const avg = Math.round(scores.reduce((a,b) => a+b, 0) / scores.length);
-        const best = weeklySnapshots.reduce((a,b) => a.score > b.score ? a : b);
-        const worst = weeklySnapshots.reduce((a,b) => a.score < b.score ? a : b);
-        const prevWeekAvg = avg - Math.floor(Math.random() * 20 - 5); // approximation until more data
-        const improvement = avg - prevWeekAvg;
-        return (
-          <div style={S.modal} onClick={() => setShowWeeklyReport(false)}>
-            <div style={S.modalBox} onClick={e => e.stopPropagation()}>
-              <div style={{ fontSize: "12px", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "4px" }}>📊 Weekly Report</div>
-              <div style={{ fontSize: "11px", color: "#8B949E", marginBottom: "24px" }}>Your performance over the last 7 days</div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "24px" }}>
-                <div style={{ padding: "16px", background: "#161B22", border: "1px solid #333333", textAlign: "center" }}>
-                  <div style={{ fontSize: "32px", color: avg >= 70 ? "#3FB950" : avg >= 40 ? "#F0883E" : "#E53935" }}>{avg}%</div>
-                  <div style={{ fontSize: "12px", color: "#8B949E", marginTop: "4px" }}>Avg Completion</div>
-                </div>
-                <div style={{ padding: "16px", background: "#161B22", border: "1px solid #333333", textAlign: "center" }}>
-                  <div style={{ fontSize: "32px", color: "#39D2C0" }}>{stats.streak}</div>
-                  <div style={{ fontSize: "12px", color: "#8B949E", marginTop: "4px" }}>Day Streak</div>
-                </div>
-                <div style={{ padding: "16px", background: "#161B22", border: "1px solid #333333", textAlign: "center" }}>
-                  <div style={{ fontSize: "14px", color: "#3FB950" }}>🏆 {best.date.slice(5)}</div>
-                  <div style={{ fontSize: "12px", color: "#8B949E", marginTop: "4px" }}>Best Day ({best.score}%)</div>
-                </div>
-                <div style={{ padding: "16px", background: "#161B22", border: "1px solid #333333", textAlign: "center" }}>
-                  <div style={{ fontSize: "14px", color: "#E53935" }}>📉 {worst.date.slice(5)}</div>
-                  <div style={{ fontSize: "12px", color: "#8B949E", marginTop: "4px" }}>Worst Day ({worst.score}%)</div>
-                </div>
+      {editTask&&(
+        <div style={S.modal} onClick={()=>setEditTask(null)}>
+          <div style={S.modalBox} onClick={e=>e.stopPropagation()}>
+            <div style={{fontSize:16,fontWeight:600,marginBottom:20}}>Edit Task</div>
+            <div style={{display:"flex",flexDirection:"column",gap:12}}>
+              <input style={S.input} value={editTask.text} onChange={e=>setEditTask({...editTask,text:e.target.value})}/>
+              <select style={S.select} value={editTask.goal_id} onChange={e=>setEditTask({...editTask,goal_id:e.target.value})}>
+                {goals.map(g=><option key={g.id} value={g.id}>{g.label}</option>)}
+              </select>
+              <input style={S.input} type="date" value={editTask.due||""} onChange={e=>setEditTask({...editTask,due:e.target.value})}/>
+              <select style={S.select} value={editTask.priority} onChange={e=>setEditTask({...editTask,priority:e.target.value})}>
+                <option value="high">High</option><option value="med">Medium</option><option value="low">Low</option>
+              </select>
+              <input style={S.input} type="number" min="0.5" step="0.5" placeholder="Hours" value={editTask.hours||""} onChange={e=>setEditTask({...editTask,hours:e.target.value})}/>
+              <div style={{display:"flex",gap:10,marginTop:8}}>
+                <button style={S.btn} onClick={saveEditTask}>Save</button>
+                <button style={S.btnDanger} onClick={()=>{deleteTask(editTask.id);setEditTask(null);}}>Delete</button>
+                <button style={S.btnOut} onClick={()=>setEditTask(null)}>Cancel</button>
               </div>
-              <div style={{ marginBottom: "20px" }}>
-                {weeklySnapshots.slice().reverse().map((s, i) => (
-                  <div key={i} style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px" }}>
-                    <div style={{ fontSize: "12px", color: "#8B949E", width: "42px" }}>{s.date.slice(5)}</div>
-                    <div style={{ flex: 1, height: "8px", background: "#2D333B", borderRadius: "4px" }}>
-                      <div style={{ height: "100%", width: `${s.score}%`, background: s.score >= 70 ? "#3FB950" : s.score >= 40 ? "#F0883E" : "#E53935", borderRadius: "4px" }} />
-                    </div>
-                    <div style={{ fontSize: "12px", color: "#8B949E", width: "34px" }}>{s.completed_tasks}/{s.total_tasks}</div>
+            </div>
+          </div>
+        </div>
+      )}
+      {editEvent&&(
+        <div style={S.modal} onClick={()=>setEditEvent(null)}>
+          <div style={S.modalBox} onClick={e=>e.stopPropagation()}>
+            <div style={{fontSize:16,fontWeight:600,marginBottom:20}}>Edit Event</div>
+            <div style={{display:"flex",flexDirection:"column",gap:12}}>
+              <input style={S.input} value={editEvent.title} onChange={e=>setEditEvent({...editEvent,title:e.target.value})}/>
+              <select style={S.select} value={editEvent.goal_id} onChange={e=>setEditEvent({...editEvent,goal_id:e.target.value})}>
+                {goals.map(g=><option key={g.id} value={g.id}>{g.label}</option>)}
+              </select>
+              <input style={S.input} type="date" value={editEvent.date} onChange={e=>setEditEvent({...editEvent,date:e.target.value})}/>
+              <input style={S.input} type="time" value={editEvent.time} onChange={e=>setEditEvent({...editEvent,time:e.target.value})}/>
+              <div style={{display:"flex",gap:10,marginTop:8}}>
+                <button style={S.btn} onClick={saveEditEvent}>Save</button>
+                <button style={S.btnOut} onClick={()=>setEditEvent(null)}>Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {showWeeklyReport&&weeklySnapshots.length>0&&(()=>{
+        const scores=weeklySnapshots.map(s=>s.score);
+        const avg=Math.round(scores.reduce((a,b)=>a+b,0)/scores.length);
+        const best=weeklySnapshots.reduce((a,b)=>a.score>b.score?a:b);
+        const worst=weeklySnapshots.reduce((a,b)=>a.score<b.score?a:b);
+        return(
+          <div style={S.modal} onClick={()=>setShowWeeklyReport(false)}>
+            <div style={S.modalBox} onClick={e=>e.stopPropagation()}>
+              <div style={{fontSize:16,fontWeight:600,marginBottom:4}}>📊 Weekly Report</div>
+              <div style={{fontSize:13,color:T.textMid,marginBottom:20}}>Your performance over the last 7 days</div>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:20}}>
+                {[["Avg Completion",`${avg}%`,avg>=70?T.green:avg>=40?T.orange:T.red],["Day Streak",stats.streak,T.accent],["Best Day",`${best.date.slice(5)} (${best.score}%)`,T.green],["Lowest Day",`${worst.date.slice(5)} (${worst.score}%)`,T.red]].map(([lbl,val,c])=>(
+                  <div key={lbl} style={{padding:16,background:T.bgSoft,borderRadius:8,textAlign:"center"}}>
+                    <div style={{fontSize:24,fontFamily:T.serif,color:c}}>{val}</div>
+                    <div style={{fontSize:11,color:T.textMute,marginTop:4}}>{lbl}</div>
                   </div>
                 ))}
               </div>
-              <div style={{ fontSize: "13px", color: improvement >= 0 ? "#3FB950" : "#E53935", marginBottom: "16px" }}>
-                {improvement >= 0 ? `📈 You improved by +${improvement}% from last week. Keep going!` : `📉 You dropped ${Math.abs(improvement)}% from last week. Let's bounce back.`}
-              </div>
-              <button style={S.btn} onClick={() => setShowWeeklyReport(false)}>Close</button>
+              {weeklySnapshots.slice().reverse().map((s,i)=>(
+                <div key={i} style={{display:"flex",alignItems:"center",gap:10,marginBottom:8}}>
+                  <div style={{fontSize:11,color:T.textMute,width:42}}>{s.date.slice(5)}</div>
+                  <div style={{flex:1,height:8,background:T.border,borderRadius:4}}><div style={{height:8,width:`${s.score}%`,background:s.score>=70?T.green:s.score>=40?T.orange:T.red,borderRadius:4}}/></div>
+                  <div style={{fontSize:11,color:T.textMute,width:36}}>{s.completed_tasks}/{s.total_tasks}</div>
+                </div>
+              ))}
+              <button style={{...S.btn,marginTop:16}} onClick={()=>setShowWeeklyReport(false)}>Close</button>
             </div>
           </div>
         );
       })()}
-
-      {/* MILESTONE POPUP */}
-      {showMilestone && (
-        <div style={S.modal} onClick={() => setShowMilestone(null)}>
-          <div style={{ ...S.modalBox, textAlign: "center", maxWidth: "320px" }} onClick={e => e.stopPropagation()}>
-            <div style={{ fontSize: "64px", marginBottom: "16px" }}>{showMilestone.emoji}</div>
-            <div style={{ fontSize: "14px", letterSpacing: "2px", textTransform: "uppercase", marginBottom: "8px" }}>Milestone Unlocked</div>
-            <div style={{ fontSize: "24px", marginBottom: "8px" }}>{showMilestone.label}</div>
-            <div style={{ fontSize: "12px", color: "#8B949E", marginBottom: "20px" }}>You've completed {showMilestone.count} tasks total. Remarkable.</div>
-            <button style={S.btn} onClick={() => setShowMilestone(null)}>Let's Keep Going</button>
+      {showMilestone&&(
+        <div style={S.modal} onClick={()=>setShowMilestone(null)}>
+          <div style={{...S.modalBox,textAlign:"center",maxWidth:320}} onClick={e=>e.stopPropagation()}>
+            <div style={{fontSize:64,marginBottom:14}}>{showMilestone.emoji}</div>
+            <div style={{fontSize:14,fontWeight:600,marginBottom:8}}>Milestone Unlocked</div>
+            <div style={{fontSize:22,fontFamily:T.serif,marginBottom:8}}>{showMilestone.label}</div>
+            <div style={{fontSize:13,color:T.textMid,marginBottom:20}}>You've completed {showMilestone.count} tasks total.</div>
+            <button style={S.btn} onClick={()=>setShowMilestone(null)}>Keep Going 🚀</button>
           </div>
         </div>
       )}
-
-      {/* NON-NEGOTIABLES PICKER */}
-      {showNNPicker && (
-        <div style={S.modal} onClick={() => setShowNNPicker(false)}>
-          <div style={S.modalBox} onClick={e => e.stopPropagation()}>
-            <div style={{ fontSize: "12px", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "8px" }}>Pick Your 3 Non-Negotiables</div>
-            <div style={{ fontSize: "11px", color: "#8B949E", marginBottom: "20px" }}>These are the 3 tasks you MUST complete today. No excuses.</div>
-            <div style={{ display: "flex", flexDirection: "column", gap: "8px", maxHeight: "360px", overflowY: "auto" }}>
-              {/* Today's tasks first */}
-              {pendingTasks.filter(t => t.due === todayStr).length > 0 && (
-                <div style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#39D2C0", marginBottom: "4px" }}>📅 Scheduled for today</div>
-              )}
-              {pendingTasks.filter(t => t.due === todayStr).map(task => {
-                const selected = nonNegotiables.includes(task.id);
-                return (
-                  <div key={task.id} onClick={() => {
-                    if (selected) setNonNegotiables(nonNegotiables.filter(id => id !== task.id));
-                    else if (nonNegotiables.length < 3) setNonNegotiables([...nonNegotiables, task.id]);
-                  }} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "10px 12px", background: selected ? "#39D2C015" : "#E6EDF3", border: `1px solid ${selected ? "#39D2C0" : "#39D2C055"}`, cursor: nonNegotiables.length >= 3 && !selected ? "not-allowed" : "pointer", opacity: nonNegotiables.length >= 3 && !selected ? 0.4 : 1 }}>
-                    <div style={{ width: "14px", height: "14px", border: `1.5px solid ${selected ? "#39D2C0" : "#484F58"}`, background: selected ? "#39D2C0" : "transparent", flexShrink: 0 }} />
-                    <div style={{ flex: 1, fontSize: "13px", color: "#E6EDF3" }}>{task.text}</div>
-                    <div style={{ fontSize: "12px", color: "#8B949E" }}>{goalLabel(task.goal_id)}</div>
-                    <div style={badge(task.priority)}>{task.priority}</div>
-                  </div>
-                );
-              })}
-              {/* All other pending tasks */}
-              {pendingTasks.filter(t => t.due !== todayStr).length > 0 && (
-                <div style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#8B949E", marginTop: "8px", marginBottom: "4px" }}>All other tasks</div>
-              )}
-              {pendingTasks.filter(t => t.due !== todayStr).map(task => {
-                const selected = nonNegotiables.includes(task.id);
-                return (
-                  <div key={task.id} onClick={() => {
-                    if (selected) setNonNegotiables(nonNegotiables.filter(id => id !== task.id));
-                    else if (nonNegotiables.length < 3) setNonNegotiables([...nonNegotiables, task.id]);
-                  }} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "10px 12px", background: selected ? "#1A161210" : "transparent", border: `1px solid ${selected ? "#39D2C0" : "#2D333B"}`, cursor: nonNegotiables.length >= 3 && !selected ? "not-allowed" : "pointer", opacity: nonNegotiables.length >= 3 && !selected ? 0.4 : 1 }}>
-                    <div style={{ width: "14px", height: "14px", border: `1.5px solid ${selected ? "#39D2C0" : "#484F58"}`, background: selected ? "#39D2C0" : "transparent", flexShrink: 0 }} />
-                    <div style={{ flex: 1, fontSize: "13px", color: "#E6EDF3" }}>{task.text}</div>
-                    <div style={{ fontSize: "12px", color: "#8B949E" }}>{task.due || ""}</div>
+      {showNNPicker&&(
+        <div style={S.modal} onClick={()=>setShowNNPicker(false)}>
+          <div style={S.modalBox} onClick={e=>e.stopPropagation()}>
+            <div style={{fontSize:16,fontWeight:600,marginBottom:6}}>🎯 Pick Your 3 Non-Negotiables</div>
+            <div style={{fontSize:13,color:T.textMid,marginBottom:18}}>The 3 tasks you MUST complete today.</div>
+            <div style={{display:"flex",flexDirection:"column",gap:8,maxHeight:360,overflowY:"auto"}}>
+              {[...pendingTasks.filter(t=>t.due===todayStr),...pendingTasks.filter(t=>t.due!==todayStr)].map(task=>{
+                const sel=nonNegotiables.includes(task.id);
+                return(
+                  <div key={task.id} onClick={()=>{if(sel)setNonNegotiables(nonNegotiables.filter(id=>id!==task.id));else if(nonNegotiables.length<3)setNonNegotiables([...nonNegotiables,task.id]);}}
+                    style={{display:"flex",alignItems:"center",gap:12,padding:"10px 12px",background:sel?T.accentBg:T.bgSoft,border:`1px solid ${sel?T.accent:T.border}`,borderRadius:6,cursor:nonNegotiables.length>=3&&!sel?"not-allowed":"pointer",opacity:nonNegotiables.length>=3&&!sel?0.4:1}}>
+                    <div style={{width:14,height:14,border:`1.5px solid ${sel?T.accent:T.border}`,background:sel?T.accent:"transparent",borderRadius:3,flexShrink:0}}/>
+                    <div style={{flex:1,fontSize:13}}>{task.text}</div>
+                    <div style={{fontSize:11,color:T.textMute}}>{goalLabel(task.goal_id)}</div>
                     <div style={badge(task.priority)}>{task.priority}</div>
                   </div>
                 );
               })}
             </div>
-            <div style={{ marginTop: "16px", display: "flex", gap: "12px" }}>
-              <button style={S.btn} onClick={() => {
-                setShowNNPicker(false);
-                setNnComplete(false);
-                supabase.from("user_stats").upsert({ ...stats, user_id: user.id, non_negotiables: nonNegotiables, nn_date: new Date().toLocaleDateString('en-CA') }, { onConflict: "user_id" });
-              }}>Lock In ({nonNegotiables.length}/3)</button>
-              <button style={S.btnOut} onClick={() => setShowNNPicker(false)}>Cancel</button>
+            <div style={{marginTop:16,display:"flex",gap:10}}>
+              <button style={S.btn} onClick={async()=>{
+                const td=new Date().toLocaleDateString('en-CA');setShowNNPicker(false);
+                setNnComplete(nonNegotiables.length===3&&nonNegotiables.every(id=>tasks.find(t=>t.id===id)?.done));
+                const u={...stats,non_negotiables:nonNegotiables,nn_date:td};setStats(u);
+                await supabase.from("user_stats").upsert({...u,user_id:user.id},{onConflict:"user_id"});
+              }}>Confirm ({nonNegotiables.length}/3)</button>
+              <button style={S.btnOut} onClick={()=>{setNonNegotiables([]);setShowNNPicker(false);}}>Clear</button>
             </div>
           </div>
         </div>
       )}
-
-      {/* FOCUS DURATION PICKER */}
-      {showFocusPicker && (
-        <div style={S.modal} onClick={() => setShowFocusPicker(false)}>
-          <div style={{ ...S.modalBox, width: "320px" }} onClick={e => e.stopPropagation()}>
-            <div style={{ fontSize: "12px", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "8px" }}>Focus Duration</div>
-            {focusPickerTask && <div style={{ fontSize: "12px", color: "#8B949E", marginBottom: "20px" }}>{focusPickerTask.text}</div>}
-            <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginBottom: "16px" }}>
-              {[25, 50, 90, 120].map(m => (
-                <button key={m} style={{ ...S.btnOut, background: focusPickerMins === m ? "#090D13" : "transparent", color: focusPickerMins === m ? "#E6EDF3" : "#090D13" }}
-                  onClick={() => setFocusPickerMins(m)}>{m} min</button>
+      {showFocusPicker&&(
+        <div style={S.modal} onClick={()=>setShowFocusPicker(false)}>
+          <div style={{...S.modalBox,maxWidth:340}} onClick={e=>e.stopPropagation()}>
+            <div style={{fontSize:16,fontWeight:600,marginBottom:18}}>⏱ Start Focus Timer</div>
+            <div style={{display:"flex",flexDirection:"column",gap:8}}>
+              {[["25 min (Pomodoro)",25],["50 min (Deep Work)",50]].map(([lbl,mins])=>(
+                <button key={mins} style={{...S.btnOut,textAlign:"left",padding:"12px 16px"}} onClick={()=>{setShowFocusPicker(false);enterFocusMode(null,mins);}}>{lbl}</button>
               ))}
-            </div>
-            <div style={{ display: "flex", gap: "8px", alignItems: "center", marginBottom: "20px" }}>
-              <input type="number" min="1" max="240" value={focusPickerMins} onChange={e => setFocusPickerMins(Number(e.target.value))}
-                style={{ ...S.input, width: "80px" }} />
-              <div style={{ fontSize: "11px", color: "#8B949E" }}>custom minutes</div>
-            </div>
-            <div style={{ display: "flex", gap: "12px" }}>
-              <button style={S.btn} onClick={() => { setShowFocusPicker(false); enterFocusMode(focusPickerTask, focusPickerMins); }}>Start Focus</button>
-              <button style={S.btnOut} onClick={() => setShowFocusPicker(false)}>Cancel</button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* EDIT TASK MODAL */}
-      {editTask && (
-        <div style={S.modal} onClick={() => setEditTask(null)}>
-          <div style={S.modalBox} onClick={e => e.stopPropagation()}>
-            <div style={{ fontSize: "12px", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "24px" }}>Edit Task</div>
-            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-              <input style={S.input} placeholder="Task description" value={editTask.text} onChange={e => setEditTask({...editTask, text: e.target.value})} />
-              <select style={S.select} value={editTask.goal_id} onChange={e => setEditTask({...editTask, goal_id: e.target.value})}>
-                {goals.map(g => <option key={g.id} value={g.id}>{g.label}</option>)}
-              </select>
-              <input style={S.input} type="date" value={editTask.due || ""} onChange={e => setEditTask({...editTask, due: e.target.value})} />
-              <select style={S.select} value={editTask.priority} onChange={e => setEditTask({...editTask, priority: e.target.value})}>
-                <option value="high">High Priority</option>
-                <option value="med">Medium Priority</option>
-                <option value="low">Low Priority</option>
-              </select>
-              <input style={S.input} type="number" min="0.5" step="0.5" placeholder="Hours needed (optional)" value={editTask.hours || ""} onChange={e => setEditTask({...editTask, hours: e.target.value})} />
-              <div>
-                <div style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#8B949E", marginBottom: "8px" }}>Repeat on (optional)</div>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                  {["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map(day => {
-                    const val = day.toLowerCase();
-                    const curr = Array.isArray(editTask.recurring) ? editTask.recurring : (editTask.recurring ? [editTask.recurring] : []);
-                    const selected = curr.includes(val);
-                    return (
-                      <div key={day} onClick={() => {
-                        setEditTask({...editTask, recurring: selected ? curr.filter(d=>d!==val) : [...curr, val]});
-                      }} style={{ padding: "6px 12px", fontSize: "11px", cursor: "pointer", border: `1px solid ${selected ? "#39D2C0" : "#2D333B"}`, background: selected ? "#39D2C0" : "transparent", color: selected ? "#0D1117" : "#6E7681", userSelect: "none" }}>
-                        {day}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-              <div style={{ display: "flex", gap: "12px", marginTop: "8px" }}>
-                <button style={S.btn} onClick={saveEditTask}>Save Changes</button>
-                <button style={S.btnDanger} onClick={() => { deleteTask(editTask.id); setEditTask(null); }}>Delete</button>
-                <button style={S.btnOut} onClick={() => setEditTask(null)}>Cancel</button>
+              <div style={{display:"flex",gap:8,alignItems:"center"}}>
+                <input style={{...S.input,flex:1}} type="number" min="5" max="180" value={customMinutes} onChange={e=>setCustomMinutes(parseInt(e.target.value)||30)}/>
+                <button style={S.btn} onClick={()=>{setShowFocusPicker(false);enterFocusMode(null,customMinutes);}}>Custom</button>
               </div>
             </div>
           </div>
-        </div>
-      )}
-
-      {/* EDIT EVENT MODAL */}
-      {editEvent && (
-        <div style={S.modal} onClick={() => setEditEvent(null)}>
-          <div style={S.modalBox} onClick={e => e.stopPropagation()}>
-            <div style={{ fontSize: "12px", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "24px" }}>Edit Event</div>
-            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-              <input style={S.input} placeholder="Event title" value={editEvent.title} onChange={e => setEditEvent({...editEvent, title: e.target.value})} />
-              <select style={S.select} value={editEvent.goal_id} onChange={e => setEditEvent({...editEvent, goal_id: e.target.value})}>
-                {goals.map(g => <option key={g.id} value={g.id}>{g.label}</option>)}
-              </select>
-              <input style={S.input} type="date" value={editEvent.date} onChange={e => setEditEvent({...editEvent, date: e.target.value})} />
-              <input style={S.input} type="time" value={editEvent.time} onChange={e => setEditEvent({...editEvent, time: e.target.value})} />
-              <div style={{ display: "flex", gap: "12px", marginTop: "8px" }}>
-                <button style={S.btn} onClick={saveEditEvent}>Save Changes</button>
-                <button style={S.btnDanger} onClick={() => { deleteEvent(editEvent.id); setEditEvent(null); }}>Delete</button>
-                <button style={S.btnOut} onClick={() => setEditEvent(null)}>Cancel</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Mobile bottom nav */}
-      {isMobile && (
-        <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: "#1C2128", display: "flex", justifyContent: "space-around", padding: "10px 0", zIndex: 100, borderTop: "1px solid #222222" }}>
-          {[["dashboard","Home"],["calendar","Cal"],["tasks","Tasks"],["goals","Goals"],["scheduler","Plan"]].map(([id,lbl]) => (
-            <button key={id} onClick={() => navigate(id)} style={{ background: "none", border: "none", color: view===id ? "#39D2C0" : "#6E7681", fontSize: "9px", letterSpacing: "1px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'DM Sans', sans-serif", display: "flex", flexDirection: "column", alignItems: "center", gap: "2px", padding: "4px 8px", borderTop: view===id ? "2px solid #39D2C0" : "2px solid transparent" }}>
-              {lbl}
-            </button>
-          ))}
         </div>
       )}
     </div>
   );
 }
 
-// ── CONFETTI ──────────────────────────────────────────────────────────────────
-function Confetti() {
-  const pieces = Array.from({ length: 60 }, (_, i) => ({
-    id: i,
-    x: Math.random() * 100,
-    color: ["#39D2C0","#E53935","#58A6FF","#3FB950","#F0883E","#8E24AA"][i % 6],
-    delay: Math.random() * 0.5,
-    duration: 1.5 + Math.random(),
-    size: 6 + Math.random() * 6,
-  }));
-  return (
-    <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 9000, overflow: "hidden" }}>
-      {pieces.map(p => (
-        <div key={p.id} style={{
-          position: "absolute", top: "-20px", left: `${p.x}%`,
-          width: p.size, height: p.size, background: p.color, borderRadius: "2px",
-          animation: `confettiFall ${p.duration}s ${p.delay}s ease-in forwards`,
-        }} />
-      ))}
-      <style>{`
-        @keyframes confettiFall {
-          0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
-          100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
-        }
-      `}</style>
-    </div>
-  );
-}
-
-// ── FOCUS MODE ────────────────────────────────────────────────────────────────
-function FocusScreen({ task, timerSeconds, timerRunning, setTimerRunning, focusComplete, focusSession, focusSessions, deepWorkMins, stats, nonNegotiables, nonNegotiableIdx, goalColor, goalLabel, ambience, setAmbience, onExit, onMarkComplete, onNextSession, focusMins }) {
-  const fmt = (s) => `${String(Math.floor(s/60)).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`;
-  const totalSecs = focusMins * 60;
-  const pct = totalSecs > 0 ? ((totalSecs - timerSeconds) / totalSecs) * 100 : 0;
-  const halfway = pct >= 50 && pct < 55;
-  const nnIdx = nonNegotiables.indexOf(task?.id);
-  const accent = task ? goalColor(task.goal_id) : "#39D2C0";
-
-  if (focusComplete) return (
-    <div style={{ position: "fixed", inset: 0, background: "#0D1117", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", zIndex: 5000, fontFamily: "'DM Sans', sans-serif", color: "#E6EDF3", textAlign: "center", padding: "40px" }}>
-      <div style={{ fontSize: "72px", marginBottom: "16px" }}>✅</div>
-      <div style={{ fontSize: "11px", letterSpacing: "4px", textTransform: "uppercase", color: "#39D2C0", marginBottom: "12px" }}>Session Complete</div>
-      <div style={{ fontSize: "48px", color: "#39D2C0", marginBottom: "4px" }}>+50 XP</div>
-      <div style={{ fontSize: "14px", color: "#8B949E", marginBottom: "8px" }}>{focusMins} minutes of deep work logged.</div>
-      <div style={{ fontSize: "12px", color: "#C9D1D9", marginBottom: "40px" }}>Session {focusSession} of {focusSessions} today · {Math.floor((stats.deep_work_minutes||0)/60)}h {(stats.deep_work_minutes||0)%60}m total</div>
-      <div style={{ display: "flex", gap: "16px", flexWrap: "wrap", justifyContent: "center" }}>
-        <button onClick={onMarkComplete} style={{ padding: "14px 28px", background: "#39D2C0", color: "#0D1117", border: "none", fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'DM Sans', sans-serif" }}>Mark Task Complete</button>
-        <button onClick={onNextSession} style={{ padding: "14px 28px", background: "transparent", color: "#39D2C0", border: "1px solid #39D2C0", fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'DM Sans', sans-serif" }}>Start Next Session</button>
-        <button onClick={() => onExit(false)} style={{ padding: "14px 28px", background: "transparent", color: "#C9D1D9", border: "1px solid #282828", fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'DM Sans', sans-serif" }}>Back to App</button>
-      </div>
-    </div>
-  );
-
-  return (
-    <div style={{ position: "fixed", inset: 0, background: "#161B22", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", zIndex: 5000, fontFamily: "'DM Sans', sans-serif", color: "#E6EDF3" }}>
-      {/* Edge blur */}
-      <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at center, transparent 40%, rgba(26,22,18,0.18) 100%)", pointerEvents: "none" }} />
-
-      {/* Top lock-in section */}
-      <div style={{ position: "absolute", top: "32px", left: 0, right: 0, textAlign: "center" }}>
-        {nnIdx >= 0 && (
-          <div style={{ fontSize: "10px", letterSpacing: "3px", textTransform: "uppercase", color: accent }}>
-            🎯 Non-Negotiable #{nnIdx + 1} of 3
-          </div>
-        )}
-        {task && <div style={{ fontSize: "11px", color: "#8B949E", marginTop: "4px", letterSpacing: "1px" }}>{goalLabel(task.goal_id)}</div>}
-      </div>
-
-      {/* Main timer */}
-      <div style={{ textAlign: "center", position: "relative", zIndex: 1 }}>
-        {/* SVG ring */}
-        <svg width="280" height="280" style={{ display: "block", margin: "0 auto" }}>
-          <circle cx="140" cy="140" r="120" fill="none" stroke="#2D333B" strokeWidth="6" />
-          <circle cx="140" cy="140" r="120" fill="none" stroke={accent} strokeWidth="6"
-            strokeDasharray={`${2 * Math.PI * 120}`}
-            strokeDashoffset={`${2 * Math.PI * 120 * (1 - pct / 100)}`}
-            strokeLinecap="round" transform="rotate(-90 140 140)"
-            style={{ transition: "stroke-dashoffset 1s linear" }} />
-          <text x="140" y="130" textAnchor="middle" fontSize="52" fill="#090D13" fontFamily="Georgia, serif" fontWeight="400">{fmt(timerSeconds)}</text>
-          <text x="140" y="158" textAnchor="middle" fontSize="11" fill="#6E7681" fontFamily="Georgia, serif" letterSpacing="2">{timerRunning ? "FOCUS" : "PAUSED"}</text>
-        </svg>
-
-        {/* Task name */}
-        <div style={{ fontSize: "20px", fontWeight: "400", marginTop: "8px", maxWidth: "480px", textAlign: "center" }}>{task?.text || "Deep Work"}</div>
-
-        {/* Halfway message */}
-        {halfway && <div style={{ fontSize: "11px", color: accent, letterSpacing: "2px", marginTop: "12px", textTransform: "uppercase" }}>You're locked in. Keep going.</div>}
-
-        {/* Stats row */}
-        <div style={{ display: "flex", gap: "32px", justifyContent: "center", marginTop: "24px", fontSize: "11px", color: "#8B949E", letterSpacing: "1px" }}>
-          <span>⏳ Session {focusSession} of {focusSessions}</span>
-          <span>⚡ {Math.floor((stats.deep_work_today||0)/60)}h {(stats.deep_work_today||0)%60}m today</span>
-        </div>
-
-        {/* Controls */}
-        <div style={{ display: "flex", gap: "12px", justifyContent: "center", marginTop: "28px" }}>
-          <button onClick={() => setTimerRunning(r => !r)} style={{ padding: "12px 32px", background: "#39D2C0", color: "#0D1117", border: "none", fontSize: "13px", fontWeight: "600", cursor: "pointer", fontFamily: "'DM Sans', sans-serif", borderRadius: "8px" }}>
-            {timerRunning ? "Pause" : "Resume"}
-          </button>
-          <button onClick={() => onExit(true)} style={{ padding: "12px 24px", background: "transparent", color: "#8B949E", border: "1px solid #555555", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", cursor: "pointer", fontFamily: "'DM Sans', sans-serif" }}>
-            Exit Early
-          </button>
-        </div>
-
-        {/* Ambience */}
-        <div style={{ display: "flex", gap: "8px", justifyContent: "center", marginTop: "24px" }}>
-          {[["🟤","brown"],["⬜","white"],["🩷","pink"],["🔇","off"]].map(([icon, val]) => (
-            <button key={val} onClick={() => setAmbience(ambience === val || val === "off" ? null : val)}
-              style={{ padding: "6px 14px", background: ambience === val ? "#090D13" : "transparent", color: ambience === val ? "#39D2C0" : "#6E7681", border: "1px solid #333333", fontSize: "11px", cursor: "pointer", fontFamily: "'DM Sans', sans-serif" }}>
-              {icon} {val === "off" ? "Off" : val.charAt(0).toUpperCase() + val.slice(1)}
-            </button>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ── SANJU LOADER ──────────────────────────────────────────────────────────────
-function SanjuLoader() {
-  const canvasRef = useRef(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    const W = canvas.width = window.innerWidth;
-    const H = canvas.height = window.innerHeight;
-
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.src = "https://tbztpvqwiutcrvecqauj.supabase.co/storage/v1/object/public/assets/Screenshot%202026-04-19%20194858.png";
-
-    const runAnim = () => {
-      const maxH = Math.min(H * 0.65, 380);
-      const ratio = img.naturalWidth / img.naturalHeight;
-      const dH = maxH;
-      const dW = dH * ratio;
-      const dX = (W - dW) / 2;
-      const dY = (H - dH) / 2 - 40;
-
-      const off = document.createElement("canvas");
-      off.width = Math.round(dW);
-      off.height = Math.round(dH);
-      const octx = off.getContext("2d");
-      octx.drawImage(img, 0, 0, off.width, off.height);
-      const imgData = octx.getImageData(0, 0, off.width, off.height);
-
-      const gap = 4;
-      const particles = [];
-      for (let y = 0; y < off.height; y += gap) {
-        for (let x = 0; x < off.width; x += gap) {
-          const i = (y * off.width + x) * 4;
-          const a = imgData.data[i+3];
-          if (a < 30) continue;
-          const r = imgData.data[i], g = imgData.data[i+1], b = imgData.data[i+2];
-          const sx = Math.random() * W;
-          const sy = Math.random() * H;
-          particles.push({
-            x: sx, y: sy, sx, sy,
-            tx: dX + x, ty: dY + y,
-            color: `rgb(${r},${g},${b})`,
-            size: gap - 1,
-            speed: 0.018 + Math.random() * 0.03,
-            delay: Math.floor(Math.random() * 60),
-          });
-        }
-      }
-
-      let frame = 0;
-      let animId;
-      const animate = () => {
-        ctx.fillStyle = "#080C12";
-        ctx.fillRect(0, 0, W, H);
-
-        for (const p of particles) {
-          if (frame < p.delay) continue;
-          p.x += (p.tx - p.x) * 0.05;
-          p.y += (p.ty - p.y) * 0.05;
-          ctx.fillStyle = p.color;
-          ctx.fillRect(Math.round(p.x), Math.round(p.y), p.size, p.size);
-        }
-
-        if (frame > 200) {
-          const alpha = Math.min(1, (frame - 200) / 60);
-          ctx.globalAlpha = alpha;
-          ctx.fillStyle = "#39D2C0";
-          ctx.font = "bold 16px 'DM Serif Display', serif";
-          ctx.textAlign = "center";
-          ctx.fillText("Meridian", W / 2, dY + dH + 44);
-          ctx.fillStyle = "#5AE4D5";
-          ctx.font = "11px 'DM Sans', sans-serif";
-          ctx.fillText("HOOK 'EM  ·  UT COCKRELL  ·  MECH E", W / 2, dY + dH + 64);
-          ctx.globalAlpha = 1;
-        }
-
-        frame++;
-        if (frame < 280) animId = requestAnimationFrame(animate);
+function SanjuLoader(){
+  const canvasRef=useRef(null);
+  useEffect(()=>{
+    const canvas=canvasRef.current;if(!canvas)return;
+    const ctx=canvas.getContext("2d");
+    canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+    const W=canvas.width,H=canvas.height;
+    const img=new Image();img.crossOrigin="anonymous";
+    img.src="https://tbztpvqwiutcrvecqauj.supabase.co/storage/v1/object/public/assets/Screenshot%202026-04-19%20194858.png";
+    const run=()=>{
+      const maxH=Math.min(H*0.65,380),ratio=img.naturalWidth/img.naturalHeight||1;
+      const dH=maxH,dW=dH*ratio,dX=(W-dW)/2,dY=(H-dH)/2-40;
+      const off=document.createElement("canvas");off.width=Math.round(dW);off.height=Math.round(dH);
+      const oc=off.getContext("2d");oc.drawImage(img,0,0,off.width,off.height);
+      const id=oc.getImageData(0,0,off.width,off.height),gap=4,particles=[];
+      for(let y=0;y<off.height;y+=gap){for(let x=0;x<off.width;x+=gap){const i=(y*off.width+x)*4;if(id.data[i+3]<30)continue;particles.push({x:Math.random()*W,y:Math.random()*H,tx:dX+x,ty:dY+y,color:`rgb(${id.data[i]},${id.data[i+1]},${id.data[i+2]})`,size:gap-1,delay:Math.floor(Math.random()*60)});}}
+      let frame=0,aid;
+      const animate=()=>{
+        ctx.fillStyle="#FFFFFF";ctx.fillRect(0,0,W,H);
+        for(const p of particles){if(frame<p.delay)continue;p.x+=(p.tx-p.x)*0.05;p.y+=(p.ty-p.y)*0.05;ctx.fillStyle=p.color;ctx.fillRect(Math.round(p.x),Math.round(p.y),p.size,p.size);}
+        if(frame>200){const a=Math.min(1,(frame-200)/60);ctx.globalAlpha=a;ctx.fillStyle="#D97706";ctx.font="italic 600 20px 'Lora',Georgia,serif";ctx.textAlign="center";ctx.fillText("Meridian",W/2,dY+dH+48);ctx.fillStyle="#9B9A97";ctx.font="13px 'Inter',sans-serif";ctx.fillText("HOOK 'EM  ·  UT COCKRELL  ·  MECH E",W/2,dY+dH+70);ctx.globalAlpha=1;}
+        frame++;if(frame<280)aid=requestAnimationFrame(animate);
       };
-      animId = requestAnimationFrame(animate);
-      canvas._cleanup = () => cancelAnimationFrame(animId);
+      aid=requestAnimationFrame(animate);canvas._cleanup=()=>cancelAnimationFrame(aid);
     };
-
-    if (img.complete) runAnim();
-    else { img.onload = runAnim; img.onerror = runAnim; }
-
-    return () => { if (canvas._cleanup) canvas._cleanup(); };
-  }, []);
-
-  return (
-    <div style={{ position: "fixed", inset: 0, background: "#0D1117", zIndex: 9999 }}>
-      <canvas ref={canvasRef} style={{ display: "block", width: "100%", height: "100%" }} />
-    </div>
-  );
+    if(img.complete)run();else{img.onload=run;img.onerror=run;}
+    return()=>{if(canvas._cleanup)canvas._cleanup();};
+  },[]);
+  return(<div style={{position:"fixed",inset:0,background:"#FFFFFF",zIndex:9999}}><canvas ref={canvasRef} style={{display:"block",width:"100%",height:"100%"}}/></div>);
 }
 
-// ── ROOT ─────────────────────────────────────────────────────────────────────
-export default function App() {
-  useEffect(() => {
-    const link = document.createElement("link");
-    link.href = "https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Serif+Display:ital@0;1&display=swap";
-    link.rel = "stylesheet";
-    document.head.appendChild(link);
-  }, []);
-  const [user, setUser] = useState(null);
-  const [checking, setChecking] = useState(true);
-  const [showAuth, setShowAuth] = useState(false);
-
-  useEffect(() => {
-    const minDelay = new Promise(res => setTimeout(res, 4000));
-    const authCheck = supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-    });
-    Promise.all([minDelay, authCheck]).then(() => setChecking(false));
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
-      setUser(session?.user ?? null);
-      if (session?.user) setShowAuth(false);
-    });
-    return () => subscription.unsubscribe();
-  }, []);
-
-  if (checking) return <SanjuLoader />;
-
-  if (user) return <MeridianApp user={user} />;
-  if (showAuth) return <AuthScreen onBack={() => setShowAuth(false)} />;
-  return <LandingPage onLogin={() => setShowAuth(true)} />;
+export default function App(){
+  useEffect(()=>{
+    const link=document.createElement("link");
+    link.href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap";
+    link.rel="stylesheet";document.head.appendChild(link);
+  },[]);
+  const [user,setUser]=useState(null);
+  const [checking,setChecking]=useState(true);
+  const [showAuth,setShowAuth]=useState(false);
+  useEffect(()=>{
+    const minDelay=new Promise(res=>setTimeout(res,4000));
+    const authCheck=supabase.auth.getSession().then(({data:{session}})=>setUser(session?.user??null));
+    Promise.all([minDelay,authCheck]).then(()=>setChecking(false));
+    const{data:{subscription}}=supabase.auth.onAuthStateChange((_e,session)=>{setUser(session?.user??null);if(session?.user)setShowAuth(false);});
+    return()=>subscription.unsubscribe();
+  },[]);
+  if(checking)return <SanjuLoader/>;
+  if(user)return <MeridianApp user={user}/>;
+  if(showAuth)return <AuthScreen onBack={()=>setShowAuth(false)}/>;
+  return <LandingPage onLogin={()=>setShowAuth(true)}/>;
 }
