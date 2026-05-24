@@ -207,7 +207,8 @@ function Scheduler({user}){
 }
 
 /* ── GOAL PAGE ──────────────────────────────────────────────────────── */
-function GoalPage({goal,tasks,events,goals,onToggle,onDeleteTask,onAddTask,onEditTask,onAddEvent,onDeleteEvent,onEditEvent,onFocus,todayStr}){
+function GoalPage({goal,tasks,events,goals,onToggle,onDeleteTask,onAddTask,onEditTask,onAddEvent,onDeleteEvent,onEditEvent,onFocus,onDeleteGoal,todayStr}){
+  const [confirmDelete,setConfirmDelete]=useState(false);
   const [taskView,setTaskView]=useState("table"); // table | board | calendar
   const [showAdd,setShowAdd]=useState(false);
   const [showAddEv,setShowAddEv]=useState(false);
@@ -279,6 +280,18 @@ function GoalPage({goal,tasks,events,goals,onToggle,onDeleteTask,onAddTask,onEdi
               <div style={{fontSize:13,color:N.text,padding:"4px 8px"}}>{val}</div>
             </div>
           ))}
+        </div>
+
+        {/* Delete goal */}
+        <div style={{marginBottom:20}}>
+          {!confirmDelete
+            ? <button style={dangerBtn} onClick={()=>setConfirmDelete(true)}>🗑 Delete this goal</button>
+            : <div style={{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",background:"#FEF2F2",borderRadius:6,border:`1px solid ${N.red}40`}}>
+                <span style={{fontSize:13,color:N.red}}>Delete "{goal.label}" and all its tasks?</span>
+                <button style={dangerBtn} onClick={()=>onDeleteGoal(goal.id)}>Yes, delete</button>
+                <button style={ghostBtn} onClick={()=>setConfirmDelete(false)}>Cancel</button>
+              </div>
+          }
         </div>
 
         {/* Divider */}
@@ -970,7 +983,7 @@ function MeridianApp({user}){
 
         {page.type==="home"&&<HomePage user={user} goals={goals} tasks={tasks} events={events} stats={stats} onNavigate={(t,id)=>setPage({type:t,goalId:id})} onAddGoal={()=>setShowAddGoal(true)} todayStr={todayStr} nextExam={nextExam} weeklySnapshots={weeklySnapshots} performanceScore={performanceScore} onFocus={handleFocusClick}/>}
 
-        {page.type==="goal"&&currentGoal&&<GoalPage goal={currentGoal} tasks={tasks} events={events} goals={goals} onToggle={toggleTask} onDeleteTask={deleteTask} onAddTask={addTask} onEditTask={editTask} onAddEvent={addEvent} onDeleteEvent={deleteEvent} onEditEvent={editEvent} onFocus={handleFocusClick} todayStr={todayStr}/>}
+        {page.type==="goal"&&currentGoal&&<GoalPage goal={currentGoal} tasks={tasks} events={events} goals={goals} onToggle={toggleTask} onDeleteTask={deleteTask} onAddTask={addTask} onEditTask={editTask} onAddEvent={addEvent} onDeleteEvent={deleteEvent} onEditEvent={editEvent} onFocus={handleFocusClick} onDeleteGoal={deleteGoal} todayStr={todayStr}/>}
 
         {page.type==="tasks"&&<AllTasksPage goals={goals} tasks={tasks} events={events} onToggle={toggleTask} onDeleteTask={deleteTask} onAddTask={addTask} onEditTask={editTask} onFocus={handleFocusClick} todayStr={todayStr} user={user}/>}
 
