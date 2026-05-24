@@ -22,29 +22,35 @@ function fmtDate(ds){if(!ds)return"";const d=new Date(ds+"T00:00:00");return d.t
 function todayCA(){return new Date().toLocaleDateString('en-CA');}
 function todayDay(){return new Date().toLocaleDateString('en-US',{weekday:'short'}).toLowerCase();}
 
-/* ── NOTION DESIGN TOKENS ───────────────────────────────────────────── */
+/* ── PREMIUM INDIE DESIGN TOKENS (Linear / Craft / Things 3) ────────── */
 const N={
-  bg:"#FFFFFF", bgPage:"#FFFFFF", bgHover:"#F1F0EF", bgSoft:"#F7F6F3",
-  sidebar:"#F7F6F3", sidebarHover:"#EFEFEF", sidebarActive:"#E7E6E3",
-  text:"#37352F", textMid:"#787774", textMute:"#9B9A97",
-  border:"#E9E9E7", borderStrong:"#D3D1CB",
-  accent:"#2383E2", accentBg:"#EAF3FF",
-  red:"#E03E3E", green:"#0F7B6C", orange:"#D9730D", blue:"#2383E2", purple:"#9065B0",
+  bg:"#FAFAF9",
+  bgPage:"#FFFFFF",
+  bgSoft:"#F5F4F0",
+  sidebar:"#EFEDE8",
+  sidebarHover:"#E8E6E1",
+  sidebarActive:"#E0DDD6",
+  text:"#1C1B18",
+  textMid:"#6F6E69",
+  textMute:"#A8A49D",
+  border:"rgba(0,0,0,0.07)",
+  accent:"#5B4FE8",   // indigo — opinionated, not generic blue
+  accentBg:"#F0EFFE",
+  red:"#D93025", green:"#1E7E5A", orange:"#C9621A", blue:"#2563EB", purple:"#7C3AED",
   font:"'Inter',-apple-system,BlinkMacSystemFont,sans-serif",
   serif:"'Georgia',serif",
-  radius:4,
 };
 
-const chip=(color)=>({display:"inline-flex",alignItems:"center",gap:4,padding:"2px 8px",borderRadius:12,background:color+"22",color,fontSize:11,fontWeight:500});
+const chip=(color)=>({display:"inline-flex",alignItems:"center",gap:4,padding:"3px 9px",borderRadius:99,background:color+"18",color,fontSize:11,fontWeight:600,letterSpacing:.2});
 const badge=(p)=>({...chip(PRIORITY_COLOR[p]||N.textMute)});
-const iconBtn={background:"none",border:"none",cursor:"pointer",padding:"4px 6px",borderRadius:4,color:N.textMid,fontSize:14,fontFamily:N.font};
-const notionInput={width:"100%",padding:"6px 8px",border:`1px solid ${N.border}`,borderRadius:4,fontSize:13,fontFamily:N.font,color:N.text,outline:"none",boxSizing:"border-box",background:"#FFF"};
+const iconBtn={background:"none",border:"none",cursor:"pointer",padding:"4px 6px",borderRadius:6,color:N.textMid,fontSize:14,fontFamily:N.font,transition:"opacity .15s"};
+const notionInput={width:"100%",padding:"8px 10px",border:"1.5px solid rgba(0,0,0,0.09)",borderRadius:8,fontSize:13,fontFamily:N.font,color:N.text,outline:"none",boxSizing:"border-box",background:"#FFF",transition:"border-color .15s",boxShadow:"0 1px 2px rgba(0,0,0,0.04)"};
 const notionSelect={...notionInput,cursor:"pointer"};
-const primaryBtn={padding:"6px 14px",background:N.accent,color:"#FFF",border:"none",borderRadius:4,fontSize:13,fontWeight:500,cursor:"pointer",fontFamily:N.font};
-const ghostBtn={padding:"6px 12px",background:"transparent",color:N.textMid,border:`1px solid ${N.border}`,borderRadius:4,fontSize:13,cursor:"pointer",fontFamily:N.font};
-const dangerBtn={...ghostBtn,color:N.red,borderColor:N.red+"60"};
-const modal={position:"fixed",inset:0,background:"rgba(0,0,0,0.4)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:400};
-const modalBox={background:"#FFF",borderRadius:8,boxShadow:"0 8px 40px rgba(0,0,0,0.15)",padding:28,width:480,maxWidth:"92vw",maxHeight:"88vh",overflowY:"auto"};
+const primaryBtn={padding:"8px 16px",background:N.accent,color:"#FFF",border:"none",borderRadius:8,fontSize:13,fontWeight:600,cursor:"pointer",fontFamily:N.font,boxShadow:"0 2px 8px rgba(91,79,232,0.3)",transition:"transform .1s,box-shadow .1s",letterSpacing:.1};
+const ghostBtn={padding:"7px 13px",background:"#FFF",color:N.textMid,border:"1.5px solid rgba(0,0,0,0.09)",borderRadius:8,fontSize:13,cursor:"pointer",fontFamily:N.font,boxShadow:"0 1px 3px rgba(0,0,0,0.05)",transition:"background .15s"};
+const dangerBtn={...ghostBtn,color:N.red,borderColor:"rgba(217,48,37,0.25)",background:"#FFF9F9"};
+const modal={position:"fixed",inset:0,background:"rgba(0,0,0,0.35)",backdropFilter:"blur(4px)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:400};
+const modalBox={background:"#FFF",borderRadius:14,boxShadow:"0 24px 64px rgba(0,0,0,0.18)",padding:32,width:500,maxWidth:"92vw",maxHeight:"88vh",overflowY:"auto"};
 
 /* ── CONFETTI ───────────────────────────────────────────────────────── */
 function Confetti(){
@@ -61,18 +67,18 @@ function Confetti(){
 /* ── LANDING ────────────────────────────────────────────────────────── */
 function LandingPage({onLogin}){
   return(
-    <div style={{minHeight:"100vh",background:"#FFF",fontFamily:N.font,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:40}}>
+    <div style={{minHeight:"100vh",background:"#FAFAF9",fontFamily:N.font,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:40}}>
       <div style={{textAlign:"center",maxWidth:560}}>
         <div style={{fontSize:52,marginBottom:12}}>🎓</div>
-        <div style={{fontSize:40,fontFamily:N.serif,fontWeight:700,color:N.text,marginBottom:8}}>Meridian</div>
-        <div style={{fontSize:18,color:N.textMid,marginBottom:40,lineHeight:1.6}}>Your college life, organized.<br/>Goals. Tasks. Focus. All in one workspace.</div>
+        <div style={{fontSize:44,fontWeight:900,color:N.text,marginBottom:8,letterSpacing:-2}}>Meridian</div>
+        <div style={{fontSize:17,color:N.textMid,marginBottom:40,lineHeight:1.7,maxWidth:400}}>Your college life, organized. Goals, tasks, and focus — all in one workspace built for students who mean it.</div>
         <div style={{display:"flex",gap:12,justifyContent:"center",marginBottom:48}}>
           <button onClick={onLogin} style={{...primaryBtn,padding:"12px 32px",fontSize:15}}>Get Started →</button>
           <button onClick={onLogin} style={{...ghostBtn,padding:"12px 32px",fontSize:15}}>Sign In</button>
         </div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:16}}>
           {[["🎯","Goals as Pages","Each goal is a full workspace page"],["✅","Task Databases","Table, board, and calendar views"],["⚡","Focus Timer","Deep work with ambience sounds"]].map(([icon,title,desc])=>(
-            <div key={title} style={{padding:20,background:N.bgSoft,borderRadius:8,textAlign:"left"}}>
+            <div key={title} style={{padding:20,background:"#FFF",borderRadius:12,textAlign:"left",boxShadow:"0 2px 12px rgba(0,0,0,0.06)",border:"1px solid rgba(0,0,0,0.05)"}}>
               <div style={{fontSize:24,marginBottom:8}}>{icon}</div>
               <div style={{fontSize:14,fontWeight:600,color:N.text,marginBottom:4}}>{title}</div>
               <div style={{fontSize:12,color:N.textMid,lineHeight:1.5}}>{desc}</div>
@@ -96,10 +102,10 @@ function AuthScreen({onBack}){
     setLoading(false);
   };
   return(
-    <div style={{minHeight:"100vh",background:N.bgSoft,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:N.font}}>
-      <div style={{width:400,padding:48,background:"#FFF",borderRadius:8,boxShadow:"0 4px 24px rgba(0,0,0,0.08)"}}>
+    <div style={{minHeight:"100vh",background:"#F5F4FF",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:N.font}}>
+      <div style={{width:400,padding:48,background:"#FFF",borderRadius:16,boxShadow:"0 16px 48px rgba(0,0,0,0.12)"}}>
         <div style={{fontSize:32,marginBottom:4}}>🎓</div>
-        <div style={{fontSize:24,fontWeight:700,color:N.text,marginBottom:4}}>Meridian</div>
+        <div style={{fontSize:28,fontWeight:900,color:N.text,marginBottom:4,letterSpacing:-1}}>Meridian</div>
         <div style={{fontSize:13,color:N.textMid,marginBottom:28}}>Your college life, organized</div>
         {err&&<div style={{fontSize:13,color:N.red,background:"#FEE2E2",padding:"10px 12px",borderRadius:4,marginBottom:14}}>{err}</div>}
         {msg&&<div style={{fontSize:13,color:N.green,background:"#DCFCE7",padding:"10px 12px",borderRadius:4,marginBottom:14}}>{msg}</div>}
@@ -119,7 +125,7 @@ function FocusScreen({task,secs,running,setRunning,done,ambience,setAmbience,min
   const fmt=s=>`${String(Math.floor(s/60)).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`;
   const pct=mins>0?Math.round(((mins*60-secs)/(mins*60))*100):0;
   return(
-    <div style={{position:"fixed",inset:0,background:"#FAFAF8",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",fontFamily:N.font,zIndex:500}}>
+    <div style={{position:"fixed",inset:0,background:"#F5F4FF",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",fontFamily:N.font,zIndex:500}}>
       <button onClick={()=>onExit()} style={{position:"absolute",top:24,left:24,...ghostBtn}}>← Exit</button>
       {task&&<div style={{fontSize:13,color:N.textMid,marginBottom:20,maxWidth:400,textAlign:"center"}}>Focusing: <strong style={{color:N.text}}>{task.text}</strong></div>}
       <svg width={220} height={220} style={{marginBottom:28}}>
@@ -258,14 +264,14 @@ function GoalPage({goal,tasks,events,goals,onToggle,onDeleteTask,onAddTask,onEdi
   return(
     <div style={{flex:1,overflowY:"auto",background:N.bgPage}}>
       {/* Cover */}
-      <div style={{height:160,background:`linear-gradient(135deg,${goal.color}33 0%,${goal.color}11 100%)`,position:"relative"}}>
+      <div style={{height:160,background:`linear-gradient(160deg,${goal.color}20 0%,${goal.color}08 100%)`,position:"relative"}}>
         <div style={{position:"absolute",inset:0,opacity:.06,backgroundImage:"repeating-linear-gradient(45deg,#000 0,#000 1px,transparent 1px,transparent 12px)"}}/>
       </div>
 
       <div style={{maxWidth:900,margin:"0 auto",padding:"0 64px 80px"}}>
         {/* Icon + title */}
         <div style={{fontSize:48,marginTop:-24,marginBottom:8,lineHeight:1}}>🎯</div>
-        <div contentEditable suppressContentEditableWarning style={{fontSize:36,fontWeight:700,color:N.text,marginBottom:4,outline:"none",fontFamily:N.font}}>{goal.label}</div>
+        <div contentEditable suppressContentEditableWarning style={{fontSize:42,fontWeight:800,color:N.text,marginBottom:4,outline:"none",fontFamily:N.font,letterSpacing:-1.5,lineHeight:1.1}}>{goal.label}</div>
 
         {/* Properties */}
         <div style={{display:"flex",gap:0,flexDirection:"column",marginTop:20,marginBottom:28,maxWidth:480}}>
@@ -275,7 +281,7 @@ function GoalPage({goal,tasks,events,goals,onToggle,onDeleteTask,onAddTask,onEdi
             ["Progress", <div style={{display:"flex",alignItems:"center",gap:8}}><div style={{width:120,height:6,background:N.border,borderRadius:3}}><div style={{width:`${pct}%`,height:6,background:goal.color,borderRadius:3,transition:"width .5s"}}/></div><span style={{fontSize:12,color:N.textMid}}>{done}/{gt.length} tasks</span></div>],
             ["Color", <div style={{display:"flex",gap:6,alignItems:"center"}}><div style={{width:14,height:14,borderRadius:"50%",background:goal.color}}/><span style={{fontSize:13,color:N.textMid}}>{goal.color}</span></div>],
           ].map(([label,val])=>(
-            <div key={label} style={{display:"flex",alignItems:"center",gap:0,padding:"4px 0",borderBottom:`1px solid ${N.border}`}}>
+            <div key={label} style={{display:"flex",alignItems:"center",gap:0,padding:"6px 0",borderBottom:"1px solid rgba(0,0,0,0.05)"}}>
               <div style={{width:120,fontSize:13,color:N.textMid,fontWeight:500,flexShrink:0}}>{label}</div>
               <div style={{fontSize:13,color:N.text,padding:"4px 8px"}}>{val}</div>
             </div>
@@ -286,7 +292,7 @@ function GoalPage({goal,tasks,events,goals,onToggle,onDeleteTask,onAddTask,onEdi
         <div style={{marginBottom:20}}>
           {!confirmDelete
             ? <button style={dangerBtn} onClick={()=>setConfirmDelete(true)}>🗑 Delete this goal</button>
-            : <div style={{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",background:"#FEF2F2",borderRadius:6,border:`1px solid ${N.red}40`}}>
+            : <div style={{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",background:"#FFF5F5",borderRadius:10,border:"1px solid rgba(217,48,37,0.15)",boxShadow:"0 2px 8px rgba(217,48,37,0.08)"}}>
                 <span style={{fontSize:13,color:N.red}}>Delete "{goal.label}" and all its tasks?</span>
                 <button style={dangerBtn} onClick={()=>onDeleteGoal(goal.id)}>Yes, delete</button>
                 <button style={ghostBtn} onClick={()=>setConfirmDelete(false)}>Cancel</button>
@@ -295,21 +301,21 @@ function GoalPage({goal,tasks,events,goals,onToggle,onDeleteTask,onAddTask,onEdi
         </div>
 
         {/* Divider */}
-        <div style={{height:1,background:N.border,marginBottom:28}}/>
+        <div style={{height:1,background:"rgba(0,0,0,0.06)",marginBottom:28}}/>
 
         {/* Tasks database */}
         <div style={{marginBottom:8,display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:8}}>
           <div style={{fontSize:14,fontWeight:600,color:N.text}}>📋 Tasks</div>
           <div style={{display:"flex",gap:4}}>
             {[["table","⊞ Table"],["board","⬛ Board"],["calendar","📅 Calendar"]].map(([v,l])=>(
-              <button key={v} onClick={()=>setTaskView(v)} style={{...ghostBtn,padding:"4px 10px",fontSize:12,background:taskView===v?N.sidebarActive:"transparent",fontWeight:taskView===v?600:400}}>{l}</button>
+              <button key={v} onClick={()=>setTaskView(v)} style={{...ghostBtn,padding:"4px 10px",fontSize:12,background:taskView===v?"rgba(0,0,0,0.07)":"transparent",fontWeight:taskView===v?700:400,color:taskView===v?N.text:N.textMid}}>{l}</button>
             ))}
           </div>
         </div>
 
         {/* Filter/sort bar */}
         <div style={{display:"flex",gap:8,alignItems:"center",marginBottom:12,flexWrap:"wrap"}}>
-          <input style={{...notionInput,width:160,fontSize:12}} placeholder="🔍 Search tasks…" value={searchQ} onChange={e=>setSearchQ(e.target.value)}/>
+          <input style={{...notionInput,width:180,fontSize:12,background:"rgba(0,0,0,0.04)",border:"none",boxShadow:"none",borderRadius:99}} placeholder="Search tasks…" value={searchQ} onChange={e=>setSearchQ(e.target.value)}/>
           <select style={{...notionSelect,width:"auto",fontSize:12,padding:"4px 8px"}} value={filterPriority} onChange={e=>setFilterPriority(e.target.value)}>
             <option value="all">All priorities</option><option value="high">High</option><option value="med">Medium</option><option value="low">Low</option>
           </select>
@@ -324,13 +330,13 @@ function GoalPage({goal,tasks,events,goals,onToggle,onDeleteTask,onAddTask,onEdi
 
         {/* TABLE VIEW */}
         {taskView==="table"&&(
-          <div style={{border:`1px solid ${N.border}`,borderRadius:6,overflow:"hidden",marginBottom:24}}>
-            <div style={{display:"grid",gridTemplateColumns:"28px 1fr 90px 100px 60px 80px",gap:0,background:N.bgSoft,borderBottom:`1px solid ${N.border}`,padding:"6px 12px"}}>
+          <div style={{border:"1px solid rgba(0,0,0,0.07)",borderRadius:10,overflow:"hidden",marginBottom:24,boxShadow:"0 2px 8px rgba(0,0,0,0.04)"}}>
+            <div style={{display:"grid",gridTemplateColumns:"28px 1fr 90px 100px 60px 80px",gap:0,background:"rgba(0,0,0,0.025)",borderBottom:"1px solid rgba(0,0,0,0.06)",padding:"8px 14px"}}>
               {["","Name","Priority","Due","Hours",""].map((h,i)=><div key={i} style={{fontSize:11,fontWeight:600,color:N.textMute}}>{h}</div>)}
             </div>
             {filtered.length===0&&<div style={{padding:"20px 16px",fontSize:13,color:N.textMute}}>No tasks match your filters.</div>}
             {filtered.map((t,i)=>(
-              <div key={t.id} style={{display:"grid",gridTemplateColumns:"28px 1fr 90px 100px 60px 80px",gap:0,padding:"8px 12px",borderBottom:i<filtered.length-1?`1px solid ${N.border}`:"none",background:t.done?"#F7F6F3":"#FFF",alignItems:"center"}}>
+              <div key={t.id} style={{display:"grid",gridTemplateColumns:"28px 1fr 90px 100px 60px 80px",gap:0,padding:"8px 12px",borderBottom:i<filtered.length-1?`1px solid ${N.border}`:"none",background:t.done?"rgba(0,0,0,0.02)":"#FFF",alignItems:"center",transition:"background .1s"}}>
                 <div onClick={()=>onToggle(t)} style={{width:16,height:16,border:`1.5px solid ${t.done?goal.color:N.border}`,borderRadius:3,background:t.done?goal.color:"transparent",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>
                   {t.done&&<span style={{fontSize:10,color:"#FFF"}}>✓</span>}
                 </div>
@@ -353,9 +359,9 @@ function GoalPage({goal,tasks,events,goals,onToggle,onDeleteTask,onAddTask,onEdi
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16,marginBottom:24}}>
             {cols.map(col=>(
               <div key={col.id}>
-                <div style={{fontSize:12,fontWeight:600,color:N.textMid,marginBottom:8,textTransform:"uppercase",letterSpacing:.5}}>{col.label} · {col.tasks.length}</div>
+                <div style={{fontSize:11,fontWeight:700,color:N.textMute,marginBottom:10,textTransform:"uppercase",letterSpacing:.8}}>{col.label} · {col.tasks.length}</div>
                 {col.tasks.map(t=>(
-                  <div key={t.id} style={{background:"#FFF",border:`1px solid ${N.border}`,borderRadius:6,padding:12,marginBottom:8,cursor:"pointer"}} onClick={()=>onToggle(t)}>
+                  <div key={t.id} style={{background:"#FFF",border:"1px solid rgba(0,0,0,0.07)",borderRadius:10,padding:14,marginBottom:8,cursor:"pointer",boxShadow:"0 1px 4px rgba(0,0,0,0.05)",transition:"box-shadow .15s"}} onClick={()=>onToggle(t)}>
                     <div style={{display:"flex",alignItems:"flex-start",gap:8,marginBottom:6}}>
                       <div style={{width:14,height:14,border:`1.5px solid ${t.done?goal.color:N.border}`,borderRadius:3,background:t.done?goal.color:"transparent",flexShrink:0,marginTop:1}}>
                         {t.done&&<span style={{fontSize:9,color:"#FFF",display:"block",textAlign:"center"}}>✓</span>}
@@ -368,7 +374,7 @@ function GoalPage({goal,tasks,events,goals,onToggle,onDeleteTask,onAddTask,onEdi
                     </div>
                   </div>
                 ))}
-                {col.tasks.length===0&&<div style={{padding:16,textAlign:"center",color:N.textMute,fontSize:13,border:`1px dashed ${N.border}`,borderRadius:6}}>Empty</div>}
+                {col.tasks.length===0&&<div style={{padding:20,textAlign:"center",color:N.textMute,fontSize:13,border:"1px dashed rgba(0,0,0,0.1)",borderRadius:10,fontStyle:"italic"}}>Nothing here yet</div>}
               </div>
             ))}
           </div>
@@ -388,7 +394,7 @@ function GoalPage({goal,tasks,events,goals,onToggle,onDeleteTask,onAddTask,onEdi
               {Array.from({length:dim}).map((_,i)=>{
                 const day=i+1,ds=calDs(day),isToday=ds===todayStr,tt2=taskByDate(ds),ev2=evByDate(ds);
                 return(
-                  <div key={day} style={{minHeight:64,border:`1px solid ${N.border}`,borderRadius:4,padding:4,background:isToday?N.accentBg:"#FFF"}}>
+                  <div key={day} style={{minHeight:64,border:"1px solid rgba(0,0,0,0.06)",borderRadius:8,padding:4,background:isToday?"#EDE9FE":"#FFF"}}>
                     <div style={{fontSize:11,fontWeight:isToday?700:400,color:isToday?N.accent:N.text,marginBottom:2}}>{day}</div>
                     {tt2.slice(0,2).map(t=><div key={t.id} style={{fontSize:10,padding:"1px 4px",borderRadius:2,marginBottom:1,background:goal.color+"22",color:goal.color,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{t.text}</div>)}
                     {ev2.slice(0,1).map(e=><div key={e.id} style={{fontSize:10,padding:"1px 4px",borderRadius:2,background:N.accentBg,color:N.accent,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>📅 {e.title}</div>)}
@@ -401,7 +407,7 @@ function GoalPage({goal,tasks,events,goals,onToggle,onDeleteTask,onAddTask,onEdi
 
         {/* Add task inline form */}
         {showAdd&&(
-          <div style={{border:`1px solid ${N.border}`,borderRadius:6,padding:16,marginBottom:20,background:N.bgSoft}}>
+          <div style={{border:"1px solid rgba(0,0,0,0.07)",borderRadius:10,padding:16,marginBottom:20,background:"#FAFAF9",boxShadow:"0 2px 8px rgba(0,0,0,0.04)"}}>
             <div style={{display:"grid",gridTemplateColumns:"1fr 90px 120px 80px",gap:8,marginBottom:10}}>
               <input style={notionInput} placeholder="Task name" autoFocus value={newTask.text} onChange={e=>setNewTask({...newTask,text:e.target.value})} onKeyDown={e=>e.key==="Enter"&&addT()}/>
               <select style={notionSelect} value={newTask.priority} onChange={e=>setNewTask({...newTask,priority:e.target.value})}><option value="high">High</option><option value="med">Med</option><option value="low">Low</option></select>
@@ -416,14 +422,14 @@ function GoalPage({goal,tasks,events,goals,onToggle,onDeleteTask,onAddTask,onEdi
         )}
 
         {/* Events section */}
-        <div style={{height:1,background:N.border,margin:"24px 0"}}/>
+        <div style={{height:1,background:"rgba(0,0,0,0.06)",margin:"28px 0"}}/>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
           <div style={{fontSize:14,fontWeight:600,color:N.text}}>📅 Events & Deadlines</div>
           <button style={{...primaryBtn,padding:"4px 12px",fontSize:12}} onClick={()=>setShowAddEv(true)}>+ Event</button>
         </div>
         {ge.length===0&&<div style={{fontSize:13,color:N.textMute}}>No events yet.</div>}
         {ge.map(e=>(
-          <div key={e.id} style={{display:"flex",alignItems:"center",gap:12,padding:"8px 12px",border:`1px solid ${N.border}`,borderRadius:6,marginBottom:6,background:"#FFF"}}>
+          <div key={e.id} style={{display:"flex",alignItems:"center",gap:12,padding:"8px 12px",border:"1px solid rgba(0,0,0,0.07)",borderRadius:10,marginBottom:6,background:"#FFF",boxShadow:"0 1px 4px rgba(0,0,0,0.04)"}}>
             <div style={{width:4,height:32,borderRadius:2,background:goal.color,flexShrink:0}}/>
             <div style={{flex:1}}>
               <div style={{fontSize:13,fontWeight:500}}>{e.title}</div>
@@ -434,7 +440,7 @@ function GoalPage({goal,tasks,events,goals,onToggle,onDeleteTask,onAddTask,onEdi
           </div>
         ))}
         {showAddEv&&(
-          <div style={{border:`1px solid ${N.border}`,borderRadius:6,padding:16,marginTop:8,background:N.bgSoft}}>
+          <div style={{border:"1px solid rgba(0,0,0,0.07)",borderRadius:10,padding:16,marginTop:8,background:"#FAFAF9",boxShadow:"0 2px 8px rgba(0,0,0,0.04)"}}>
             <div style={{display:"grid",gridTemplateColumns:"1fr 160px 100px",gap:8,marginBottom:10}}>
               <input style={notionInput} placeholder="Event title" autoFocus value={newEvent.title} onChange={e=>setNewEvent({...newEvent,title:e.target.value})}/>
               <input style={notionInput} type="date" value={newEvent.date} onChange={e=>setNewEvent({...newEvent,date:e.target.value})}/>
@@ -497,30 +503,29 @@ function HomePage({user,goals,tasks,events,stats,onNavigate,onAddGoal,todayStr,n
   return(
     <div style={{flex:1,overflowY:"auto",background:N.bgPage}}>
       {/* Cover */}
-      <div style={{height:160,background:"linear-gradient(135deg,#FFECD2 0%,#FCB69F 35%,#A1C4FD 65%,#C2E9FB 100%)",position:"relative",overflow:"hidden"}}>
+      <div style={{height:160,background:"linear-gradient(160deg,#EDE9FE 0%,#F5F3FF 50%,#FAFAF9 100%)",position:"relative",overflow:"hidden"}}>
         <div style={{position:"absolute",inset:0,opacity:.06,backgroundImage:"repeating-linear-gradient(90deg,#000 0,#000 2px,transparent 2px,transparent 60px)"}}/>
         <div style={{position:"absolute",bottom:0,left:0,right:0,height:40,background:"linear-gradient(to top,#fff,transparent)"}}/>
       </div>
       <div style={{maxWidth:900,margin:"0 auto",padding:"0 64px 80px"}}>
         <div style={{fontSize:52,marginTop:-22,marginBottom:6,lineHeight:1}}>🎓</div>
-        <div style={{fontSize:36,fontWeight:700,color:N.text,fontFamily:N.font,marginBottom:2}}>{getGreeting()}</div>
+        <div style={{fontSize:40,fontWeight:800,color:N.text,fontFamily:N.font,marginBottom:2,letterSpacing:-1.5,lineHeight:1.1}}>{getGreeting()}</div>
         <div style={{fontSize:14,color:N.textMid,marginBottom:4}}>{user.email}</div>
         <div style={{fontSize:13,fontStyle:"italic",color:N.textMute,marginBottom:28}}>{QUOTES[quoteIdx]}</div>
 
-        <div style={{height:1,background:N.border,marginBottom:28}}/>
+        <div style={{height:1,background:"rgba(0,0,0,0.06)",marginBottom:28}}/>
 
         {/* Stats row */}
-        <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:12,marginBottom:28}}>
+        <div style={{display:"flex",gap:32,marginBottom:36,flexWrap:"wrap"}}>
           {[
-            ["Tasks Today",todayTasks.length,"⚡",N.orange],
-            ["Total Remaining",pendingTasks.length,"📋",N.blue],
-            ["Completion",`${completionRate}%`,"✅",N.green],
-            ["Streak",`${stats.streak||0}d`,"🔥",N.red],
-          ].map(([l,v,ic,c])=>(
-            <div key={l} style={{padding:16,border:`1px solid ${N.border}`,borderRadius:8,background:"#FFF"}}>
-              <div style={{fontSize:24,marginBottom:4}}>{ic}</div>
-              <div style={{fontSize:28,fontWeight:700,color:c,lineHeight:1}}>{v}</div>
-              <div style={{fontSize:12,color:N.textMid,marginTop:4}}>{l}</div>
+            ["due today",todayTasks.length,N.orange],
+            ["remaining",pendingTasks.length,N.text],
+            ["done",`${completionRate}%`,N.green],
+            ["streak",stats.streak>0?`${stats.streak}d`:"—",N.accent],
+          ].map(([l,v,c])=>(
+            <div key={l}>
+              <div style={{fontSize:32,fontWeight:800,color:c,lineHeight:1,letterSpacing:-1}}>{v}</div>
+              <div style={{fontSize:12,color:N.textMute,marginTop:3,fontWeight:500}}>{l}</div>
             </div>
           ))}
         </div>
@@ -528,7 +533,7 @@ function HomePage({user,goals,tasks,events,stats,onNavigate,onAddGoal,todayStr,n
         {/* Goal forecast */}
         {goals.length>0&&(
           <div style={{marginBottom:28}}>
-            <div style={{fontSize:14,fontWeight:600,color:N.text,marginBottom:12}}>🎯 Goals</div>
+            <div style={{fontSize:12,fontWeight:700,color:N.textMute,textTransform:"uppercase",letterSpacing:.8,marginBottom:12}}>Goals</div>
             <div style={{border:`1px solid ${N.border}`,borderRadius:6,overflow:"hidden"}}>
               {goals.map((g,i)=>{
                 const gt=tasks.filter(t=>t.goal_id===g.id);
@@ -536,7 +541,7 @@ function HomePage({user,goals,tasks,events,stats,onNavigate,onAddGoal,todayStr,n
                 const days=g.deadline?Math.ceil((new Date(g.deadline+"T00:00:00")-Date.now())/86400000):null;
                 const uc=days===null?N.textMute:days<0?N.red:days<=7?N.red:days<=14?N.orange:N.green;
                 return(
-                  <div key={g.id} onClick={()=>onNavigate("goal",g.id)} style={{display:"flex",alignItems:"center",gap:12,padding:"12px 16px",background:ROW_BG[i%ROW_BG.length],borderBottom:i<goals.length-1?`1px solid ${N.border}`:"none",cursor:"pointer"}}>
+                  <div key={g.id} onClick={()=>onNavigate("goal",g.id)} style={{display:"flex",alignItems:"center",gap:12,padding:"12px 16px",background:i%2===0?"#FAFAF9":"#FFF",borderBottom:`1px solid rgba(0,0,0,0.05)`,cursor:"pointer",transition:"background .1s"}}>
                     <div style={{width:10,height:10,borderRadius:"50%",background:g.color,flexShrink:0}}/>
                     <div style={{fontSize:13,fontWeight:500,flex:1,color:N.text}}>{g.label}</div>
                     {g.deadline&&<span style={{fontSize:12,color:uc}}>{days<0?"Overdue":days===0?"Today":days===1?"1d":days+"d"}</span>}
@@ -561,7 +566,7 @@ function HomePage({user,goals,tasks,events,stats,onNavigate,onAddGoal,todayStr,n
         {/* Today's tasks */}
         {todayTasks.length>0&&(
           <div style={{marginBottom:28}}>
-            <div style={{fontSize:14,fontWeight:600,color:N.text,marginBottom:12}}>📌 Due Today</div>
+            <div style={{fontSize:12,fontWeight:700,color:N.textMute,textTransform:"uppercase",letterSpacing:.8,marginBottom:12}}>Due Today</div>
             <div style={{border:`1px solid ${N.border}`,borderRadius:6,overflow:"hidden"}}>
               {todayTasks.map((t,i)=>(
                 <div key={t.id} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",background:"#FFF",borderBottom:i<todayTasks.length-1?`1px solid ${N.border}`:"none"}}>
@@ -578,7 +583,7 @@ function HomePage({user,goals,tasks,events,stats,onNavigate,onAddGoal,todayStr,n
 
         {/* Next exam */}
         {nextExam&&(
-          <div style={{padding:16,border:`1px solid ${N.border}`,borderRadius:8,marginBottom:28,background:nextExam.daysLeft<=3?"#FEF2F2":"#FFF",borderLeft:`4px solid ${nextExam.daysLeft<=3?N.red:N.orange}`}}>
+          <div style={{padding:16,border:"1px solid rgba(0,0,0,0.07)",borderRadius:10,marginBottom:28,boxShadow:"0 2px 8px rgba(0,0,0,0.04)",background:nextExam.daysLeft<=3?"#FEF2F2":"#FFF",borderLeft:`4px solid ${nextExam.daysLeft<=3?N.red:N.orange}`}}>
             <div style={{fontSize:12,fontWeight:600,color:nextExam.daysLeft<=3?N.red:N.orange,marginBottom:4}}>📚 Next Exam</div>
             <div style={{fontSize:15,fontWeight:600,color:N.text}}>{nextExam.title}</div>
             <div style={{fontSize:13,color:N.textMid,marginTop:2}}>{fmtDate(nextExam.date)} · {nextExam.daysLeft===0?"Today":nextExam.daysLeft===1?"Tomorrow":`${nextExam.daysLeft} days away`}</div>
@@ -587,8 +592,8 @@ function HomePage({user,goals,tasks,events,stats,onNavigate,onAddGoal,todayStr,n
 
         {/* Performance */}
         {performanceScore!==null&&weeklySnapshots.length>0&&(
-          <div style={{border:`1px solid ${N.border}`,borderRadius:8,padding:20,background:"#FFF"}}>
-            <div style={{fontSize:14,fontWeight:600,color:N.text,marginBottom:16}}>📈 Weekly Performance</div>
+          <div style={{border:"1px solid rgba(0,0,0,0.07)",borderRadius:12,padding:24,background:"#FFF",boxShadow:"0 2px 8px rgba(0,0,0,0.04)"}}>
+            <div style={{fontSize:12,fontWeight:700,color:N.textMute,textTransform:"uppercase",letterSpacing:.8,marginBottom:16}}>Performance</div>
             <div style={{display:"flex",alignItems:"center",gap:24}}>
               <div>
                 <div style={{fontSize:48,fontWeight:700,color:performanceScore>=70?N.green:performanceScore>=40?N.orange:N.red,lineHeight:1}}>{performanceScore}</div>
@@ -650,7 +655,7 @@ function AllTasksPage({goals,tasks,events,onToggle,onDeleteTask,onAddTask,onEdit
 
       {/* Add inline */}
       {showAdd&&(
-        <div style={{border:`1px solid ${N.border}`,borderRadius:6,padding:16,marginBottom:20,background:N.bgSoft}}>
+        <div style={{border:"1px solid rgba(0,0,0,0.07)",borderRadius:10,padding:16,marginBottom:20,background:"#FAFAF9",boxShadow:"0 2px 8px rgba(0,0,0,0.04)"}}>
           <div style={{display:"grid",gridTemplateColumns:"1fr 180px 90px 120px 80px",gap:8,marginBottom:10}}>
             <input style={notionInput} placeholder="Task name" autoFocus value={newTask.text} onChange={e=>setNewTask({...newTask,text:e.target.value})} onKeyDown={e=>e.key==="Enter"&&addT()}/>
             <select style={notionSelect} value={newTask.goal_id} onChange={e=>setNewTask({...newTask,goal_id:e.target.value})}>
@@ -670,7 +675,7 @@ function AllTasksPage({goals,tasks,events,onToggle,onDeleteTask,onAddTask,onEdit
 
       {/* Filters */}
       <div style={{display:"flex",gap:8,marginBottom:16,flexWrap:"wrap",alignItems:"center"}}>
-        <input style={{...notionInput,width:160,fontSize:12}} placeholder="🔍 Search…" value={searchQ} onChange={e=>setSearchQ(e.target.value)}/>
+        <input style={{...notionInput,width:180,fontSize:12,background:"rgba(0,0,0,0.04)",border:"none",boxShadow:"none",borderRadius:99}} placeholder="Search…" value={searchQ} onChange={e=>setSearchQ(e.target.value)}/>
         <select style={{...notionSelect,width:"auto",fontSize:12,padding:"5px 8px"}} value={filterGoal} onChange={e=>setFilterGoal(e.target.value)}>
           <option value="all">All goals</option>
           {goals.map(g=><option key={g.id} value={g.id}>{g.label}</option>)}
@@ -691,7 +696,7 @@ function AllTasksPage({goals,tasks,events,onToggle,onDeleteTask,onAddTask,onEdit
         <div key={goal.id} style={{marginBottom:24}}>
           <div style={{display:"flex",alignItems:"center",gap:8,padding:"8px 12px",background:ROW_BG[gi%ROW_BG.length],borderRadius:"6px 6px 0 0",border:`1px solid ${N.border}`,borderBottom:"none"}}>
             <div style={{width:10,height:10,borderRadius:"50%",background:goal.color}}/>
-            <div style={{fontSize:13,fontWeight:600,flex:1}}>{goal.label}</div>
+            <div style={{fontSize:13,fontWeight:700,flex:1}}>{goal.label}</div>
             {goal.deadline&&<div style={{fontSize:12,color:N.textMid}}>{fmtDate(goal.deadline)}</div>}
             <div style={{fontSize:12,color:N.textMute}}>{gt.filter(t=>t.done).length}/{gt.length}</div>
           </div>
@@ -712,7 +717,7 @@ function AllTasksPage({goals,tasks,events,onToggle,onDeleteTask,onAddTask,onEdit
           </div>
         </div>
       ))}
-      {grouped.length===0&&<div style={{padding:48,textAlign:"center",color:N.textMute,fontSize:14}}>No tasks match your filters.</div>}
+      {grouped.length===0&&<div style={{padding:64,textAlign:"center",color:N.textMute,fontSize:14,fontStyle:"italic"}}>No tasks match those filters</div>}
 
       {editT&&(
         <div style={modal} onClick={()=>setEditT(null)}>
@@ -901,13 +906,13 @@ function MeridianApp({user}){
 
       {/* ── SIDEBAR ─────────────────────────────────────── */}
       {(!isMobile||sidebarOpen)&&(
-        <div style={{width:240,background:N.sidebar,borderRight:`1px solid ${N.border}`,display:"flex",flexDirection:"column",flexShrink:0,overflowY:"auto",height:"100vh"}}>
+        <div style={{width:240,background:N.sidebar,boxShadow:"inset -1px 0 0 rgba(0,0,0,0.06)",display:"flex",flexDirection:"column",flexShrink:0,overflowY:"auto",height:"100vh"}}>
           {/* Workspace header */}
-          <div style={{padding:"12px 12px 8px",borderBottom:`1px solid ${N.border}`}}>
-            <div style={{display:"flex",alignItems:"center",gap:8,padding:"6px 8px",borderRadius:4,cursor:"pointer",background:N.sidebarActive}}>
-              <span style={{fontSize:16}}>🎓</span>
+          <div style={{padding:"18px 16px 12px",borderBottom:"1px solid rgba(0,0,0,0.06)"}}>
+            <div style={{display:"flex",alignItems:"center",gap:10,cursor:"pointer"}}>
+              <div style={{width:28,height:28,borderRadius:7,background:"linear-gradient(135deg,#5B4FE8,#8B7FF5)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:15,flexShrink:0}}>🎓</div>
               <div style={{flex:1,minWidth:0}}>
-                <div style={{fontSize:13,fontWeight:600,color:N.text,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>Meridian</div>
+                <div style={{fontSize:14,fontWeight:700,color:N.text,letterSpacing:-.3}}>Meridian</div>
                 <div style={{fontSize:11,color:N.textMute,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{user.email}</div>
               </div>
             </div>
@@ -930,17 +935,17 @@ function MeridianApp({user}){
             ].map(({icon,label,p})=>{
               const active=page.type===p.type;
               return(
-                <div key={label} onClick={()=>setPage(p)} style={{display:"flex",alignItems:"center",gap:6,padding:"5px 8px",borderRadius:4,marginBottom:1,cursor:"pointer",background:active?N.sidebarActive:"transparent",color:active?N.text:N.textMid,fontSize:13,fontWeight:active?500:400}}>
-                  <span style={{fontSize:14}}>{icon}</span>{label}
+                <div key={label} onClick={()=>setPage(p)} style={{display:"flex",alignItems:"center",gap:8,padding:"6px 10px",borderRadius:8,marginBottom:2,cursor:"pointer",background:active?"rgba(0,0,0,0.07)":"transparent",color:active?N.text:N.textMid,fontSize:13,fontWeight:active?600:400,transition:"background .1s"}}>
+                  <span style={{fontSize:14,opacity:active?1:.7}}>{icon}</span>{label}
                 </div>
               );
             })}
           </div>
 
           {/* Goals section */}
-          <div style={{padding:"12px 12px 4px",marginTop:8}}>
-            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:4}}>
-              <div style={{fontSize:11,fontWeight:600,color:N.textMute,textTransform:"uppercase",letterSpacing:.5}}>Goals</div>
+          <div style={{padding:"12px 14px 4px",marginTop:4}}>
+            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6}}>
+              <div style={{fontSize:11,fontWeight:700,color:N.textMute,textTransform:"uppercase",letterSpacing:.8}}>Goals</div>
               <button onClick={()=>setShowAddGoal(true)} style={{...iconBtn,fontSize:16,padding:"0 4px",color:N.textMute}}>+</button>
             </div>
             {goals.map(g=>{
@@ -949,25 +954,28 @@ function MeridianApp({user}){
               const pct=gt.length?Math.round((gt.filter(t=>t.done).length/gt.length)*100):0;
               return(
                 <div key={g.id} onClick={()=>setPage({type:"goal",goalId:g.id})}
-                  style={{display:"flex",alignItems:"center",gap:6,padding:"5px 8px",borderRadius:4,marginBottom:1,cursor:"pointer",background:active?N.sidebarActive:"transparent",color:active?N.text:N.textMid,fontSize:13}}>
-                  <div style={{width:8,height:8,borderRadius:"50%",background:g.color,flexShrink:0}}/>
-                  <div style={{flex:1,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",fontWeight:active?500:400}}>{g.label}</div>
-                  <div style={{fontSize:10,color:N.textMute}}>{pct}%</div>
+                  style={{display:"flex",alignItems:"center",gap:8,padding:"6px 10px",borderRadius:8,marginBottom:2,cursor:"pointer",background:active?"rgba(0,0,0,0.07)":"transparent",color:active?N.text:N.textMid,fontSize:13,transition:"background .1s"}}>
+                  <div style={{width:9,height:9,borderRadius:"50%",background:g.color,flexShrink:0,boxShadow:`0 0 0 2px ${g.color}30`}}/>
+                  <div style={{flex:1,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",fontWeight:active?600:400}}>{g.label}</div>
+                  <div style={{fontSize:11,color:N.textMute,fontWeight:500}}>{pct}%</div>
                 </div>
               );
             })}
-            {goals.length===0&&<div style={{fontSize:12,color:N.textMute,padding:"4px 8px"}}>No goals yet</div>}
+            {goals.length===0&&<div style={{fontSize:12,color:N.textMute,padding:"6px 10px",fontStyle:"italic"}}>No goals yet — add one ↑</div>}
           </div>
 
           {/* Bottom */}
-          <div style={{marginTop:"auto",borderTop:`1px solid ${N.border}`,padding:12}}>
-            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
-              <button onClick={()=>setShowImport(true)} style={{...ghostBtn,flex:1,fontSize:12,padding:"6px 10px",textAlign:"left"}}>📥 Import</button>
-              <button onClick={()=>setSoundEnabled(s=>!s)} style={{...iconBtn,fontSize:16}}>{soundEnabled?"🔊":"🔇"}</button>
+          <div style={{marginTop:"auto",borderTop:"1px solid rgba(0,0,0,0.06)",padding:14}}>
+            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
+              <button onClick={()=>setShowImport(true)} style={{...ghostBtn,flex:1,fontSize:12,padding:"6px 10px",textAlign:"left",background:"transparent",border:"none",boxShadow:"none",color:N.textMid}}>📥 Import</button>
+              <button onClick={()=>setSoundEnabled(s=>!s)} style={{...iconBtn,fontSize:16,opacity:.7}}>{soundEnabled?"🔊":"🔇"}</button>
             </div>
-            <div style={{fontSize:11,color:N.textMute,marginBottom:6}}>Lvl {stats.level} · {stats.xp%100}/100 XP · 🔥 {stats.streak}d</div>
-            <div style={{height:4,background:N.border,borderRadius:2,marginBottom:10}}><div style={{height:4,width:`${stats.xp%100}%`,background:N.accent,borderRadius:2}}/></div>
-            <button onClick={signOut} style={{...ghostBtn,width:"100%",fontSize:12,textAlign:"center"}}>Sign Out</button>
+            <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:6}}>
+              <div style={{fontSize:11,color:N.textMute}}>Lvl {stats.level}</div>
+              <div style={{flex:1,height:3,background:"rgba(0,0,0,0.08)",borderRadius:2}}><div style={{height:3,width:`${stats.xp%100}%`,background:N.accent,borderRadius:2,transition:"width .5s"}}/></div>
+              <div style={{fontSize:11,color:N.textMute}}>{stats.streak>0?`🔥 ${stats.streak}d`:""}</div>
+            </div>
+            <button onClick={signOut} style={{...ghostBtn,width:"100%",fontSize:12,textAlign:"center",background:"transparent",border:"none",boxShadow:"none",color:N.textMute,padding:"6px 0"}}>Sign out</button>
           </div>
         </div>
       )}
@@ -989,14 +997,14 @@ function MeridianApp({user}){
 
         {page.type==="scheduler"&&(
           <div style={{flex:1,overflowY:"auto",padding:"48px 64px",maxWidth:900,margin:"0 auto",width:"100%",boxSizing:"border-box"}}>
-            <div style={{fontSize:32,fontWeight:700,color:N.text,marginBottom:24}}>⚡ Schedule Builder</div>
+            <div style={{fontSize:38,fontWeight:800,color:N.text,marginBottom:24,letterSpacing:-1.2}}>Schedule</div>
             <Scheduler user={user}/>
           </div>
         )}
 
         {page.type==="focus"&&(
           <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:40}}>
-            <div style={{fontSize:32,fontWeight:700,color:N.text,marginBottom:8}}>⏱ Focus Timer</div>
+            <div style={{fontSize:38,fontWeight:800,color:N.text,marginBottom:8,letterSpacing:-1.2}}>Focus</div>
             <div style={{fontSize:14,color:N.textMid,marginBottom:32}}>Start a deep work session</div>
             <div style={{display:"flex",flexDirection:"column",gap:10,width:280}}>
               {[["25 min — Pomodoro",25],["50 min — Deep Work",50]].map(([l,m])=>(
@@ -1058,7 +1066,7 @@ function MeridianApp({user}){
           <div style={{...modalBox,width:540}} onClick={e=>e.stopPropagation()}>
             <div style={{fontSize:15,fontWeight:600,marginBottom:6}}>📥 Import</div>
             <div style={{fontSize:13,color:N.textMid,marginBottom:16}}>Paste a plan from Claude or use quick load.</div>
-            <div style={{padding:14,border:`1px solid ${N.border}`,borderRadius:6,marginBottom:14,background:N.bgSoft}}>
+            <div style={{padding:14,border:"1px solid rgba(91,79,232,0.15)",borderRadius:10,marginBottom:14,background:"#F6F4FF"}}>
               <div style={{fontSize:13,fontWeight:600,color:N.accent,marginBottom:8}}>⚡ Quick Load — Full Plan</div>
               <button style={primaryBtn} onClick={seedData} disabled={importLoading}>{importLoading?"Loading…":"Load My Plan"}</button>
             </div>
@@ -1108,15 +1116,15 @@ function SanjuLoader(){
   useEffect(()=>{
     const c=r.current;if(!c)return;const ctx=c.getContext("2d");c.width=window.innerWidth;c.height=window.innerHeight;const W=c.width,H=c.height;
     const img=new Image();img.crossOrigin="anonymous";img.src="https://tbztpvqwiutcrvecqauj.supabase.co/storage/v1/object/public/assets/Screenshot%202026-04-19%20194858.png";
-    const run=()=>{const maxH=Math.min(H*.65,380),ratio=img.naturalWidth/img.naturalHeight||1,dH=maxH,dW=dH*ratio,dX=(W-dW)/2,dY=(H-dH)/2-40;const off=document.createElement("canvas");off.width=Math.round(dW);off.height=Math.round(dH);const oc=off.getContext("2d");oc.drawImage(img,0,0,off.width,off.height);const id2=oc.getImageData(0,0,off.width,off.height),gap=4,particles=[];for(let y=0;y<off.height;y+=gap)for(let x=0;x<off.width;x+=gap){const i=(y*off.width+x)*4;if(id2.data[i+3]<30)continue;particles.push({x:Math.random()*W,y:Math.random()*H,tx:dX+x,ty:dY+y,color:`rgb(${id2.data[i]},${id2.data[i+1]},${id2.data[i+2]})`,size:gap-1,delay:Math.floor(Math.random()*60)});}let frame=0,aid;const animate=()=>{ctx.fillStyle="#FFFFFF";ctx.fillRect(0,0,W,H);for(const p of particles){if(frame<p.delay)continue;p.x+=(p.tx-p.x)*.05;p.y+=(p.ty-p.y)*.05;ctx.fillStyle=p.color;ctx.fillRect(Math.round(p.x),Math.round(p.y),p.size,p.size);}if(frame>200){const a=Math.min(1,(frame-200)/60);ctx.globalAlpha=a;ctx.fillStyle="#2383E2";ctx.font="bold 18px 'Georgia',serif";ctx.textAlign="center";ctx.fillText("Meridian",W/2,dY+dH+48);ctx.fillStyle="#9B9A97";ctx.font="12px 'Inter',sans-serif";ctx.fillText("HOOK 'EM  ·  UT COCKRELL  ·  MECH E",W/2,dY+dH+68);ctx.globalAlpha=1;}frame++;if(frame<280)aid=requestAnimationFrame(animate);};aid=requestAnimationFrame(animate);c._cleanup=()=>cancelAnimationFrame(aid);};
+    const run=()=>{const maxH=Math.min(H*.65,380),ratio=img.naturalWidth/img.naturalHeight||1,dH=maxH,dW=dH*ratio,dX=(W-dW)/2,dY=(H-dH)/2-40;const off=document.createElement("canvas");off.width=Math.round(dW);off.height=Math.round(dH);const oc=off.getContext("2d");oc.drawImage(img,0,0,off.width,off.height);const id2=oc.getImageData(0,0,off.width,off.height),gap=4,particles=[];for(let y=0;y<off.height;y+=gap)for(let x=0;x<off.width;x+=gap){const i=(y*off.width+x)*4;if(id2.data[i+3]<30)continue;particles.push({x:Math.random()*W,y:Math.random()*H,tx:dX+x,ty:dY+y,color:`rgb(${id2.data[i]},${id2.data[i+1]},${id2.data[i+2]})`,size:gap-1,delay:Math.floor(Math.random()*60)});}let frame=0,aid;const animate=()=>{ctx.fillStyle="#FAFAF9";ctx.fillRect(0,0,W,H);for(const p of particles){if(frame<p.delay)continue;p.x+=(p.tx-p.x)*.05;p.y+=(p.ty-p.y)*.05;ctx.fillStyle=p.color;ctx.fillRect(Math.round(p.x),Math.round(p.y),p.size,p.size);}if(frame>200){const a=Math.min(1,(frame-200)/60);ctx.globalAlpha=a;ctx.fillStyle="#5B4FE8";ctx.font="900 20px 'Inter',sans-serif";ctx.textAlign="center";ctx.fillText("Meridian",W/2,dY+dH+48);ctx.fillStyle="#A8A49D";ctx.font="500 11px 'Inter',sans-serif";ctx.fillText("UT COCKRELL  ·  MECH E",W/2,dY+dH+68);ctx.globalAlpha=1;}frame++;if(frame<280)aid=requestAnimationFrame(animate);};aid=requestAnimationFrame(animate);c._cleanup=()=>cancelAnimationFrame(aid);};
     if(img.complete)run();else{img.onload=run;img.onerror=run;}return()=>{if(c._cleanup)c._cleanup();};
   },[]);
-  return(<div style={{position:"fixed",inset:0,background:"#FFF",zIndex:9999}}><canvas ref={r} style={{display:"block",width:"100%",height:"100%"}}/></div>);
+  return(<div style={{position:"fixed",inset:0,background:"#FAFAF9",zIndex:9999}}><canvas ref={r} style={{display:"block",width:"100%",height:"100%"}}/></div>);
 }
 
 /* ── ROOT ───────────────────────────────────────────────────────────── */
 export default function App(){
-  useEffect(()=>{const l=document.createElement("link");l.href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap";l.rel="stylesheet";document.head.appendChild(l);},[]);
+  useEffect(()=>{const l=document.createElement("link");l.href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap";l.rel="stylesheet";document.head.appendChild(l);},[]);
   const [user,setUser]=useState(null);const [checking,setChecking]=useState(true);const [showAuth,setShowAuth]=useState(false);
   useEffect(()=>{
     const min=new Promise(r=>setTimeout(r,4000));
